@@ -1,0 +1,22 @@
+{
+  "name": "vsqle-client",
+  "version": "1.0.0",
+  "description": "VoltDB SQL client",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "voltdb",
+    "editor"
+  ],
+  "author": "aamadeo27",
+  "license": "ISC",
+  "dependencies": {
+    "react": "^15.3.2",
+    "react-ace": "^3.6.1",
+    "react-dom": "^15.3.2",
+    "react-redux": "^4.4.5",
+    "redux": "^3.6.0"
+  }
+}

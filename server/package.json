@@ -1,0 +1,29 @@
+{
+  "name": "vsqle",
+  "version": "0.0.1",
+  "description": "SQL Editor for voltDB",
+  "main": "entry/sever.js",
+  "scripts": {
+    "start": "nodemon --watch ./entry --watch ./modules --delay 250ms --exec npm run start:server",
+    "start:server": "node --harmony ./entry/server.js"
+  },
+  "author": "aamadeo27",
+  "license": "ISC",
+  "dependencies": {
+    "async": "~2.0.0-rc.6",
+    "babel": "^6.5.2",
+    "bcryptjs": "^2.3.0",
+    "body-parser": "~1.15.1",
+    "compression": "^1.6.2",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.2.0",
+    "ejs": "~2.4.1",
+    "express": "^4.14.0",
+    "express-session": "^1.14.0",
+    "hashcode": "^1.0.3",
+    "if-env": "^1.0.0",
+    "morgan": "~1.7.0",
+    "serve-favicon": "~2.3.0",
+    "voltjs": "git+https://github.com/VoltDB/voltdb-client-nodejs.git"
+  }
+}
