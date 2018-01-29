@@ -1,11 +1,11 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
-import './index.css';
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap/dist/css/bootstrap-theme.css';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import App from './App'
+import './css/bootstrap-cerulean.min.css'
+//import 'bootstrap/dist/css/bootstrap-theme.min.css'
+import './App.css'
 
-const rootEl = document.getElementById('root');
+const rootEl = document.getElementById('root')
 
 ReactDOM.render(
   <App />,

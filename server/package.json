@@ -4,8 +4,8 @@
   "description": "SQL Editor for voltDB",
   "main": "entry/sever.js",
   "scripts": {
-    "start": "nodemon --watch ./entry --watch ./modules --delay 250ms --exec npm run start:server",
-    "start:server": "node --harmony ./entry/server.js"
+    "start": "nodemon --watch . --delay 250ms --exec npm run start:server",
+    "start:server": "node --harmony ./server.js"
   },
   "author": "aamadeo27",
   "license": "ISC",
@@ -23,6 +23,7 @@
     "hashcode": "^1.0.3",
     "if-env": "^1.0.0",
     "morgan": "~1.7.0",
+    "node-fetch": "^1.6.3",
     "serve-favicon": "~2.3.0",
     "voltjs": "git+https://github.com/VoltDB/voltdb-client-nodejs.git"
   }
