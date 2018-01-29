@@ -100,6 +100,8 @@ class Tools extends React.Component {
 
 		const reload = this.reload.bind(this)
 		const loadSchema = this.loadSchema.bind(this)
+
+		const openWikiPage = window.open("http://aamadeo27.github.com/vsqle/wiki","_blank")
 		
     return (
       <Row><Col xsOffset={0} xs={12}>
@@ -136,7 +138,7 @@ class Tools extends React.Component {
 						<Button title="variables" bsStyle="info" onClick={this.props.toggleShowVars} bsSize='small'>
 							{"${vars}"}
 						</Button>
-						<Button title="help" bsStyle="info" onClick={() => console.log("Help")} bsSize="small">
+						<Button title="help" bsStyle="info" onClick={openWikiPage} bsSize="small">
 							<Glyphicon glyph="question-sign"/>
 						</Button>
 					</ButtonGroup>

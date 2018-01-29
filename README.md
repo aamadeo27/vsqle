@@ -18,8 +18,14 @@ Node v8 or later
 cd client/
 npm install
 npm run build
-cd server/
+cd ../server/
 npm install
+```
+
+### Run
+```
+cd server/
+node server.js
 ```
 
 ## Built With
@@ -31,6 +37,7 @@ npm install
 * [react](https://reactjs.org/docs/)
 * [redux](https://redux.js.org/)
 * [react-bootstrap](https://react-bootstrap.github.io/)
+* [react-ace](https://github.com/securingsincity/react-ace)
 
 ## Authors
 
