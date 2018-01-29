@@ -1,19 +1,3 @@
-## Table of contents
-- [Install](#install)
-- [Run](#run)
-
-### Install
-```
-cd client/
-npm install
-npm run build
-cd server/
-npm install
-```
-### Run
-cd server
-node index
-
 # Volt SQL Editor
 
 Web based sql editor for VoltDB
