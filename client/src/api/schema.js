@@ -1,21 +1,14 @@
+import * as api from './api'
 
-const url = `http://${window.location.host}/schema`
-
-const headers = new Headers()
-headers.append('Accept','application/json')
-headers.append('Content-Type','application/json') 
-
-const loadObject = body => {
-	const conf = { 
-		method: 'POST',
-		headers,
-		body: JSON.stringify( body )
+const loadObject = object => api.loadObject(object).then ( response => {
+	if ( response.error){
+		return { error: response.error }
+	} else {
+		return response
 	}
+})
 
-	return fetch(url, conf).then( response => response.json() )
-}
-
-export const load = serverConfig => {
+export const load = handleError => {
 	const schema = {
 		tables: false,
 		procedures: false,
@@ -26,7 +19,7 @@ export const load = serverConfig => {
 		schema[name] = {}
 
 		if ( object.error ){
-			console.error(object.error)
+			console.error("Load Schema Error", object)
 			return
 		}
 
@@ -86,22 +79,18 @@ export const load = serverConfig => {
 	}
 
 	const job = (resolve, reject) => {
-		let body = Object.assign({}, serverConfig, { objectType: 'PROCEDURECOLUMNS' })
-		loadObject(body).then( procedures => 
+		loadObject('PROCEDURECOLUMNS').then( procedures => 
 			afterLoad("procedures", procedures, resolve, reject)
 		).catch( err => reject(err) )
 
-		body = Object.assign({}, serverConfig, { objectType: 'COLUMNS' })
-		loadObject(body).then( columns => 
+		loadObject('COLUMNS').then( columns => 
 			afterLoad("tables", columns, resolve, reject)
 		).catch( err => reject(err) )
 
-
-		body = Object.assign({}, serverConfig, { objectType: 'PRIMARYKEYS' })
-		loadObject(body).then( columns => 
+		loadObject('PRIMARYKEYS').then( columns => 
 			afterLoad("pks", columns, resolve, reject)
 		).catch( err => reject(err) )
 	}
 
-	return new Promise(job).catch( err => console.log(err))
+	return new Promise(job).catch( handleError )
 }

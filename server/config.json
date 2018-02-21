@@ -1,0 +1,8 @@
+{
+    "key" : "localhost.key",
+    "cert" : "localhost.crt",
+    "origin" : "http://10.150.55.146:3000",
+    "port" : 8084,
+    "voltdbPort" : 21212,
+    "loginDelay": 1200
+}

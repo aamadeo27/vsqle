@@ -110,7 +110,6 @@ class Editor extends React.Component {
 	addTab(){
 		const { addTab } = this.props
 
-		//const fileID = api.getFileID()
 		const newTab = api.newTab()
 		addTab(newTab)
 
@@ -124,19 +123,21 @@ class Editor extends React.Component {
 	}
 
 	loadSchema(){
-		const { updateSchema, addResult } = this.props
+		const { updateSchema, addResult, connection } = this.props
+		const handleError = err => addResult( { error: err.error, queryConfig: { query: "Load Schema" } })
 
-		schema.load( this.props.config ).then( response => {
-
-			console.log({ response })
-
-			if ( response ){
-				const {tables, procedures, columns, pks} = response
-				updateSchema(tables, procedures, columns, pks)
-			} else {
-				addResult( { error: "No response from back end", queryConfig: { query: "Load Schema" } })
-			}
-		})
+		if ( connection.user ){
+			schema.load( ).then( response => {
+				if ( response ){
+					const {tables, procedures, columns, pks} = response
+					updateSchema(tables, procedures, columns, pks)
+				} else {
+					handleError({ error: "No response from back end" })
+				}
+			}).catch ( e => {
+				handleError(e)
+			})
+		}
 	}
 
 	componentDidMount(){
@@ -147,7 +148,7 @@ class Editor extends React.Component {
 	componentDidUpdate(prevProps){
 		this.checkTabs()
 
-		if ( prevProps.config.host !== this.props.config.host ){
+		if ( prevProps.connection !== this.props.connection ){
 			this.loadSchema()
 		}
 
@@ -205,12 +206,13 @@ class Editor extends React.Component {
   }
 }
 
-const mapStateToProps = ({ tabs, activeTab, config, schema, vars }) => ({ 
+const mapStateToProps = ({ tabs, activeTab, config, schema, vars, connection }) => ({ 
 	tabs,
 	activeTab,
 	config,
 	schema,
-	vars
+	vars,
+	connection
 })
 
 const mapDispatchToProps =  dispatch => ({

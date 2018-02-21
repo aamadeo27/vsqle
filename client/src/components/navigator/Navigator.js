@@ -29,7 +29,9 @@ const Folder = ({ folder, depth, handlers, expanded }) => ({
 
 const Project = ({ project, handlers }) => ({
   render(){
-    return <Folder folder={this.props.project.root} depth={0} handlers={handlers} expanded={true}/>
+    return <div className="Navigator"
+      ><Folder folder={this.props.project.root} depth={0} handlers={handlers} expanded={true}/>
+    </div>
   }
 })
 
@@ -45,9 +47,15 @@ class Navigator extends Component {
   }
 
 	upload(e){
+    let path = e.target.value
+
+    if ( path.match(/\\/) ){
+      path = path.split("\\").join("/")
+    }
+
 		const { updateProject } = this.props
 		const target = {
-			name: e.target.value.replaceAll("\\","/").split("/").pop(),
+			name: path.split("\\").pop(),
 			file: e.target.files[0]
 		}
 
@@ -111,20 +119,20 @@ class Navigator extends Component {
 		return <div>
       <Row><Col xsOffset={1} xs={11}>
         <ButtonToolbar>
-          <ButtonGroup>
-            <Button bsSize="small" title="new folder" bsStyle="success" onClick={() => this.props.changeDialog('NewFolder')}>
+          <ButtonGroup  bsSize="small">
+            <Button title="new folder" bsStyle="success" onClick={() => this.props.changeDialog('NewFolder')}>
               <Glyphicon glyph="folder-close"/>
             </Button>
-            <Button bsSize="small" title="delete" bsStyle="success" onClick={this.delete.bind(this)}>
+            <Button title="delete" bsStyle="success" onClick={this.delete.bind(this)}>
               <Glyphicon glyph="trash"/>
             </Button>
-            <Button bsSize="small" title="rename" bsStyle="success" onClick={() => this.props.changeDialog('Rename')}>
+            <Button title="rename" bsStyle="success" onClick={() => this.props.changeDialog('Rename')}>
               <Glyphicon glyph="edit"/>
             </Button>
-            <Button bsSize="small" title="download project" bsStyle="success" onClick={this.download.bind(this)}>
+            <Button title="download project" bsStyle="success" onClick={this.download.bind(this)}>
               <Glyphicon glyph="cloud-download"/>
             </Button>
-            <Button bsSize="small" title="upload project" bsStyle="success" >
+            <Button title="upload project" bsStyle="success" >
 							<div className='fileUpload'>
 								<Glyphicon glyph="cloud-upload"/>
 								<input type='file' id='file' onChange={this.upload.bind(this)}/>

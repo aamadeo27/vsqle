@@ -7,20 +7,41 @@ const session = require('express-session')
 const bodyParser = require('body-parser')
 const app = express()
 const fs = require('fs')
-const PORT = process.env.PORT || 10080
+const https = require('https')
+const config = require('./config.json')
+const appLogger = require('./logger')
+
+const PORT = config.port || 8084
+
+appLogger.log("Configuration", config)
 
 /*Routers*/
 const client = require('./client')
 const schema = require('./schema')
 
-app.listen(PORT, function () {
-	console.log("Listening on " + PORT)
-})
+app.use(session({
+	resave: true, 
+	saveUninitialized: true,
+	secret: 'AManHasNoSecrets',
+	cookie: {
+		path: '/',
+		maxAge: 1000 * 60 * 60 * 24,
+		httpOnly: false,
+		secure: true
+	}
+}))
+
+app.disable('x-powered-by')
+
+https.createServer({
+	key: fs.readFileSync(config.key),
+	cert: fs.readFileSync(config.cert)
+}, app).listen({ port: PORT }, () => appLogger.log("vsqle-be listening on " + PORT))
 
 app.use(compression())
 app.use(function (req, res, next) {
 	// Website you wish to allow to connect
-	res.setHeader('Access-Control-Allow-Origin', 'http://www.dev.localhost:3000')
+	res.setHeader('Access-Control-Allow-Origin', config.origin)
 	// Request methods you wish to allow
 	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE')
 	// Request headers you wish to allow
@@ -42,5 +63,4 @@ if (app.get('env') === 'production') {
 	app.set('trust proxy', 1)
 }
 
-app.use('/query', client)
-app.use('/schema', schema)
+app.use('/', client)

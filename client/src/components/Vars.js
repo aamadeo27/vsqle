@@ -4,7 +4,7 @@ import Sidebar from 'react-sidebar'
 import { 
 	Row, Col,
 	Form, FormControl, InputGroup,
-	Glyphicon, Button
+	Glyphicon, Button, ButtonGroup
 } from 'react-bootstrap'
 
 import * as actions from '../Actions.js'
@@ -15,7 +15,7 @@ class Variable extends Component {
 	constructor(props){
 		super(props)
 
-		this.state = { variable: props.variable }
+		this.state = { variable: props.variable, editable: false }
 	}
 
 	onNameChange(e){
@@ -28,28 +28,64 @@ class Variable extends Component {
 		this.setState({ variable })
 	}
 
+	edit(){
+		this.setState({ editable: true })
+	}
+
 	render(){
 		const update = () => {
 			api.updateVar(this.state.variable)
 			this.props.onChange(this.state.variable)
-		}
-		const remove = variable => {
-			api.removeVar(this.state.variable)
-			this.props.remove(variable)
+			this.setState({ editable: false })
 		}
 
-		return <Form inline onBlur={update} onSubmit={update}>
-			<div id="xx-tmp" />
-			<InputGroup>
-				<FormControl componentClass={Button} bsStyle="danger" onClick={() => remove(this.props.variable)}>
-					<Glyphicon glyph="trash"/>
-				</FormControl>
-				<InputGroup.Addon>name</InputGroup.Addon>
-				<FormControl ref="name" type="text" size={10} value={this.state.variable.name} onChange={this.onNameChange.bind(this)}/>
-				<InputGroup.Addon>value</InputGroup.Addon>
-				<FormControl ref="value" type="text" size={20} value={this.state.variable.value} onChange={this.onValueChange.bind(this)}/>
-			</InputGroup>
-		</Form>
+		const example = "${" + this.state.variable.name + "} = " + this.state.variable.value
+
+		if ( this.state.editable ){
+			return <form onSubmit={update}>
+				<InputGroup inline>
+					<FormControl 
+						placeholder="Name"
+						ref="name"
+						type="text"
+						size={5}
+						value={this.state.variable.name}
+						onChange={this.onNameChange.bind(this)}
+					/>
+					<InputGroup.Addon>=</InputGroup.Addon>
+					<FormControl 
+						placeholder="Value"
+						ref="value"
+						type="text"
+						size={10}
+						value={this.state.variable.value}
+						onChange={this.onValueChange.bind(this)}
+					/>
+				</InputGroup>
+				<Button type="submit" className="invisible-submit"/>
+			</form>
+		}
+
+		const remove = () => {
+			api.removeVar(this.state.variable)
+			this.props.remove(this.state.variable)
+		}
+
+		return <Row className="hover-row">
+			<Col xs={9}>
+				<div className="variable">{example}</div>
+			</Col>
+			<Col xs={3}>
+				<ButtonGroup bsSize="xsmall">
+					<Button bsStyle="primary" onClick={() => this.edit()}>
+						<Glyphicon glyph="edit"/>
+					</Button>
+					<Button bsStyle="danger" onClick={remove}>
+						<Glyphicon glyph="remove"/>
+					</Button>
+				</ButtonGroup>
+			</Col>
+		</Row>
 	}
 }
 
@@ -64,7 +100,7 @@ class Vars extends Component {
 		const addVar = () => {
 			const variable = {
 				id : api.getFileID(),
-				name: '',
+				name: 'var_'+this.props.vars.list.length,
 				value: ''
 			}
 
@@ -82,27 +118,43 @@ class Vars extends Component {
 			/>
 		})
 
-		const content = <div style={{ background: "white", height: "100%", width: "100%", padding: 0, margin: 0 }}>
+		const content = <div style={{ background: "white", height: "100%", width: "30vw", padding: 0, margin: 0 }}>
 			<Row>
 				<Col xs={12}>
-					<Button onClick={this.props.hideVars} bsSize="large" block>
-						<Glyphicon glyph="menu-right"/>
-					</Button>
+					<span className="vars-header">Variables</span>
 				</Col>
 			</Row>
 			<Row>
 				<Col xs={12}>
-					<span className="vars-header">Variables</span>
-					<br/>
-					<Button onClick={addVar} bsSize="small" bsStyle="info" block>
-						<Glyphicon glyph="plus-sign"/> Add Variable
-					</Button>
+					<hr />
+				</Col>
+			</Row>
+			<Row>
+				<Col xs={12}>
 					{varList}
+				</Col>
+			</Row>
+			<Row>
+				<Col xs={12}>
+					<hr />
+				</Col>
+			</Row>
+			<Row>
+				<Col xs={2} xsOffset={1}>
+					<Button bsStyle="primary" bsSize="small" onClick={addVar}>
+						Add Variable
+					</Button>
 				</Col>
 			</Row>
     </div>
 
-		return <Sidebar sidebar={content} open={this.props.vars.show} pullRight style={{ overflowY:"hidden"}}>
+		return <Sidebar 
+			sidebar={content} 
+			open={this.props.vars.show} 
+			pullRight 
+			style={{ overflowY:"hidden"}}
+			onSetOpen={this.props.hideVars}
+		>	
 			{this.props.children}
 		</Sidebar>
 	}

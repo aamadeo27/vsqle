@@ -45,10 +45,10 @@ class Editor extends React.Component {
 
 		const sortF = (a,b) => (a.queryConfig.id - b.queryConfig.id)
 		const resultPanels = results.sort(sortF).map( (result, i) => {
-			if ( result.error ) return <ResultError {...result} key={i} retry={retry}/> 
 			if ( result.describe ) return <Describe key={i} table={result.table} name={result.queryConfig.table} expanded={result.expanded}/>
+			if ( result.error || !result.result ) return <ResultError {...result} key={i} retry={retry}/> 
 
-			return <Result {...result} key={i} {...handlers} />
+			return <Result {...result} key={i} {...handlers} config={serverConfig}/>
 		})
 
     return <Row>

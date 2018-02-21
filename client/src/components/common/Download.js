@@ -30,7 +30,7 @@ export default class extends React.Component {
 		try {
 			_content = window.btoa(content)
 		} catch (err) {
-			console.error(err, content)
+			console.error("Error File:" + name)
 		}
 
 		const href = 'data:application/octet-stream;base64,' + _content

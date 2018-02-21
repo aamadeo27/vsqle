@@ -26,7 +26,8 @@ import {
 	UPDATE_VARIABLE,
 	REMOVE_VARIABLE,
 	
-	TOGGLE_SHOWVARS
+    TOGGLE_SHOWVARS,
+    UPDATE_CONNECTION
 } from './Constants.js'
 
 export const changeDialog = dialog => ({ type: CHANGE_DIALOG, dialog })
@@ -56,3 +57,5 @@ export const addVariable = variable => ({ type: ADD_VARIABLE, variable })
 export const removeVariable = variable => ({ type: REMOVE_VARIABLE, variable })
 export const updateVariable = variable => ({ type: UPDATE_VARIABLE, variable })
 export const toggleShowVars = ({ type: TOGGLE_SHOWVARS })
+
+export const updateConnection = connection => ({ type: UPDATE_CONNECTION, connection })

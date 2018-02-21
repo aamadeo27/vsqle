@@ -1,5 +1,5 @@
-import { IGNORE_PATTERN, CONNECTION_ERROR, TIMEOUT_ERROR } from '../Constants.js'
-
+import { IGNORE_PATTERN } from '../Constants.js'
+import * as api from './api'
 const trimQuery = query => query.replace(IGNORE_PATTERN,'').replace(/\n/g,' ').replace(/^\s+|\s+$/g, '')
 
 const parseQuery = (inputString, variables) => {
@@ -67,7 +67,7 @@ const getAllQueries = editor => {
 	
 	while( true ){
 		let querySection = getQueryInLine(editor, pos)
-		queries.push ( trimQuery(querySection.content).replace(";","") )
+		queries.push ( trimQuery(querySection.content).replace(/;\s*$/,"") )
 		
 		let { row, column } = querySection
 		pos = { row, column }
@@ -109,8 +109,6 @@ const getSelectInfo = queryString => {
 	}
 	
 	var matches = queryString.match(new RegExp(regexpStr,"i"))
-
-	console.log({matches, fromStr, regexpStr, queryString})
 	
 	fromStr = matches[fromStr].split(",")
 	fromStr = fromStr.map( e => {
@@ -130,8 +128,6 @@ const getSelectInfo = queryString => {
 	return select
 }
 
-const url = `http://${window.location.host}/query`
-
 const describe = (queryConfig, schema) => new Promise( (resolve, reject) => {
 	if ( ! schema.tables ) resolve({ queryConfig, error: 'Schema not loaded' })
 
@@ -148,7 +144,6 @@ const describe = (queryConfig, schema) => new Promise( (resolve, reject) => {
 })
 
 export const executeQuery = (queryConfig, serverConfig, schema) => {
-
 	if ( queryConfig.describe ){
 		return describe(queryConfig, schema)
 	}
@@ -160,34 +155,13 @@ export const executeQuery = (queryConfig, serverConfig, schema) => {
 		query += " offset " + queryConfig.offset
 	}
 
-	const headers = new Headers()
-	headers.append('Accept','application/json')
-  	headers.append('Content-Type','application/json') 
-
-	const conf = { 
-		method: 'POST',
-		headers,
-		body: JSON.stringify( Object.assign({}, serverConfig, { query }) )
-	}
-
-	console.log({ query })
-
-	return new Promise( (resolve, reject) => {
-		fetch(url, conf).then( response => {
-			response.json().then( json =>  ( json.error 
-				? resolve({ queryConfig, error: json.error })
-				: resolve({ queryConfig, result: json }) 
-			))
-		}).catch( reason => 
-			resolve({ queryConfig, error: CONNECTION_ERROR })
-		)
-
-		console.log("ServerConfig", serverConfig)
-		setTimeout(
-			() => resolve({ queryConfig, error: TIMEOUT_ERROR }),
-			serverConfig.timeout || 5000
-		)
-	}).then( x => { console.log("Response: ", x) ; return x })
+	return api.executeQuery(query).then ( response => {
+		if ( response.error ){
+			return { queryConfig, error: response.error }
+		} else {
+			return { queryConfig, result: response }
+		}
+	})
 }
 
 const prepareQueries = queries => {
@@ -198,8 +172,6 @@ const prepareQueries = queries => {
 		const queryConfig = { id: queue.length, paginable: false }
 		const selectRegex = /^\s*select .+ from .+/i
 		const describeRegex = /^\s*describe\s+(.+)\s*/i
-
-		console.log({ query })
 
 		const describeQuery = query.match(describeRegex)
 		if ( describeQuery ){
@@ -246,18 +218,18 @@ const executeSQL = (editor, config, variables, schema) => {
 	let queryString = editor.getSelectedText()
         
 	if ( queryString === undefined || queryString === '' ) {
-			queryString = editor.getValue()
+		queryString = editor.getValue()
 	}
 
-  queryString = parseQuery( queryString, variables )
+	queryString = parseQuery( queryString, variables )
 
-  editor.setValue(IGNORE_PATTERN + queryString)
+	editor.setValue(IGNORE_PATTERN + queryString)
 	const queue = prepareQueries( getAllQueries(editor) )
 	
 	const queryPromises = []
 	queue.forEach( query => queryPromises.push(executeQuery(query, config, schema)) )
     
-  editor.setValue(editorContent)
+	editor.setValue(editorContent)
 	editor.selection.clearSelection()
 	editor.selection.moveCursorTo(curPos.row, curPos.column)
 
@@ -266,7 +238,7 @@ const executeSQL = (editor, config, variables, schema) => {
 
 export const executeLine = (editor, config, variables, schema) => {
 	const curPos = editor.getCursorPosition()
-  let query = getQueryInLine(editor, curPos).content
+	let query = getQueryInLine(editor, curPos).content
 
 	if ( query.charAt(query.length-1) === ';' ){
 		query = query.substring(0,query.length-1)

@@ -102,7 +102,7 @@ class EditorTab extends Component {
 		addCommand(tab.editor,{ name: "leftTab", win: "Ctrl+Left", mac: "", action: leftTab } )
 		addCommand(tab.editor,{ name: "newTab", win: "Alt+T", mac: "Cmd+T", action: newTab } )
 		addCommand(tab.editor,{ name: "closeTab", win: "Alt+W", mac: "Cmd+W", action: close } )
-		addCommand(tab.editor,{ name: "variables", win: "Alt+V", mac: "Alt+V", action: toggleVars } )
+		addCommand(tab.editor,{ name: "variables", win: "F3", mac: "F3", action: toggleVars } )
 
 		updateTab( tab )
 		this.props.setCompleters(tab.editor)
@@ -126,7 +126,6 @@ class EditorTab extends Component {
 
 		const execute = () => {
 			clearResults()
-			console.log("EditorTab.cdu.Execute", { schema })
 			query.execute(tab.editor, config, vars.list, schema).forEach( promise => {
 				promise.then( addResult )
 			})
@@ -151,9 +150,13 @@ class EditorTab extends Component {
       theme: "textmate",
       name: "EditorTab." + file.id,
       height: "35vh",
-      width: "100%",
-      showGutter: false,
-      editorProps: { $blockScrolling: true }
+			width: "100%",
+			showGutter: false,
+			fontFamily: "tahoma",
+			fontSize: "10pt",
+      editorProps: { 
+				$blockScrolling: true,
+			}
     }
 
     return <div className="EditorTab">

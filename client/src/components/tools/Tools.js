@@ -30,11 +30,17 @@ class Tools extends React.Component {
 	}
 
 	loadSchema(){
-		const { updateSchema } = this.props
+		const { updateSchema, addResult } = this.props
+		const handleError = err => addResult( { error: err.error , queryConfig: { query: "Load Schema" } })
 
-		schema.load( this.props.config ).then( ({tables, procedures, columns, pks}) => {
+		schema.load( this.props.config ).then( response => {
+			if (! response ){
+				handleError({ error : "No response from back end" })
+			}
+
+			const {tables, procedures, columns, pks} = response
 			updateSchema(tables, procedures, columns, pks)
-		})
+		}).catch( handleError )
 	}
 
 	execute(){
@@ -53,7 +59,7 @@ class Tools extends React.Component {
 	upload(e){
 		const { addTab } = this.props
 		const target = {
-			name: e.target.value.replaceAll("\\","/").split("/").pop(),
+			name: e.target.value.split("\\").pop(),
 			file: e.target.files[0]
 		}
 
@@ -101,44 +107,44 @@ class Tools extends React.Component {
 		const reload = this.reload.bind(this)
 		const loadSchema = this.loadSchema.bind(this)
 
-		const openWikiPage = window.open("http://aamadeo27.github.com/vsqle/wiki","_blank")
+		const openWikiPage = () => window.open("https://github.com/aamadeo27/vsqle/wiki/Guide","_blank")
 		
     return (
       <Row><Col xsOffset={0} xs={12}>
         <ButtonToolbar>
-          <ButtonGroup>
-            <Button bsSize="small" title="configuration" bsStyle="warning" onClick={() => changeDialog("Config")}>
+          <ButtonGroup bsSize="small">
+            <Button title="configuration" bsStyle="warning" onClick={() => changeDialog("Config")}>
               <Glyphicon glyph="cog"/>
             </Button>
-						<Button bsSize="small" title="reload schema" bsStyle="warning" onClick={loadSchema}>
+						<Button title="reload schema" bsStyle="warning" onClick={loadSchema}>
 							<Glyphicon glyph="refresh"/>
 						</Button>
-            <Button bsSize="small" title="execute" bsStyle="warning" onClick={this.execute.bind(this)}>
+            <Button title="execute" bsStyle="warning" onClick={this.execute.bind(this)}>
               <Glyphicon glyph="play"/>
             </Button>
           </ButtonGroup>
-          <ButtonGroup>
-            <Button bsSize="small" title="save" bsStyle="warning" onClick={this.save.bind(this)}>
+          <ButtonGroup bsSize="small">
+            <Button title="save" bsStyle="warning" onClick={this.save.bind(this)}>
               <Glyphicon glyph="floppy-disk"/>
 						</Button>
-            <Button bsSize="small" title="reload" bsStyle="warning" onClick={reload} disabled={!existsInProject}>
+            <Button title="reload" bsStyle="warning" onClick={reload} disabled={!existsInProject}>
 							<Glyphicon glyph="repeat"/>
 						</Button>
-            <Button bsSize="small" title="download" bsStyle="warning" onClick={this.download.bind(this)}>
+            <Button title="download" bsStyle="warning" onClick={this.download.bind(this)}>
 							<Glyphicon glyph="save"/>
 						</Button>
-            <Button bsSize="small" title="upload" bsStyle="warning">
+            <Button title="upload" bsStyle="warning">
 							<div className='fileUpload'>
 								<Glyphicon glyph="open"/>
 								<input type='file' id='file' onChange={this.upload.bind(this)}/>
 							</div>
 						</Button>
 					</ButtonGroup>
-					<ButtonGroup>
-						<Button title="variables" bsStyle="info" onClick={this.props.toggleShowVars} bsSize='small'>
-							{"${vars}"}
+					<ButtonGroup bsSize="small">
+						<Button bsStyle="info" onClick={this.props.toggleShowVars}>
+							<span className="tool">{"${vars}"}</span>
 						</Button>
-						<Button title="help" bsStyle="info" onClick={openWikiPage} bsSize="small">
+						<Button title="help" bsStyle="info" onClick={openWikiPage}>
 							<Glyphicon glyph="question-sign"/>
 						</Button>
 					</ButtonGroup>

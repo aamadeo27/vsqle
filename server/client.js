@@ -1,56 +1,175 @@
 const express = require('express')
 const router = express.Router()
-const url = require('url')
-const fetch = require('node-fetch')
-
-
+const getVoltConnection = require('./VoltConnection')
 const sendMw = (res,object) => res.send(JSON.stringify(object))
+const { BigInteger } = require('bignumber')
+const logger = require('./logger')
 
-router.post('/', (req, res, next) => {
+const connections = new Map()
+const disconnects = new Map()
+
+const disconnect = (req) => {
+	const { cid, name } = req.session
+
+	if ( cid ) {
+		delete req.session.cid
+		delete req.session.name
+
+		const connection = connections.get(cid)
+		if ( connection && connection.connected() ){
+			connection.close()
+			connections.delete(cid)
+		}
+
+		const disconnect = disconnects.get(cid)
+		if ( disconnect ){
+			clearTimeout(disconnect)
+			delete req.session.disconnect
+		}
+	}
+}
+
+const valueOf = v => {
+	if ( typeof v !== 'object' || !v ) return v
 	
-	console.log("body:", req.body)
-	
-	let { query, host, user, password } = req.body
-	const port = req.body.port || 8080
-	
-	query = query.split('"').join('\\"')
-	query = query.split('%').join('%25')
-	
-	const params = [
-		`Procedure=@AdHoc`,
-		`Parameters=["${encodeURIComponent(query)}"]`,
-		`User=${encodeURIComponent(user)}`,
-		`Password=${encodeURIComponent(password)}`,
-	]
-	
-  const queryURL = decodeURI(`http://${host}:${port}/api/1.0/?`+params.join("&"))
-	let resolved = false
-	
-	console.log ( "\nurl: ", queryURL )
-	console.log ( "\nquery: <", query ,">")
-	
-   fetch(queryURL).then( response => {
-		response.json().then( json =>{
-			if ( resolved ) return
-			resolved = true
-			
-			console.log(json)
-			if ( json.status == 1 ) sendMw(res, json.results[0]) 
-			else sendMw(res, { error: json.statusstring })
+	//BigInteger
+	if ( v['0'] ) return v['0']
+
+	return v.getTime()
+}
+
+router.get('/session', (req, res, next) => {
+	const { cid, name } = req.session
+
+	if ( cid ){
+		const connection = connections.get(cid)
+
+		let response = { name }
+		if ( connection && connection.connected() ) {
+			response = { name, user: connection.client.config[0].username }
+		}
+
+		sendMw(res, response)
+		logger.log("GetSession", response)
+	} else {
+		sendMw(res, {})
+	}
+})
+
+router.get('/schema', (req, res, next) => {
+	const { cid, name } = req.session
+	const { object } = req.query
+
+	logger.log("Schema",{ object })
+
+
+	if ( cid ){
+		const connection = connections.get(cid)
+		
+		connection.loadSchema(object).then( r => {
+			const { table, err } = r
+
+			let data = undefined, schema = undefined
+			if ( table.length > 0 ){
+				schema = table[0].columnTypes.map( (t,i) => ({ name: table[0].columnNames[i], type : t }) )
+				data = table[0].map( r => table[0].columnNames.map( (t,i) => valueOf(r[table[0].columnNames[i]]) ))
+				
+				delete data.columnNames
+				delete data.columnTypes
+			}
+
+			const response = { data, schema, error: r.status !== 1 ? r.statusString : undefined }
+			logger.log("Schema",{ response })
+			sendMw(res, response )
+		}).catch( err => {
+			logger.error("Schema",{ error: err.toString() })
+			sendMw(res, { error: err })
 		})
-   }).catch( err => {
-		console.log("Error: ")
+		
+	} else {
+		const response = { error: "Not logged in" }
+		logger.error("QueryResponse", response )
+		sendMw(res, response)
+	}
+})
+
+router.get('/disconnect', (req, res, next) => {
+	const { cid, name } = req.session
+
+	logger.log("LogOutRequest", { name, cid })
+	disconnect(req)
+
+	logger.log("LogOutResponse", { name, status: 0 })
+	sendMw(res, { status: 0 })
+})
+
+router.post('/connect', (req, res, next) => {
+	const { cid, name: currSession } = req.session
+	const { user , nodes, name } = req.body
+
+	if ( cid ){
+		const connection = connections.get(cid)
+		if ( connection && connection.connected() ) {
+			return sendMw(res, { status: 0 })
+		} else {
+			disconnect(req)
+		}
+	}
+	
+	logger.log("LogInRequest", { user, nodes })
+	
+	const conn = getVoltConnection(req.body)
+	conn.connect().then( connection => {
+		connection.id = `${req.headers.cookie.substring(14)}`
+		req.session.cid = connection.id
+		req.session.name = name
+
+		const disconnect = setTimeout(() => connections.delete(connection.id), req.session.cookie.maxAge)
+		connections.set(connection.id, connection)
+		disconnects.set(connection.id, disconnect)
+
+		logger.log("LogInResponse",{ user, status: 0 })
+		sendMw(res, { status: 0 })
+	}).catch( err => {
+		req.session.name = undefined
+		logger.log("LogInResponse -Catch-",{ user, error: err })
+		console.log(err)
+		sendMw(res, { err })
 	})
-	
-	setTimeout( () => {
-		if ( resolved ) return
-		resolved = true
+})
+
+router.post('/query', (req, res, next) => {
+	const { session: { cid } ,  body: { query }} = req
+
+	logger.log("QueryRequest",{ query })
+	if ( cid ){
+		const connection = connections.get(cid)
 		
-		console.log("TIMEOUT")
+		connection.executeQuery(query).then( r => {
+			const { table, err } = r
+
+			let data = undefined, schema = undefined
+			if ( table.length > 0 ){
+				schema = table[0].columnTypes.map( (t,i) => ({ name: table[0].columnNames[i], type : t }) )
+				data = table[0].map( r => table[0].columnNames.map( (t,i) => valueOf(r[table[0].columnNames[i]]) ))
+				
+				delete data.columnNames
+				delete data.columnTypes
+			}
+
+			const response = { data, schema, error: r.status !== 1 ? r.statusString : undefined }
+			logger.log("QueryResponse",{ response })
+			sendMw(res, response )
+		}).catch( err => {
+			logger.error("QueryResponse",{ error: err })
+			sendMw(res, { error: err })
+		})
 		
-		sendMw(res, { error: 'Timeout' })
-	}, req.body.timeout - 50)
-	
+	} else {
+		const response = { error: "Not logged in" }
+		logger.error("QueryResponse", response )
+		sendMw(res, response)
+	}
 })
 
 module.exports = router

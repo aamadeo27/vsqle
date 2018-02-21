@@ -30,7 +30,9 @@ import {
 	UPDATE_VARIABLE,
 	REMOVE_VARIABLE,
 	
-	TOGGLE_SHOWVARS
+	TOGGLE_SHOWVARS,
+
+	UPDATE_CONNECTION
 } from '../Constants.js'
 
 import { 
@@ -174,9 +176,19 @@ const show = (state = false, action) => {
 	return state
 }
 
+const connection = ( state = {}, action ) => {
+	switch(action.type){
+		case UPDATE_CONNECTION:
+			return action.connection
+		default:
+			return state
+	}
+}
+
 const vars = combineReducers({ list, show })
 
 const main = combineReducers({
+	connection,
 	activeTab,
 	showDialog,
 	project,
@@ -190,7 +202,9 @@ const main = combineReducers({
 export default (state, action ) => {
 	let newState = main(state, action)
 
-	console.log({ action, pre: state, post: newState })
+	const { config } = state
+
+	if ( config && config.debugMode ) console.log({ action, pre: state, post: newState })
 
 	return newState
  }

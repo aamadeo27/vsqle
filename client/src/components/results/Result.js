@@ -36,41 +36,56 @@ export default class extends Component {
 	}
 
 	getValue(row, schema, column, literal){
+
 		let value = row[column]
 		const { type } = schema[column]
+		const { config } = this.props
 
 		const pad = x => x.length === 1 ? "0" + x : x;
-		const DATE_TYPE = 11
-		const STRING_TYPE = 9
+		const DATE_TYPE = 'date'
+		const STRING_TYPE = 'string'
 		
 		if ( type === DATE_TYPE ){
-			value = value ? new Date(value / 1000) : "null"
+			value = value ? new Date(value) : "null"
 
 			if ( value && value !== "null" ){
 				const date = value
-				value = date.getUTCFullYear() + "-"
-				value += pad("" + (date.getUTCMonth()+1)) + "-"
-				value += pad("" + date.getUTCDate()) + " "
-				value += pad("" + date.getUTCHours()) + ":"
-				value += pad("" + date.getUTCMinutes()) + ":"
-				value += pad("" + date.getUTCSeconds())
+
+				if ( config.useLocalTime ){
+					value = date.getFullYear() + "-"
+					value += pad("" + (date.getMonth()+1)) + "-"
+					value += pad("" + date.getDate()) + " "
+					value += pad("" + date.getHours()) + ":"
+					value += pad("" + date.getMinutes()) + ":"
+					value += pad("" + date.getSeconds())
+				} else {
+					value = date.getUTCFullYear() + "-"
+					value += pad("" + (date.getUTCMonth()+1)) + "-"
+					value += pad("" + date.getUTCDate()) + " "
+					value += pad("" + date.getUTCHours()) + ":"
+					value += pad("" + date.getUTCMinutes()) + ":"
+					value += pad("" + date.getUTCSeconds())
+				}
 			}
 		}
 
-		if ( !literal || !value ) return value
-		if ( !(type === STRING_TYPE || type === DATE_TYPE) ) return value
+		if ( type === STRING_TYPE && value ){
+			if ( value.length > 256 ) return `'${value.substr(0,253)}'...`
 
-		return `'${value}'`
+			return `'${value}'`
+		}
+
+		return value
 	}
 
 	getCSV(result){
 		const csvHeader = result.schema.reduce( (content, h) => content + h.name.toLowerCase() + ",", "" ) + "\n"
 
-		return csvHeader + result.data.reduce( (content,row) => {
+		return csvHeader + result.data.reduce( (content,row, i) => {
 			let columns = ""
-
-			for( let column in row ){
-				const value = this.getValue(row, result.schema, column)
+			
+			for( let j = 0 ; j < row.length; j++ ){
+				const value = this.getValue(row, result.schema, j)
 				columns += value + ","
 			}
 			
@@ -86,11 +101,9 @@ export default class extends Component {
 		return xlsHeader + result.data.reduce( (content,row) => {
 			let columns = ""
 
-			for( let column in row ){
-				if( column !== ""){
-					const value = this.getValue(row, result.schema, column)
-					columns += value + "\t"
-				}
+			for( let j = 0 ; j < row.length; j++ ){
+				const value = this.getValue(row, result.schema, j)
+				columns += value + "\t"
 			}
 
 			columns = columns.substring(0, columns.length - 1)
@@ -108,11 +121,12 @@ export default class extends Component {
 		columns = columns.substring(0, columns.length-2)
 
 		return result.data.reduce( (content, row) => {
-			let args = '';
+			let args = ''
 
-			for( let column in row ) {
-				const value = this.getValue(row, result.schema, column, true)
+			for( let j = 0; j < row.length ; j++) {
+				const value = this.getValue(row, result.schema, j)
 				args += value + ", "
+				j++
 			}
 			args = args.substring(0, args.length - 2)
 
@@ -135,23 +149,23 @@ export default class extends Component {
 
 		let filename = ""
 		if ( queryConfig.select ){
-			 filename = queryConfig.select.from[0].table + "." + new Date().toLocaleString()
+			const now = new Date()
+			const id = `${now.getDate()}-${now.getMonth()}-${now.getFullYear()}`
+			filename = queryConfig.select.from[0].table + "." + id
 		}
 
 		let rowID = 0
 		const rows = result.data.map( row => {
 			const columns = []
 
-			for( let column in row ){
-				if( column !== ""){
-					let value = this.getValue(row, result.schema, column)
+			for( let j = 0 ; j < row.length; j++ ){
+				let value = this.getValue(row, result.schema, j, true)
 
-					if ( result.schema[column].type === 11 ){
-						value = <span>{value}</span> 
-					}
-
-					columns.push(<td key={column}>{value}</td>)
+				if ( result.schema[j].type === 'date' ){
+					value = <span>{value}</span> 
 				}
+
+				columns.push(<td key={j}>{value}</td>)
 			}
 
 			rowID++
@@ -165,9 +179,11 @@ export default class extends Component {
 			cursor: "pointer"
 		}
 
-		const title = <div className="text-left" style={style}  onClick={onClick} >
+		let title = ((queryConfig.select && queryConfig.select.original) || queryConfig.query)
+		title = title.substring(0, 100) +  (title.length < 100 ? '' : '...')
+		title = <div className="text-left" style={style}  onClick={onClick} >
 			<Glyphicon glyph={glyph} />
-			{' ' + ((queryConfig.select && queryConfig.select.original) || queryConfig.query)}
+			{' ' + title}
 		</div>
 
 		const exportBtnProps = {

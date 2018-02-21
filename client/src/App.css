@@ -9,6 +9,40 @@ a { text-decoration: none !important }
   height: 30px;
 }
 
+.app-brand {
+  font-family: Poppins;
+  font-size: 3vh;
+  text-shadow: 1px 1px 1px gray;
+}
+
+.login {
+  margin: 1vw;
+  text-shadow: 1px 1px 1px #666;
+}
+
+.connection-status {
+  font-family: Muli;
+  font-weight: bold;
+  font-size: 1.8vh;
+  margin: 0 0 0 0.8vw;
+  color: white;
+  text-shadow: 1px 1px 2px #666;
+}
+
+.connections {
+  font-family: Titillium Web;
+  text-align: left;
+  width: 100%;
+}
+
+.connection-name {
+  width: 20%;
+}
+
+.connection-nodes {
+  width: 65%;
+}
+
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
@@ -24,26 +58,46 @@ a { text-decoration: none !important }
   padding: 5px;
 }
 
-.Navigator-bar {
-  padding: 10px;
-  height: 10vh;
+.Navigator {
+  height: 70vh;
+  overflow-x: scroll;
+}
+
+.node-text {
+  padding-left: 0.5vw;
+  color: #444;
 }
 
 .tree-node {
-  padding: 0 0 0 1.5vw;
+  padding: 0 0 0 1vw;
   text-align: left;
-  font-size: 1.2vw;
+  font-size: 1.75vh;
   font-weight: bold;
+  font-family: Muli;
+}
+
+.tree-node a {
+  display: block;
+  width: auto;
 }
 
 .tree-node a:focus,
 .tree-node a:hover {
-  text-decoration: none
+  text-decoration: none;
+  text-shadow: 1px 1px 1px #999;
 }
 
-a.node-selected,
-a:focus.node-selected {
-  color: #99F;
+.folder-node {
+  color: #FCAA67;
+}
+
+.file-node {
+  color: #BBB;
+}
+
+.tool {
+  font-family: Titillium Web;
+  font-size: 1.5vh;
 }
 
 .Editor {
@@ -120,6 +174,24 @@ a:focus.node-selected {
   padding-right: 4vw;
   font-weight: bold;
   color: #337ab7;
+}
+
+.variable {
+  text-align: left;
+  width: 100%;
+  padding: 0.2vh 4vw;
+  font-family: monospace;
+}
+
+.invisible-submit {
+  height: 0;
+  width: 0;
+  border: 0px;
+  padding: 0px;
+}
+
+.hover-row:hover {
+  background: #EEE;
 }
 
 @media (min-width: 300px) {

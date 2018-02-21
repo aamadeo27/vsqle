@@ -43,17 +43,28 @@ class TreeNode extends Component {
     const onFocus = this.props.onFocus || this.context.onFocus
     const activePath = (this.props.selected || this.context.selected)() 
     const selected = activePath === fullpath
-    const className = selected ? "node-selected" : ""
     const handlers = {
       onClick: this.onClick.bind(this),
       onDoubleClick: this.onDoubleClick.bind(this),
       onFocus: () => onFocus(fullpath),
     }
 
-    const icon = leaf ? "" : ( this.state.expanded ? (<Glyphicon glyph="collapse-down"/>) : (<Glyphicon glyph="expand"/>) )
+    let icon = null
+    if ( leaf ){
+      icon = <Glyphicon className="file-node" glyph="file"/>
+    } else {
+      icon = ( this.state.expanded ? (<Glyphicon className="folder-node" glyph="folder-open"/>) : (<Glyphicon className="folder-node" glyph="folder-close"/>) ) 
+    }
+
+    let title = leaf ? "Double click to open" : ""
+
+    const style = { width: (name.length+5) + "vh" }
 
     return <div className="tree-node">
-      <a id={name} className={className} href="#node" {...handlers} >{icon} {name}</a>
+      <a id={name} href="#node" {...handlers} title={title} style={style}>
+        {icon}
+        <span className="node-text">{name}</span>
+      </a>
       {this.state.expanded ? this.props.children : ""}
     </div>
   }

@@ -2,15 +2,15 @@ import React, { Component } from 'react'
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 import reducer from './reducer'
-import { Navbar, Row, Col } from 'react-bootstrap'
-import logo from './logo.svg'
+import { Row, Col } from 'react-bootstrap'
 
-import Tools from './components/tools/Tools.js'
-import Editor from './components/editor/Editor.js'
-import Results from './components/results/Results.js'
-import Navigator from './components/navigator/Navigator.js'
-import Dialogs from './components/dialogs/Dialogs.js'
-import Vars from './components/Vars.js'
+import Tools from './components/tools/Tools'
+import Editor from './components/editor/Editor'
+import Results from './components/results/Results'
+import Navigator from './components/navigator/Navigator'
+import Dialogs from './components/dialogs/Dialogs'
+import Vars from './components/Vars'
+import Navbar from './components/Navbar'
 
 import * as api from './api/api.js'
 
@@ -36,23 +36,14 @@ class App extends Component {
           <Vars>
             <Row>
               <Col xs={12}>
-              <Navbar>
-                  <Navbar.Header>
-                      <Navbar.Brand>
-                          <span>vsqle2</span>
-                          <a href="#index">
-                              <img src={logo} className="App-logo" alt="logo" />
-                          </a>
-                      </Navbar.Brand>
-                  </Navbar.Header>
-              </Navbar>
+                <Navbar />
               </Col>
             </Row>
             <Row >
-              <Col xsHidden sm={3} md={3} lg={3}>
+              <Col xsHidden sm={2} md={2} lg={2}>
                 <Navigator />
               </Col>
-              <Col xs={12} sm={9} md={9} lg={9}>
+              <Col xs={12} sm={10} md={10} lg={10}>
                 <Tools />
                 <Editor />
                 <Results />

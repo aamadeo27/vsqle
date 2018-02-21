@@ -41,11 +41,13 @@ class Describe extends React.Component {
 			<Panel.Body>
 				<Table style={style} striped hover bordered responsive>
 					<thead>
-						<th>Column</th>
-						<th>DataType</th>
-						<th>Size</th>
-						<th>Nullable</th>
-						<th>PartitionKey</th>
+						<tr>
+							<td>Column</td>
+							<td>DataType</td>
+							<td>Size</td>
+							<td>Nullable</td>
+							<td>PartitionKey</td>
+						</tr>
 					</thead>
 					<tbody>
 						{description}

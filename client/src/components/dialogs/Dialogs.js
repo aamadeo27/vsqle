@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import * as api from '../../api/api.js'
 import * as actions from '../../Actions.js'
 
+import LoginDialog from './LoginDialog.js'
 import NewFileDialog from './NewFileDialog.js'
 import ConfigDialog from './ConfigDialog.js'
 import RenameDialog from './RenameDialog.js'
@@ -44,22 +45,34 @@ class Dialogs extends Component {
 	}
 
 	render(){
-		const { showDialog, changeDialog, tabs, project } = this.props
+		const { updateConnection, showDialog, changeDialog, tabs, config, project } = this.props
 		const activeTab = tabs[this.props.activeTab] || { filepath: "", content: "" }
 
 		const closeDialog = () => changeDialog("")
 
-    const createFolder = folder => {
+		const login = connection => {
+			this.props.updateConnection(connection)
+			console.log("UpdateConnection", connection)
+		}
+
+		const createFolder = folder => {
 			this.props.createFolder(folder)
 			console.log("Creating", folder)
-    }
+		}
 
-    const rename = (activePath, name) => {
-      this.props.renameNode(activePath, name)
-      console.log("Renaming", activePath, name)
-    }
+		const rename = (activePath, name) => {
+			this.props.renameNode(activePath, name)
+			console.log("Renaming", activePath, name)
+		}
 
 		return <div>
+			<LoginDialog
+				show={showDialog === 'Login'}
+				close={closeDialog}
+				save={login}
+				updateConnection={updateConnection}
+				connections={config.connections}
+			/>
 			<NewFileDialog
 				show={showDialog === 'NewFile'}
 				close={closeDialog}
@@ -70,7 +83,7 @@ class Dialogs extends Component {
 				show={showDialog === 'Config'}
 				close={closeDialog}
 				save={this.saveConfig()}
-				config={this.props.config}
+				config={config}
 			/>
 			<NewFolderDialog
 				show={showDialog === 'NewFolder'}
@@ -103,18 +116,16 @@ const mapDispatchToProps = dispatch => ({
 	updateTab: tab => dispatch(actions.updateTab(tab)),
 	changeTabContent: file => dispatch(actions.changeTabContent(file.id, file.content)),
 
-  createFolder: folder => dispatch(actions.createFolder(folder)),
-  changeActivePath: path => dispatch(actions.changeActivePath(path)),
-  deleteNode: node => dispatch(actions.deleteNode(node)),
-  renameNode: (path, newName) => dispatch(actions.renameNode(path,newName)),
-  updateProject: project => dispatch(actions.updateProject(project)),
-
-	addResult: result => dispatch(actions.addResult(result)),
-	clearResults: () => dispatch(actions.clearResults),
+	createFolder: folder => dispatch(actions.createFolder(folder)),
+	changeActivePath: path => dispatch(actions.changeActivePath(path)),
+	deleteNode: node => dispatch(actions.deleteNode(node)),
+	renameNode: (path, newName) => dispatch(actions.renameNode(path,newName)),
+	updateProject: project => dispatch(actions.updateProject(project)),
 
 	updateConfig: config => dispatch(actions.updateConfig(config)),
+	updateConnection: connection => dispatch(actions.updateConnection(connection)),
 
-	changeDialog: dialog => dispatch(actions.changeDialog(dialog))
+	changeDialog: dialog => dispatch(actions.changeDialog(dialog)),
 })
 
 

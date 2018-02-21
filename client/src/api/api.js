@@ -82,7 +82,7 @@ export const renameNode = (projectName, path, newName, callback) => {
     if ( typeof callback === 'function') callback()
 }
 
-export const newTab = () => ({ id: getFileID(), filepath: "/New Tab", content: "-- New Tab", newTab: true })
+export const newTab = () => ({ id: getFileID(), filepath: "/New Tab", content: "-- New Tab\nselect * from dual", newTab: true })
 
 export const getConfig = () => JSON.parse(localStorage.getItem("$config")) || undefined
 export const saveConfig = (config, callback) => {
@@ -101,3 +101,38 @@ export const updateVar = variable => {
     setVars(getVars().map( v => v.id === variable.id ? variable : v ))
 }
 export const removeVar = variable => setVars(getVars().filter(v => v.id !== variable.id))
+
+const headers = new Headers()
+headers.append('Accept','application/json')
+headers.append('Content-Type','application/json')
+
+const conf = {
+    headers,
+    credentials: 'include'
+}
+
+const dataOp = method => (url, data) => {
+    const callConf = { ...conf, body: JSON.stringify(data), method }
+
+    return fetch(url, callConf).then( r => r.json() ).then( r => {
+        return r
+    })
+}
+
+const post = dataOp('POST')
+const get = url => fetch(url, conf).then( r => r.json() )
+
+const urls = {
+    session: "https://10.150.55.146:8084/session",
+    login: "https://10.150.55.146:8084/connect",
+    logout: "https://10.150.55.146:8084/disconnect",
+    query: "https://10.150.55.146:8084/query",
+    schema: o => "https://10.150.55.146:8084/schema?object="+o
+}
+
+export const login = userAuth => post(urls.login, userAuth)
+export const logout = () => get(urls.logout)
+export const getSession = () => get(urls.session)
+export const loadObject = object => get(urls.schema(object))
+
+export const executeQuery = query => post(urls.query, { query })

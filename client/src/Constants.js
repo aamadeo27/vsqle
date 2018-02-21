@@ -25,6 +25,8 @@ export const UPDATE_VARIABLE = "UPDATE_VARIABLE"
 export const REMOVE_VARIABLE = "REMOVE_VARIABLE"
 export const TOGGLE_SHOWVARS = "TOGGLE_SHOWVARS"
 
+export const UPDATE_CONNECTION = "UPDATE_CONNECTION"
+
 export const EMPTY_PROJECT = {
   name: "Project",
   activePath: "/Project",
@@ -35,10 +37,9 @@ export const EMPTY_PROJECT = {
 }
 
 export const INITIAL_CONFIG = {
-  host: "localhost",
-  user: "voltdb",
-  password: "voltdb",
-  timeout: "5000"
+  debugMode: false,
+  useLocalTime: true,
+  connections: []
 }
 
 export const IGNORE_PATTERN = '--IGNORE-CHANGE\n'

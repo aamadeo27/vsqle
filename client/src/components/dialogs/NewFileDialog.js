@@ -38,24 +38,33 @@ export default class NewFileDialog extends React.Component {
 	}
 
 	render(){
+		const onSubmit = e => {
+			e.preventDefault()
+			this.save()
+
+			return false
+		}
+
 		return <Modal show={this.props.show} onHide={this.props.close}>
-			<Modal.Header closeButton>
-				<Modal.Title>Create File</Modal.Title>
-			</Modal.Header>
-			<Modal.Body>
-				<InputGroup>
-					<InputGroup.Addon>name</InputGroup.Addon>
-					<FormControl type="text" id="filename" onChange={this.onChange.bind(this)} value={this.state.filename}/>
-				</InputGroup>
-				<InputGroup>
-					<InputGroup.Addon>path</InputGroup.Addon>
-					<FormControl type="text" id="path" onChange={this.onChange.bind(this)} value={this.state.path}/>
-				</InputGroup>
-			</Modal.Body>
-			<Modal.Footer>
-				<Button bsStyle="danger" onClick={this.props.close}>Close</Button>
-				<Button bsStyle="success" onClick={this.save.bind(this)}>Save</Button>
-			</Modal.Footer>
+			<form onSubmit={onSubmit}>
+				<Modal.Header closeButton>
+					<Modal.Title>Create File</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<InputGroup>
+						<InputGroup.Addon>name</InputGroup.Addon>
+						<FormControl type="text" id="filename" onChange={this.onChange.bind(this)} value={this.state.filename}/>
+					</InputGroup>
+					<InputGroup>
+						<InputGroup.Addon>path</InputGroup.Addon>
+						<FormControl type="text" id="path" onChange={this.onChange.bind(this)} value={this.state.path}/>
+					</InputGroup>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button bsStyle="danger" onClick={this.props.close}>Close</Button>
+					<Button bsStyle="success" type="submit">Save</Button>
+				</Modal.Footer>
+			</form>
 		</Modal>
 	}
 }
