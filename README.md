@@ -13,7 +13,6 @@ git clone https://github.com/aamadeo27/vsqle.git
 Node v8 or later
 
 ### Installing
-
 ```
 cd client/
 npm install
@@ -21,12 +20,34 @@ npm run build
 cd ../server/
 npm install
 ```
+### config.json
+```
+{
+    "key" : "server.key",
+    "cert" : "server.crt",
+    ["ca" : "ca.crt",]
+    "origin" : "http://10.150.55.146:3000",
+    "port" : 8084,
+    "voltdbPort" : 21212,
+    "loginDelay": 1200
+}
+```
+`"key","cert"[,"ca"]` : The server runs on https so it needs a *server private key*, a *server certificate* and optionally a *ca certificate*.
+
+`"origin"` : It defines a domain to allow CORS
+
+`"port"` : Port of the vsqle server
+
+`"voltdbPort"` : Port of the voltdb server
+
+`"loginDelay"` : It's a delay used to wait for errors in a Login operation to the database.
 
 ### Run
 ```
 cd server/
 node server.js
 ```
+https://server-name:port/
 
 ## Built With
 ### Back End
