@@ -127,7 +127,7 @@ const urls = {
     login: "https://10.150.55.146:8084/connect",
     logout: "https://10.150.55.146:8084/disconnect",
     query: "https://10.150.55.146:8084/query",
-    schema: o => "https://10.150.55.146:8084/schema?object="+o
+    schema: o => "https://10.150.55.146:8084/schema?object=" + o
 }
 
 export const login = userAuth => post(urls.login, userAuth)

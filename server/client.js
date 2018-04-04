@@ -33,7 +33,7 @@ const valueOf = v => {
 	if ( typeof v !== 'object' || !v ) return v
 	
 	//BigInteger
-	if ( v['0'] ) return v['0']
+	if ( v['0'] !== undefined ) return v['0']
 
 	return v.getTime()
 }
@@ -141,7 +141,7 @@ router.post('/connect', (req, res, next) => {
 router.post('/query', (req, res, next) => {
 	const { session: { cid } ,  body: { query }} = req
 
-	logger.log("QueryRequest",{ query })
+	logger.log("QueryRequest",{ query, cid })
 	if ( cid ){
 		const connection = connections.get(cid)
 		
@@ -161,7 +161,7 @@ router.post('/query', (req, res, next) => {
 			logger.log("QueryResponse",{ response })
 			sendMw(res, response )
 		}).catch( err => {
-			logger.error("QueryResponse",{ error: err })
+			logger.error("QueryResponse", err)
 			sendMw(res, { error: err })
 		})
 		

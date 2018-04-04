@@ -51,11 +51,11 @@ class Editor extends React.Component {
 			return <Result {...result} key={i} {...handlers} config={serverConfig}/>
 		})
 
-    return <Row>
-				<Col xs={11}>
-						{resultPanels}
-				</Col>
-		</Row>
+    return <Row className="section">
+		<Col xs={12}>
+			{resultPanels}
+		</Col>
+	</Row>
   }
 }
 

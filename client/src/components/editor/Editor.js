@@ -196,12 +196,14 @@ class Editor extends React.Component {
 		}
 
     return (
-		  <Row className="Editor">
-				<Tabs {...props} >
-					{editorTabs}
-					<Tab eventKey="newtab" title={<Glyphicon glyph="plus"/>} key="newtab" bsStyle="info"/>
-				</Tabs>
-			</Row>
+		<Row className="section">
+			<div className="Editor">
+			<Tabs {...props} >
+				{editorTabs}
+				<Tab eventKey="newtab" title={<Glyphicon glyph="plus"/>} key="newtab" bsStyle="info"/>
+			</Tabs>
+			</div>
+		</Row>
     )
   }
 }

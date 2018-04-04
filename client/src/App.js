@@ -32,8 +32,8 @@ class App extends Component {
   render() {
     return (
       <Provider store={store} >
-        <div className="App">
-          <Vars>
+        <Vars>
+          <div className="App container-fluid">
             <Row>
               <Col xs={12}>
                 <Navbar />
@@ -50,8 +50,8 @@ class App extends Component {
               </Col>
             </Row>
             <Dialogs />
-          </Vars>
-        </div>
+          </div>
+        </Vars>
       </Provider>
     )
   }

@@ -44,14 +44,18 @@ class Tools extends React.Component {
 	}
 
 	execute(){
-		const { tabs, addResult, clearResults, config, variables, schema } = this.props
+		const { tabs, addResult, clearResults, config, variables, schema, logout } = this.props
 		const activeTab = tabs[this.props.activeTab]
 
 		clearResults()
 
 		query.execute(activeTab.editor, config, variables, schema).forEach( promise => {
-			promise.then( result => {
-				addResult(result)
+			promise.then( response => {
+				if ( response.error === 'Not logged in' ){
+					logout()
+				}
+
+				addResult(response)
 			})
 		})
 	}
@@ -110,49 +114,51 @@ class Tools extends React.Component {
 		const openWikiPage = () => window.open("https://github.com/aamadeo27/vsqle/wiki/Guide","_blank")
 		
     return (
-      <Row><Col xsOffset={0} xs={12}>
-        <ButtonToolbar>
-          <ButtonGroup bsSize="small">
-            <Button title="configuration" bsStyle="warning" onClick={() => changeDialog("Config")}>
-              <Glyphicon glyph="cog"/>
-            </Button>
-						<Button title="reload schema" bsStyle="warning" onClick={loadSchema}>
-							<Glyphicon glyph="refresh"/>
-						</Button>
-            <Button title="execute" bsStyle="warning" onClick={this.execute.bind(this)}>
-              <Glyphicon glyph="play"/>
-            </Button>
-          </ButtonGroup>
-          <ButtonGroup bsSize="small">
-            <Button title="save" bsStyle="warning" onClick={this.save.bind(this)}>
-              <Glyphicon glyph="floppy-disk"/>
-						</Button>
-            <Button title="reload" bsStyle="warning" onClick={reload} disabled={!existsInProject}>
-							<Glyphicon glyph="repeat"/>
-						</Button>
-            <Button title="download" bsStyle="warning" onClick={this.download.bind(this)}>
-							<Glyphicon glyph="save"/>
-						</Button>
-            <Button title="upload" bsStyle="warning">
-							<div className='fileUpload'>
-								<Glyphicon glyph="open"/>
-								<input type='file' id='file' onChange={this.upload.bind(this)}/>
-							</div>
-						</Button>
-					</ButtonGroup>
-					<ButtonGroup bsSize="small">
-						<Button bsStyle="info" onClick={this.props.toggleShowVars}>
-							<span className="tool">{"${vars}"}</span>
-						</Button>
-						<Button title="help" bsStyle="info" onClick={openWikiPage}>
-							<Glyphicon glyph="question-sign"/>
-						</Button>
-					</ButtonGroup>
-					
-        </ButtonToolbar>
-      </Col>
-			<Download content={activeTab.content} name={tabName} download={this.state.download}/>
-			</Row>
+			<div className="Tools">
+				<Row><Col xsOffset={0} xs={12}>
+					<ButtonToolbar>
+						<ButtonGroup bsSize="small">
+							<Button title="configuration" bsStyle="warning" onClick={() => changeDialog("Config")}>
+								<Glyphicon glyph="cog"/>
+							</Button>
+							<Button title="reload schema" bsStyle="warning" onClick={loadSchema}>
+								<Glyphicon glyph="refresh"/>
+							</Button>
+							<Button title="execute" bsStyle="warning" onClick={this.execute.bind(this)}>
+								<Glyphicon glyph="play"/>
+							</Button>
+						</ButtonGroup>
+						<ButtonGroup bsSize="small">
+							<Button title="save" bsStyle="warning" onClick={this.save.bind(this)}>
+								<Glyphicon glyph="floppy-disk"/>
+							</Button>
+							<Button title="reload" bsStyle="warning" onClick={reload} disabled={!existsInProject}>
+								<Glyphicon glyph="repeat"/>
+							</Button>
+							<Button title="download" bsStyle="warning" onClick={this.download.bind(this)}>
+								<Glyphicon glyph="save"/>
+							</Button>
+							<Button title="upload" bsStyle="warning">
+								<div className='fileUpload'>
+									<Glyphicon glyph="open"/>
+									<input type='file' id='file' onChange={this.upload.bind(this)}/>
+								</div>
+							</Button>
+						</ButtonGroup>
+						<ButtonGroup bsSize="small">
+							<Button bsStyle="info" onClick={this.props.toggleShowVars}>
+								<span className="tool">{"${vars}"}</span>
+							</Button>
+							<Button title="help" bsStyle="info" onClick={openWikiPage}>
+								<Glyphicon glyph="question-sign"/>
+							</Button>
+						</ButtonGroup>
+						
+					</ButtonToolbar>
+				</Col>
+				<Download content={activeTab.content} name={tabName} download={this.state.download}/>
+				</Row>
+			</div>
     )
   }
 }
@@ -174,6 +180,7 @@ const mapDispatchToProps = dispatch => ({
 
 	addResult: result => dispatch(actions.addResult(result)),
 	clearResults: () => dispatch(actions.clearResults),
+	logout: () => dispatch(actions.updateConnection({})),
 
 	changeDialog: dialog => dispatch(actions.changeDialog(dialog)),
 	toggleShowVars: () => dispatch(actions.toggleShowVars),

@@ -12,7 +12,7 @@ a { text-decoration: none !important }
 .app-brand {
   font-family: Poppins;
   font-size: 3vh;
-  text-shadow: 1px 1px 1px gray;
+  text-shadow: 0px 0px 1px gray;
 }
 
 .login {
@@ -53,9 +53,8 @@ a { text-decoration: none !important }
   padding: 5px;
 }
 
-.Tools-bar {
-  border: 1px solid red;
-  padding: 5px;
+.Tools {
+  padding-left: 30px;
 }
 
 .Navigator {
@@ -97,26 +96,24 @@ a { text-decoration: none !important }
 
 .tool {
   font-family: Titillium Web;
-  font-size: 1.5vh;
+  font-size: 1.4vh;
+}
+
+.section {
+  padding: 0 2vw 0 2vw;
 }
 
 .Editor {
-  padding: 10px;
-  height: auto;
-  width: 96%;
-  overflow-y: auto;
-  font-size: 1vw;
-  font-weight: bold;
+  padding: 15px;
 }
 
 .EditorTab {
-  overflow-y: scroll;
   height: auto;
   display: block;
   text-align: left;
   font-size: 1.5vw;
   width: 100%;
-  border: 1px solid lightgray;
+  border: 1px solid #DADADA;
 }
 
 .Console {
@@ -135,7 +132,8 @@ a { text-decoration: none !important }
 }
 
 .editor-tabs {
-  width: 99%
+  margin-top: 2vh;
+  width: 100%
 }
 
 .ace-tm {
@@ -198,4 +196,8 @@ a { text-decoration: none !important }
   .navbar-nav .caret {
     display:none;
   }
+}
+
+.nav-tabs {
+  border: 0px;
 }

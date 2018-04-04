@@ -39,10 +39,8 @@ class TreeNode extends Component {
     const { name, leaf } = this.props
     const thisPath = (this.context.path || "") + "/"
     const fullpath = thisPath + this.props.name
-
     const onFocus = this.props.onFocus || this.context.onFocus
-    const activePath = (this.props.selected || this.context.selected)() 
-    const selected = activePath === fullpath
+
     const handlers = {
       onClick: this.onClick.bind(this),
       onDoubleClick: this.onDoubleClick.bind(this),

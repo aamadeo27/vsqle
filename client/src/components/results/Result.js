@@ -35,7 +35,7 @@ export default class extends Component {
 		this.setState({ download: { [format]: true }  })
 	}
 
-	getValue(row, schema, column, literal){
+	getValue(row, schema, column, full){
 
 		let value = row[column]
 		const { type } = schema[column]
@@ -70,7 +70,7 @@ export default class extends Component {
 		}
 
 		if ( type === STRING_TYPE && value ){
-			if ( value.length > 256 ) return `'${value.substr(0,253)}'...`
+			if ( !full && value.length > 256 ) return `'${value.substr(0,253)}'...`
 
 			return `'${value}'`
 		}
@@ -85,7 +85,7 @@ export default class extends Component {
 			let columns = ""
 			
 			for( let j = 0 ; j < row.length; j++ ){
-				const value = this.getValue(row, result.schema, j)
+				const value = this.getValue(row, result.schema, j, true)
 				columns += value + ","
 			}
 			
@@ -102,7 +102,7 @@ export default class extends Component {
 			let columns = ""
 
 			for( let j = 0 ; j < row.length; j++ ){
-				const value = this.getValue(row, result.schema, j)
+				const value = this.getValue(row, result.schema, j, true)
 				columns += value + "\t"
 			}
 
@@ -124,13 +124,13 @@ export default class extends Component {
 			let args = ''
 
 			for( let j = 0; j < row.length ; j++) {
-				const value = this.getValue(row, result.schema, j)
+				const value = this.getValue(row, result.schema, j, true)
 				args += value + ", "
-				j++
 			}
 			args = args.substring(0, args.length - 2)
 
 			const insert = `insert into ${table} (${columns})\nvalues (${args})`
+			console.log("Insert:",insert)
 
 			return content + insert + ";\n\n"
 		}, "" )
@@ -159,7 +159,7 @@ export default class extends Component {
 			const columns = []
 
 			for( let j = 0 ; j < row.length; j++ ){
-				let value = this.getValue(row, result.schema, j, true)
+				let value = this.getValue(row, result.schema, j)
 
 				if ( result.schema[j].type === 'date' ){
 					value = <span>{value}</span> 

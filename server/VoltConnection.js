@@ -32,7 +32,16 @@ module.exports = userConfig => {
 	const client = new VoltClient(confs)
 
     const connection = {
-		connected: () => connection.client && !!connection.client._getConnection(),
+		connected: () => {
+			if ( ! connection.client ) return false
+			
+			const conn = connection.client._getConnection()
+			if ( ! conn ) return false 
+			if ( ! conn.isValidConnection() ) return false
+
+			return true
+		},
+
 		close: () => connection.client.exit(),
 
 		handler: {
@@ -57,7 +66,9 @@ module.exports = userConfig => {
 			},
 		},
 
-        connect: (query) => new Promise( (resolve, reject) => {
+		connecting: false,
+
+        connect: () => new Promise( (resolve, reject) => {
 			client.on(VoltConstants.SESSION_EVENT.CONNECTION, (event, code, message) => {})
 			client.on(VoltConstants.SESSION_EVENT.CONNECTION_ERROR, connection.handler.err.connection)
 			client.on(VoltConstants.SESSION_EVENT.QUERY_RESPONSE_ERROR, connection.handler.err.query)
@@ -66,13 +77,21 @@ module.exports = userConfig => {
 			
 			const connected = []
 			let failed = 0
+			let finished = 0
+
+			connection.connecting = true
 
             client.connect( (code, event, result) => {
 				if( code ) {
+					if ( ! connection.connecting ){
+						return connection.client.exit()
+					}
+
 					connected[result.config.host] = false
 					failed++
 					console.log("Could not connect to " + result.config.host + "\nError:", VoltConstants.STATUS_CODE_STRINGS[code])
 					result.close()
+					result.validConnection = false
 
 					if ( failed === nodes.length ){
 						reject({ status: ERR_NOT_CONNECTED })
@@ -91,13 +110,19 @@ module.exports = userConfig => {
 						}
 					}, config.loginDelay)
 				}
-            }, (code, event, results) => reject({ code, event, message: VoltConstants.STATUS_CODE_STRINGS[code] }) )
+
+				finished++
+				connection.connecting = finished < nodes.length
+			}, (code, event, results) => reject({ code, event, message: VoltConstants.STATUS_CODE_STRINGS[code] }) )
+			
+			setTimeout(() => {
+				connection.connecting = false 
+			},config.longDelay)
 		}),
 
 		loadSchema: object => new Promise( (resolve, reject) => {
 			if ( !connection.connected() ) {
-				reject({ status: ERR_NOT_CONNECTED, message: 'Not Connected' })
-				return
+				return reject('Not Logged in')
 			}
 
 			const statement = SystemCatalog.getQuery()
@@ -105,34 +130,35 @@ module.exports = userConfig => {
         	statement.setParameters([object])
 
 			client.callProcedure( statement, (event, code, results) => {
-				if ( results.error ) reject(results)
+				if ( results.error ) reject(results.error)
 				else resolve(results)
 			})
 		}),
 		
 		executeQuery: query => new Promise( (resolve, reject) => {
 			if ( !connection.connected() ) {
-				reject({ status: ERR_NOT_CONNECTED, message: 'Not Connected' })
-				return
+				return reject('Not Logged in')
 			}
 
+			console.log(connection.client._getConnection().is)
 			const statement = AdHoc.getQuery()
 
         	statement.setParameters([query])
 
+			const timeout = setTimeout( () => reject('Timeout'),config.timeout)
+
 			client.callProcedure( statement, (event, code, results) => {
-				if ( results.error ) reject(results)
+				if ( results.error ) reject(results.error)
 				else resolve(results)
 			})
 		}),
 
 		callProcedure: () => new Promise( (resolve, reject) => {
 			if ( !connection.connected() ) {
-				reject({ status: ERR_NOT_CONNECTED, message: 'Not Connected' })
-				return
+				return reject('Not Logged in')
 			}
 
-			reject({ status: -2, message: 'Not Implemented' })
+			reject({ status: -1000, message: 'Not Implemented' })
 
 			/*
 			const procedure = new VoltProcedure(proc.name, proc)

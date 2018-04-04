@@ -119,21 +119,34 @@ class EditorTab extends Component {
 
 		if ( prevProps.schema !== schema ) console.log("New Schema", schema )
 
-    const { addResult, clearResults } = this.props
+    const { addResult, clearResults, logout } = this.props
 
     const tab = Object.assign({}, file)
     tab.editor = this.refs.AceEditor.editor
 
 		const execute = () => {
 			clearResults()
+
 			query.execute(tab.editor, config, vars.list, schema).forEach( promise => {
-				promise.then( addResult )
+				promise.then( response => {
+					if ( response.error === 'Not logged in' ){
+						logout()
+					}
+	
+					addResult(response)
+				})
 			})
 		}
 
 		const executeLine = () => {
 			clearResults()
-			query.executeLine(tab.editor, config, vars.list, schema).then( addResult )
+			query.executeLine(tab.editor, config, vars.list, schema).then( response => {
+				if ( response.error === 'Not logged in' ){
+					logout()
+				}
+
+				addResult(response)
+			})
 		}
 
 		addCommand(tab.editor,{ name: "executeLine", win: "F4", mac: "Cmd+L", action: executeLine } )
@@ -160,19 +173,23 @@ class EditorTab extends Component {
     }
 
     return <div className="EditorTab">
-      <Col xs={12}>
-        <Row>
-          <Button bsSize="xsmall" title="close tab" bsStyle="default" onClick={this.props.close} className="pull-right">
-            <Glyphicon glyph="remove"/>
-          </Button>
-        </Row>
-        <Row>
-          <AceEditor {...AceEditorProps}	ref={"AceEditor"}/>
-        </Row>
-        <Row>
-          <span className="tab-footer pull-left">{file.filepath}</span>
-        </Row>
-      </Col>
+			<div className="container-fluid">
+				<Row>
+					<Col xs={12}>
+						<Row>
+							<Button bsSize="xsmall" title="close tab" bsStyle="default" onClick={this.props.close} className="pull-right">
+								<Glyphicon glyph="remove"/>
+							</Button>
+						</Row>
+						<Row>
+							<AceEditor {...AceEditorProps}	ref={"AceEditor"}/>
+						</Row>
+						<Row>
+							<span className="tab-footer pull-left">{file.filepath}</span>
+						</Row>
+					</Col>
+				</Row>
+			</div>
     </div>
   }
 }
@@ -183,6 +200,8 @@ const mapDispatchToProps = dispatch => ({
 
 	addResult: result => dispatch(actions.addResult(result)),
 	clearResults: () => dispatch(actions.clearResults),
+
+	logout: () => dispatch(actions.updateConnection({})),
 
   changeTabContent: (id,content) => dispatch(actions.changeTabContent(id,content)),
   updateTab: tab => dispatch(actions.updateTab(tab)),

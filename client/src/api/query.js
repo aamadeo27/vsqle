@@ -9,7 +9,7 @@ const parseQuery = (inputString, variables) => {
 	variables.forEach( variable => {
 		if ( queryString.indexOf("${"+variable.name+"}" ) === -1) return
 		
-		console.log("Replacing", "${" + variable.name + "}")
+		console.debug("Replacing", "${" + variable.name + "}")
 		queryString = queryString.split("${" + variable.name + "}").join(variable.value)
 	})
 	

@@ -8,13 +8,13 @@ export default class LoginDialog extends React.Component {
 
 		const { connections } = props
 
-		this.state = { user: "", password: "", connection: (connections[0] && connections[0].name) || "" }
+		this.state = { user: "", password: "", connection: (connections && connections[0] && connections[0].name) || "" }
 	}
 
 	componentWillReceiveProps(props){
 		const { connections } = props
 
-		this.setState({ user: "", password: "", connection: (connections[0] && connections[0].name) || "" })
+		this.setState({ user: "", password: "", connection: (connections && connections[0] && connections[0].name) || "" })
 	}
 
 	onChange(e){

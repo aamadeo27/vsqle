@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import Sidebar from 'react-sidebar'
 import { 
 	Row, Col,
-	Form, FormControl, InputGroup,
+	FormControl, InputGroup,
 	Glyphicon, Button, ButtonGroup
 } from 'react-bootstrap'
 
