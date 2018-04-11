@@ -50,13 +50,15 @@ const StaticWordCompleter = {
 	getCompletions(editor, session, pos, prefix, callback){
 		const filter = word => word.toLowerCase().match(new RegExp("^" + prefix.toLowerCase()))
 
-		/*let wordList = StaticWordCompleter.procedures.filter( filter ).map( word => 
+		let wordList = StaticWordCompleter.procedures.filter( filter ).map( word => 
 			({ caption: word, value: word, meta: "Procedure" }) 
-		)*/
-		
-		let wordList = StaticWordCompleter.tables.filter( filter ).map( word =>
-			({ caption: word.toLowerCase(), value: word.toLowerCase(), meta: "Table" }) 
 		)
+		
+		wordList.push({ caption: "exec", value: "exec", meta: "keyword"})
+
+		wordList = wordList.concat( StaticWordCompleter.tables.filter( filter ).map( word =>
+			({ caption: word.toLowerCase(), value: word.toLowerCase(), meta: "Table" }) 
+		))
 
 		wordList = wordList.concat( StaticWordCompleter.columns.filter( filter ).map( word =>
 			({ caption: word.toLowerCase(), value: word.toLowerCase(), meta: "Column" })
@@ -95,7 +97,7 @@ const setCompleters = editor => {
 }
 
 const updateCompleters = schema => {
-	StaticWordCompleter.procedures = Object.keys(schema.procedures)
+	StaticWordCompleter.procedures = Object.keys(schema.procedures).filter( p => ! p.match(/.+\.+/) )
 	StaticWordCompleter.tables = Object.keys(schema.tables).map(s => s.toLowerCase())
 	StaticWordCompleter.columns = schema.columns || []
 	ColumnsCompleter.tables = schema.tables || []

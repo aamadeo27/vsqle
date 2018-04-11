@@ -82,7 +82,8 @@ export const renameNode = (projectName, path, newName, callback) => {
     if ( typeof callback === 'function') callback()
 }
 
-export const newTab = () => ({ id: getFileID(), filepath: "/New Tab", content: "-- New Tab\nselect * from dual", newTab: true })
+const TEMPLATE_SQL = "-- New Tab\nexec @Statistics 'PROCEDUREDETAIL'"
+export const newTab = (content = TEMPLATE_SQL) => ({ id: getFileID(), filepath: "/New Tab", content, newTab: true })
 
 export const getConfig = () => JSON.parse(localStorage.getItem("$config")) || undefined
 export const saveConfig = (config, callback) => {
@@ -122,12 +123,15 @@ const dataOp = method => (url, data) => {
 const post = dataOp('POST')
 const get = url => fetch(url, conf).then( r => r.json() )
 
+const prefix = process.env.NODE_ENV ? 'https://10.150.55.146:8084' : ''
+
 const urls = {
-    session: "https://10.150.55.146:8084/session",
-    login: "https://10.150.55.146:8084/connect",
-    logout: "https://10.150.55.146:8084/disconnect",
-    query: "https://10.150.55.146:8084/query",
-    schema: o => "https://10.150.55.146:8084/schema?object=" + o
+    session: prefix + "/session",
+    login: prefix + "/connect",
+    logout: prefix + "/disconnect",
+    query: prefix + "/query",
+    storeProcedure: prefix + "/store-procedure",
+    schema: o => (prefix+"/schema?object=" + o)
 }
 
 export const login = userAuth => post(urls.login, userAuth)
@@ -136,3 +140,4 @@ export const getSession = () => get(urls.session)
 export const loadObject = object => get(urls.schema(object))
 
 export const executeQuery = query => post(urls.query, { query })
+export const execStoreProcedure = data => post(urls.storeProcedure, data)

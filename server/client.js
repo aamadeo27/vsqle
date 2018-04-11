@@ -172,4 +172,38 @@ router.post('/query', (req, res, next) => {
 	}
 })
 
+router.post('/store-procedure', (req, res, next) => {
+	const { session: { cid } ,  body: { procedure, args }} = req
+
+	logger.log("StoreProcedureRequest",{ procedure, args, cid })
+	if ( cid ){
+		const connection = connections.get(cid)
+		
+		connection.callProcedure(procedure, args).then( r => {
+			const { table, err } = r
+
+			let data = undefined, schema = undefined
+			if ( table.length > 0 ){
+				schema = table[0].columnTypes.map( (t,i) => ({ name: table[0].columnNames[i], type : t }) )
+				data = table[0].map( r => table[0].columnNames.map( (t,i) => valueOf(r[table[0].columnNames[i]]) ))
+				
+				delete data.columnNames
+				delete data.columnTypes
+			}
+
+			const response = { data, schema, error: r.status !== 1 ? r.statusString : undefined }
+			logger.log("QueryResponse",{ response })
+			sendMw(res, response )
+		}).catch( err => {
+			logger.error("QueryResponse", err)
+			sendMw(res, { error: err.toString() })
+		})
+		
+	} else {
+		const response = { error: "Not logged in" }
+		logger.error("QueryResponse", response )
+		sendMw(res, response)
+	}
+})
+
 module.exports = router

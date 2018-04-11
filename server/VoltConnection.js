@@ -3,7 +3,7 @@ const VoltClient = require('voltjs/lib/client')
 const VoltProcedure = require('voltjs/lib/query')
 const VoltConstants = require('voltjs/lib/voltconstants')
 const config = require('./config')
-
+const logger = require('./logger')
 const AdHoc = new VoltProcedure('@AdHoc', ['string'])
 const SystemCatalog = new VoltProcedure('@SystemCatalog', ['string'])
 
@@ -84,7 +84,7 @@ module.exports = userConfig => {
             client.connect( (code, event, result) => {
 				if( code ) {
 					if ( ! connection.connecting ){
-						return connection.client.exit()
+						if ( connection.client ) return connection.client.exit()
 					}
 
 					connected[result.config.host] = false
@@ -140,11 +140,11 @@ module.exports = userConfig => {
 				return reject('Not Logged in')
 			}
 
-			console.log(connection.client._getConnection().is)
 			const statement = AdHoc.getQuery()
 
         	statement.setParameters([query])
 
+			console.log("Timeout: ",  config.timeout)
 			const timeout = setTimeout( () => reject('Timeout'),config.timeout)
 
 			client.callProcedure( statement, (event, code, results) => {
@@ -153,22 +153,32 @@ module.exports = userConfig => {
 			})
 		}),
 
-		callProcedure: () => new Promise( (resolve, reject) => {
+		callProcedure: (procedure, args) => new Promise( (resolve, reject) => {
 			if ( !connection.connected() ) {
 				return reject('Not Logged in')
 			}
 
-			reject({ status: -1000, message: 'Not Implemented' })
+			const numberTypes = {
+				f: "float", d: "double", i: "int", l: "long", t: "date"
+			}
 
-			/*
-			const procedure = new VoltProcedure(proc.name, proc)
+			const parseType = arg => arg.match(/'.+'$/) ? 'string' : numberTypes[ arg[arg.length-1].toLowerCase() ]
+			const parseValue = (arg,type) => type === 'string' ? arg.substring(1, arg.length-1) : parseInt(arg)
+			const parsedArgs = args.map( e => ({ value: e, type: parseType(e) }))
+								   .map( ({ value, type}) => ({ type, value: parseValue(value, type)}))
 
-			const statement = SystemCatalog.getQuery()
-			statement.setParameters(['COLUMNS'])
-	
-			const tables = { }
-			let result = await client.callProcedure(statement)
-			*/
+			const voltProcedure = new VoltProcedure(procedure, parsedArgs.map( ({ type }) => type))
+
+			console.log("Call Procedure ", { procedure, parsedArgs })
+			console.log(voltProcedure)
+			
+			const statement = voltProcedure.getQuery()
+			statement.setParameters(parsedArgs.map( ({ value }) => value))
+
+			client.callProcedure(statement, (event, code, results) => {
+				if ( results.error ) reject(results.error)
+				else resolve(results)
+			})
 		})
 	}
 	

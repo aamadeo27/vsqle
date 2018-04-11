@@ -177,7 +177,7 @@ a { text-decoration: none !important }
 .variable {
   text-align: left;
   width: 100%;
-  padding: 0.2vh 4vw;
+  padding: 0.2vh 1vw;
   font-family: monospace;
 }
 
@@ -200,4 +200,8 @@ a { text-decoration: none !important }
 
 .nav-tabs {
   border: 0px;
+}
+
+.table-responsive {
+  min-height: 200px
 }

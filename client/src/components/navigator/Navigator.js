@@ -46,6 +46,13 @@ class Navigator extends Component {
     }
   }
 
+  shouldComponentUpdate({ project, tabs }){
+    if ( this.props.project !== project ) return true
+    if ( this.props.tabs !== tabs ) return true
+
+    return false
+  }
+
 	upload(e){
     let path = e.target.value
 

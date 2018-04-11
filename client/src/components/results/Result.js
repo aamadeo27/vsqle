@@ -1,6 +1,19 @@
 import React, { Component } from 'react'
 import { Panel, Table, ButtonGroup, Button, DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap'
 import Download from '../common/Download.js'
+import * as api from '../../api/api'
+
+const pad = x => x.length === 1 ? "0" + x : x
+const getUTCString = date => {
+	let value = date.getUTCFullYear() + "-"
+	value += pad("" + (date.getUTCMonth()+1)) + "-"
+	value += pad("" + date.getUTCDate()) + " "
+	value += pad("" + date.getUTCHours()) + ":"
+	value += pad("" + date.getUTCMinutes()) + ":"
+	value += pad("" + date.getUTCSeconds())
+
+	return value
+}
 
 export default class extends Component {
 	constructor(props){
@@ -41,7 +54,6 @@ export default class extends Component {
 		const { type } = schema[column]
 		const { config } = this.props
 
-		const pad = x => x.length === 1 ? "0" + x : x;
 		const DATE_TYPE = 'date'
 		const STRING_TYPE = 'string'
 		
@@ -59,12 +71,7 @@ export default class extends Component {
 					value += pad("" + date.getMinutes()) + ":"
 					value += pad("" + date.getSeconds())
 				} else {
-					value = date.getUTCFullYear() + "-"
-					value += pad("" + (date.getUTCMonth()+1)) + "-"
-					value += pad("" + date.getUTCDate()) + " "
-					value += pad("" + date.getUTCHours()) + ":"
-					value += pad("" + date.getUTCMinutes()) + ":"
-					value += pad("" + date.getUTCSeconds())
+					value = getUTCString(date)
 				}
 			}
 		}
@@ -130,13 +137,50 @@ export default class extends Component {
 			args = args.substring(0, args.length - 2)
 
 			const insert = `insert into ${table} (${columns})\nvalues (${args})`
-			console.log("Insert:",insert)
 
 			return content + insert + ";\n\n"
 		}, "" )
 	}
 
+	getVoltTable(result, queryConfig){
+		if ( !queryConfig.select ) return null
+
+		const { schema, data } = result
+		const vt = {
+			data,
+			schema: schema.map( ({ type }) => type )
+		}
+
+		return JSON.stringify(vt)
+	}
+
+	newTab(content, name){
+		const { addTab, changeTab } = this.props
+
+		const newTab = api.newTab(content)
+		newTab.filepath = "/" + name
+		addTab(newTab)
+		changeTab(newTab.id)
+	}
+
+	newVar(value){
+		const { addVar, showVars } = this.props
+
+		const variable = {
+			id : api.getFileID(),
+			value
+		}
+
+		variable.name = 'voltTable_' + variable.id
+
+		api.addVar(variable)
+		
+		addVar(variable)
+		showVars()
+	}
+
 	render(){
+		console.log("Render Result")
 		const { queryConfig, all, more, result } = this.props
 		const { expanded } = this.state
 		const onClick = this.onClick.bind(this)
@@ -146,6 +190,7 @@ export default class extends Component {
 		const csv = this.getCSV(result)
 		const xls = this.getXLS(result)
 		const sql = this.getSQL(result, queryConfig)
+		const voltTable = this.getVoltTable(result, queryConfig)
 
 		let filename = ""
 		if ( queryConfig.select ){
@@ -197,6 +242,9 @@ export default class extends Component {
       		<MenuItem eventKey="1" onClick={() => this.download('xls')}>as XLS</MenuItem>
 			<MenuItem eventKey="1" onClick={() => this.download('csv')}>as CSV</MenuItem>
 			<MenuItem eventKey="1" onClick={() => this.download('sql')}>as SQL</MenuItem>
+			<MenuItem divider />
+			<MenuItem eventKey="1" onClick={() => this.newTab(sql, filename)}>as SQL in new tab</MenuItem>
+			<MenuItem eventKey="1" onClick={() => this.newVar(voltTable)}>as VoltTable in new tab</MenuItem>
     	</DropdownButton>
 
 

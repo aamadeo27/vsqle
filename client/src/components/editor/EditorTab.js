@@ -22,6 +22,10 @@ const addCommand = (editor, command) => editor.commands.addCommand({
 })
 
 class EditorTab extends Component {
+	/*shouldComponentUpdate({ activeTab	}){
+		return activeTab === this.props.id
+	}*/
+
   onChange( newValue ){
     const { changeTabContent, id } = this.props
 		const ignorePattern = new RegExp("^" + IGNORE_PATTERN + ".*")
@@ -65,7 +69,7 @@ class EditorTab extends Component {
 			enableLiveAutocompletion: true
     })
 		
-		const execute = () => {
+		const execute = e => {
 			clearResults()
 			query.execute(tab.editor, config, vars.list, schema).forEach( promise => {
 				promise.then( addResult )
@@ -122,9 +126,9 @@ class EditorTab extends Component {
     const { addResult, clearResults, logout } = this.props
 
     const tab = Object.assign({}, file)
-    tab.editor = this.refs.AceEditor.editor
+		tab.editor = this.refs.AceEditor.editor
 
-		const execute = () => {
+		const execute = e => {
 			clearResults()
 
 			query.execute(tab.editor, config, vars.list, schema).forEach( promise => {
@@ -134,7 +138,7 @@ class EditorTab extends Component {
 					}
 	
 					addResult(response)
-				})
+				}).catch( err => console.log(err))
 			})
 		}
 

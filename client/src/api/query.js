@@ -143,9 +143,41 @@ const describe = (queryConfig, schema) => new Promise( (resolve, reject) => {
 	})
 })
 
-export const executeQuery = (queryConfig, serverConfig, schema) => {
+// exec @AdHoc 'select * from dual' 123 456L
+const nameRegex = /^([@\w\d]+)/
+const argsRegex = /(?:\s+('.*'[tT]?|\d+[LliIFf]|\d+\.\d+[FfDd]|\{.+\}))/g
+const execStoreProcedure = (queryConfig, variables) => {
+	let buffer = trimQuery(queryConfig.invocation)
+	buffer = parseQuery(buffer, variables)
+
+	const procedure = buffer.match(nameRegex)[1]
+	buffer = buffer.replace(procedure,'')
+
+	let args = buffer.match(argsRegex)
+
+	if ( ! args ) args = []
+
+	args = args.map( e => e.substring(1))
+
+	queryConfig.query = `${procedure}(${args.join(",")})`
+
+	return api.execStoreProcedure({ procedure, args }).then ( response => {
+
+		if ( response.error ){
+			localStorage.setItem("LastResponse", JSON.stringify(response.error))
+			return { queryConfig, error: response.error }
+		} else {
+			return { queryConfig, result: response }
+		}
+	})
+}
+
+//Todo: quitar serverConfig
+export const executeQuery = (queryConfig, serverConfig, schema, variables) => {
 	if ( queryConfig.describe ){
 		return describe(queryConfig, schema)
+	} else if ( queryConfig.exec ){
+		return execStoreProcedure( queryConfig, variables )
 	}
 
 	let query = trimQuery(queryConfig.query)
@@ -172,12 +204,17 @@ const prepareQueries = queries => {
 		const queryConfig = { id: queue.length, paginable: false }
 		const selectRegex = /^\s*select .+ from .+/i
 		const describeRegex = /^\s*describe\s+(.+)\s*/i
+		const execRegex = /^\s*exec\s+(.+)\s*/i
 
 		const describeQuery = query.match(describeRegex)
+		const execQuery = query.match(execRegex)
+
 		if ( describeQuery ){
 			queryConfig.describe = true
 			queryConfig.table = describeQuery[1]
-
+		} else if ( execQuery ) {
+			queryConfig.exec = true
+			queryConfig.invocation = execQuery[1]
 		} else if ( query.match(selectRegex) ){
 			let select = getSelectInfo(query)
 
@@ -227,7 +264,7 @@ const executeSQL = (editor, config, variables, schema) => {
 	const queue = prepareQueries( getAllQueries(editor) )
 	
 	const queryPromises = []
-	queue.forEach( query => queryPromises.push(executeQuery(query, config, schema)) )
+	queue.forEach( query => queryPromises.push(executeQuery(query, config, schema, variables)) )
     
 	editor.setValue(editorContent)
 	editor.selection.clearSelection()
