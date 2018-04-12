@@ -172,12 +172,151 @@ const execStoreProcedure = (queryConfig, variables) => {
 	})
 }
 
+const schema = {
+	node:1,
+	partition: 4,
+	procedure: 5,
+	statement: 6,
+	
+	sample: 8,
+
+	minTime: 9,
+	avgTime: 10,
+	maxTime: 11
+}
+const parseAnalysis = row => ({
+	partition: row[schema.partition],
+	node: row[schema.node],
+	statement: row[schema.statement],
+	
+	time: {
+		min: row[schema.minTime],
+		avg: row[schema.avgTime],
+		max: row[schema.maxTime]
+	},
+
+	sample: row[schema.sample]
+})
+
+const analyze = async (queryConfig, variables) => {
+	delete queryConfig.analyze
+	let buffer = []
+
+	try {
+		queryConfig.invocation = `@Statistics 'PROCEDUREDETAIL' 0i` //procedure
+		let { result } = await execStoreProcedure(queryConfig, variables)
+
+		buffer = result.data
+	} catch (err){
+		console.log("error", err)
+	}
+
+	const analysis = {
+		partition: [],
+		node: [],
+		statement: {}
+	}
+
+	console.log({ buffer })
+
+	if ( buffer ) {
+		buffer = buffer.filter( row => row[schema.procedure].match(queryConfig.procedure) )
+
+		buffer.forEach( e => {
+			const row = parseAnalysis(e)
+
+			if ( analysis.partition[row.partition] ) analysis.partition[row.partition].push(row)
+			else analysis.partition[row.partition] = [row]
+
+			if ( analysis.node[row.node] ) analysis.node[row.node].push(row)
+			else analysis.node[row.node] = [row]
+
+			if ( analysis.statement[row.statement] ) analysis.statement[row.statement].push(row)
+			else analysis.statement[row.statement] = [row]
+		})
+
+		console.log("Filtered", analysis )
+
+		analysis.partition.forEach( pt => {
+			let sum = 0
+			let total = 0
+			let min = Number.MAX_SAFE_INTEGER
+			let max = Number.MIN_SAFE_INTEGER
+
+			pt.forEach( e => {
+				if ( e.statement !== '<ALL>' ) return 
+
+				sum += e.time.avg * e.sample
+				total += e.sample
+
+				if ( e.time.min < min ) min = e.time.min
+				if ( e.time.max > max ) max = e.time.max
+			})
+
+			pt['summary'] = {
+				sample: total,
+				time: { min, max, avg: sum / total }
+			}
+		})
+
+		analysis.node.forEach( node => {
+			let sum = 0
+			let total = 0
+			let min = Number.MAX_SAFE_INTEGER
+			let max = Number.MIN_SAFE_INTEGER
+
+			node.forEach( e => {
+				if ( e.statement !== '<ALL>' ) return 
+
+				sum += e.time.avg * e.sample
+				total += e.sample
+
+				if ( e.time.min < min ) min = e.time.min
+				if ( e.time.max > max ) max = e.time.max
+			})
+
+			node['summary'] = {
+				sample: total,
+				time: { min, max, avg: sum / total }
+			}
+		})
+
+		let sum = 0
+		let total = 0
+		let min = Number.MAX_SAFE_INTEGER
+		let max = Number.MIN_SAFE_INTEGER
+		analysis.statement['<ALL>'].forEach( e => {
+			sum += e.time.avg * e.sample
+			total += e.sample
+
+			if ( e.time.min < min ) min = e.time.min
+			if ( e.time.max > max ) max = e.time.max
+		})
+
+		analysis.summary = {
+			sample: total,
+			time: { min, max, avg: sum / total }
+		}
+
+	} else {
+		return { queryConfig, error: "Incomplete" }
+	}
+
+	console.log({ analysis })
+
+	queryConfig.sql = "analyze " + queryConfig.procedure
+
+	return { queryConfig, error: "Incomplete" }
+}
+
 //Todo: quitar serverConfig
 export const executeQuery = (queryConfig, serverConfig, schema, variables) => {
 	if ( queryConfig.describe ){
 		return describe(queryConfig, schema)
 	} else if ( queryConfig.exec ){
 		return execStoreProcedure( queryConfig, variables )
+	} else if ( queryConfig.analyze ){
+		return analyze( queryConfig, variables )
 	}
 
 	let query = trimQuery(queryConfig.query)
@@ -205,9 +344,11 @@ const prepareQueries = queries => {
 		const selectRegex = /^\s*select .+ from .+/i
 		const describeRegex = /^\s*describe\s+(.+)\s*/i
 		const execRegex = /^\s*exec\s+(.+)\s*/i
+		const analyzeRegex = /^\s*analyze\s+(.+)\s*/i
 
 		const describeQuery = query.match(describeRegex)
 		const execQuery = query.match(execRegex)
+		const analyzeQuery = query.match(analyzeRegex)
 
 		if ( describeQuery ){
 			queryConfig.describe = true
@@ -215,6 +356,9 @@ const prepareQueries = queries => {
 		} else if ( execQuery ) {
 			queryConfig.exec = true
 			queryConfig.invocation = execQuery[1]
+		} else if ( analyzeQuery ) {
+			queryConfig.analyze = true
+			queryConfig.procedure = analyzeQuery[1]
 		} else if ( query.match(selectRegex) ){
 			let select = getSelectInfo(query)
 

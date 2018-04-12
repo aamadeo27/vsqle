@@ -82,7 +82,7 @@ export const renameNode = (projectName, path, newName, callback) => {
     if ( typeof callback === 'function') callback()
 }
 
-const TEMPLATE_SQL = "-- New Tab\nexec @Statistics 'PROCEDUREDETAIL'"
+const TEMPLATE_SQL = "-- New Tab\nanalyze ConsumidorRARSPLoader"
 export const newTab = (content = TEMPLATE_SQL) => ({ id: getFileID(), filepath: "/New Tab", content, newTab: true })
 
 export const getConfig = () => JSON.parse(localStorage.getItem("$config")) || undefined
