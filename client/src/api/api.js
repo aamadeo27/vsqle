@@ -82,7 +82,7 @@ export const renameNode = (projectName, path, newName, callback) => {
     if ( typeof callback === 'function') callback()
 }
 
-const TEMPLATE_SQL = "-- New Tab\nanalyze ConsumidorRARSPLoader"
+const TEMPLATE_SQL = "-- New Tab\n"
 export const newTab = (content = TEMPLATE_SQL) => ({ id: getFileID(), filepath: "/New Tab", content, newTab: true })
 
 export const getConfig = () => JSON.parse(localStorage.getItem("$config")) || undefined
@@ -123,7 +123,8 @@ const dataOp = method => (url, data) => {
 const post = dataOp('POST')
 const get = url => fetch(url, conf).then( r => r.json() )
 
-const prefix = process.env.NODE_ENV ? 'https://10.150.55.146:8084' : ''
+const DEBUG_URL = 'https://localhost:8084'
+const prefix = process.env.NODE_ENV === 'development' ? DEBUG_URL : ''
 
 const urls = {
     session: prefix + "/session",

@@ -180,7 +180,6 @@ export default class extends Component {
 	}
 
 	render(){
-		console.log("Render Result")
 		const { queryConfig, all, more, result } = this.props
 		const { expanded } = this.state
 		const onClick = this.onClick.bind(this)

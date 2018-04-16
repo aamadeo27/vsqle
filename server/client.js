@@ -79,7 +79,7 @@ router.get('/schema', (req, res, next) => {
 			}
 
 			const response = { data, schema, error: r.status !== 1 ? r.statusString : undefined }
-			logger.log("Schema",{ response })
+			logger.log("Schema OK")
 			sendMw(res, response )
 		}).catch( err => {
 			logger.error("Schema",{ error: err.toString() })
@@ -158,7 +158,7 @@ router.post('/query', (req, res, next) => {
 			}
 
 			const response = { data, schema, error: r.status !== 1 ? r.statusString : undefined }
-			logger.log("QueryResponse",{ response })
+			logger.log("QueryResponse OK", { query })
 			sendMw(res, response )
 		}).catch( err => {
 			logger.error("QueryResponse", err)
@@ -192,7 +192,7 @@ router.post('/store-procedure', (req, res, next) => {
 			}
 
 			const response = { data, schema, error: r.status !== 1 ? r.statusString : undefined }
-			logger.log("QueryResponse",{ response })
+			logger.log("QueryResponse OK", { procedure, args })
 			sendMw(res, response )
 		}).catch( err => {
 			logger.error("QueryResponse", err)

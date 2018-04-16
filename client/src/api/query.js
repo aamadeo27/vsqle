@@ -181,8 +181,8 @@ const schema = {
 	sample: 8,
 
 	minTime: 9,
-	avgTime: 10,
-	maxTime: 11
+	maxTime: 10,
+	avgTime: 11,
 }
 const parseAnalysis = row => ({
 	partition: row[schema.partition],
@@ -203,8 +203,16 @@ const analyze = async (queryConfig, variables) => {
 	let buffer = []
 
 	try {
-		queryConfig.invocation = `@Statistics 'PROCEDUREDETAIL' 0i` //procedure
-		let { result } = await execStoreProcedure(queryConfig, variables)
+		queryConfig.invocation = `@Statistics 'PROCEDUREDETAIL' 1000` //procedure
+		let { result, error } = await execStoreProcedure(queryConfig, variables)
+
+		queryConfig.query = queryConfig.procedure
+	
+		if ( error ){
+			return { queryConfig, error }
+		}
+
+		console.debug("Schema", result.schema)
 
 		buffer = result.data
 	} catch (err){
@@ -212,80 +220,43 @@ const analyze = async (queryConfig, variables) => {
 	}
 
 	const analysis = {
+		procedure: queryConfig.procedure,
 		partition: [],
 		node: [],
-		statement: {}
+		statement: [],
+		all: []
 	}
 
-	console.log({ buffer })
+	buffer = buffer.filter( row => row[schema.procedure].match(queryConfig.procedure) )
 
-	if ( buffer ) {
-		buffer = buffer.filter( row => row[schema.procedure].match(queryConfig.procedure) )
+	if ( buffer.length === 0 ){
+		return { queryConfig, error: "No data found" }
+	}
 
-		buffer.forEach( e => {
-			const row = parseAnalysis(e)
+	console.log(buffer)
 
-			if ( analysis.partition[row.partition] ) analysis.partition[row.partition].push(row)
-			else analysis.partition[row.partition] = [row]
+	buffer.forEach( e => {
+		const row = parseAnalysis(e)
 
-			if ( analysis.node[row.node] ) analysis.node[row.node].push(row)
-			else analysis.node[row.node] = [row]
+		if ( analysis.partition[row.partition] ) analysis.partition[row.partition].push(row)
+		else analysis.partition[row.partition] = [row]
 
-			if ( analysis.statement[row.statement] ) analysis.statement[row.statement].push(row)
-			else analysis.statement[row.statement] = [row]
-		})
+		if ( analysis.node[row.node] ) analysis.node[row.node].push(row)
+		else analysis.node[row.node] = [row]
 
-		console.log("Filtered", analysis )
+		if ( analysis.statement[row.statement] ) analysis.statement[row.statement].push(row)
+		else analysis.statement[row.statement] = [row]
+	})
 
-		analysis.partition.forEach( pt => {
-			let sum = 0
-			let total = 0
-			let min = Number.MAX_SAFE_INTEGER
-			let max = Number.MIN_SAFE_INTEGER
-
-			pt.forEach( e => {
-				if ( e.statement !== '<ALL>' ) return 
-
-				sum += e.time.avg * e.sample
-				total += e.sample
-
-				if ( e.time.min < min ) min = e.time.min
-				if ( e.time.max > max ) max = e.time.max
-			})
-
-			pt['summary'] = {
-				sample: total,
-				time: { min, max, avg: sum / total }
-			}
-		})
-
-		analysis.node.forEach( node => {
-			let sum = 0
-			let total = 0
-			let min = Number.MAX_SAFE_INTEGER
-			let max = Number.MIN_SAFE_INTEGER
-
-			node.forEach( e => {
-				if ( e.statement !== '<ALL>' ) return 
-
-				sum += e.time.avg * e.sample
-				total += e.sample
-
-				if ( e.time.min < min ) min = e.time.min
-				if ( e.time.max > max ) max = e.time.max
-			})
-
-			node['summary'] = {
-				sample: total,
-				time: { min, max, avg: sum / total }
-			}
-		})
-
+	analysis.partition.forEach( pt => {
 		let sum = 0
 		let total = 0
 		let min = Number.MAX_SAFE_INTEGER
 		let max = Number.MIN_SAFE_INTEGER
-		analysis.statement['<ALL>'].forEach( e => {
+
+		pt.forEach( e => {
+			if ( e.statement !== '<ALL>' ) return 
+
 			sum += e.time.avg * e.sample
 			total += e.sample
 
@@ -293,20 +264,90 @@ const analyze = async (queryConfig, variables) => {
 			if ( e.time.max > max ) max = e.time.max
 		})
 
-		analysis.summary = {
+		pt['summary'] = {
 			sample: total,
 			time: { min, max, avg: sum / total }
 		}
+	})
 
-	} else {
-		return { queryConfig, error: "Incomplete" }
+	analysis.node.forEach( node => {
+		let sum = 0
+		let total = 0
+		let min = Number.MAX_SAFE_INTEGER
+		let max = Number.MIN_SAFE_INTEGER
+
+		node.forEach( e => {
+			if ( e.statement !== '<ALL>' ) return 
+
+			sum += e.time.avg * e.sample
+			total += e.sample
+
+			if ( e.time.min < min ) min = e.time.min
+			if ( e.time.max > max ) max = e.time.max
+		})
+
+		node['summary'] = {
+			sample: total,
+			time: { min, max, avg: sum / total }
+		}
+	})
+
+
+	const list = []
+	for( let name in analysis.statement ){
+		list.push(analysis.statement[name])
+	}
+	analysis.statement = list
+
+	analysis.statement.forEach( statement => {
+		if ( statement[0].statement === '<ALL>' ) return
+
+		let sum = 0
+		let total = 0
+		let min = Number.MAX_SAFE_INTEGER
+		let max = Number.MIN_SAFE_INTEGER
+
+		statement.forEach( e => {
+			sum += e.time.avg * e.sample
+			total += e.sample
+
+			if ( e.time.min < min ) min = e.time.min
+			if ( e.time.max > max ) max = e.time.max
+
+			analysis.all.push(e)
+		})
+
+		statement['summary'] = {
+			name: statement[0].statement,
+			sample: total,
+			time: { min, max, avg: sum / total }
+		}
+	})
+
+	analysis.statement = analysis.statement.filter( s => s[0].statement !== '<ALL>')
+
+	let sum = 0
+	let total = 0
+	let min = Number.MAX_SAFE_INTEGER
+	let max = Number.MIN_SAFE_INTEGER
+
+	analysis.statement[0].forEach( e => {
+		console.debug("all", e.time, e.sample)
+		sum += e.time.avg * e.sample
+		total += e.sample
+
+		if ( e.time.min < min ) min = e.time.min
+		if ( e.time.max > max ) max = e.time.max
+	})
+
+	analysis.summary = {
+		sample: total,
+		time: { min, max, avg: sum / total }
 	}
 
 	console.log({ analysis })
 
-	queryConfig.sql = "analyze " + queryConfig.procedure
-
-	return { queryConfig, error: "Incomplete" }
+	return { queryConfig, analysis }
 }
 
 //Todo: quitar serverConfig

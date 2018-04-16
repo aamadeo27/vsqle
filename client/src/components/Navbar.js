@@ -44,9 +44,9 @@ class AppNavbar extends Component {
                     </Navbar.Brand>
                 </Navbar.Header>
                 <Nav pullRight>
-                    <NavItem eventKey={1} href="#" onClick={() => this.props.showLoginDialog()}>
+                    {connection.user ? <NavItem eventKey={1} href="#" onClick={() => this.props.showLoginDialog()}>
                         <span className="connection-status">{session}</span>
-                    </NavItem>
+                    </NavItem> : ""}
                     {logintItem}
                 </Nav>
             </Navbar>

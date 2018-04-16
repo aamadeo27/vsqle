@@ -1,6 +1,6 @@
 {
   "name": "vsqle",
-  "version": "2.0.0",
+  "version": "2.11111111111.0",
   "repository": "https://github.com/aamadeo27/vsqle",
   "description": "SQL Editor for voltDB",
   "main": "entry/sever.js",

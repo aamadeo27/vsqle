@@ -144,8 +144,7 @@ module.exports = userConfig => {
 
         	statement.setParameters([query])
 
-			console.log("Timeout: ",  config.timeout)
-			const timeout = setTimeout( () => reject('Timeout'),config.timeout)
+			const timeout = setTimeout( () => reject(`Timeout(${config.timeout}ms)`),config.timeout)
 
 			client.callProcedure( statement, (event, code, results) => {
 				if ( results.error ) reject(results.error)
