@@ -203,7 +203,7 @@ const analyze = async (queryConfig, variables) => {
 	let buffer = []
 
 	try {
-		queryConfig.invocation = `@Statistics 'PROCEDUREDETAIL' 1000` //procedure
+		queryConfig.invocation = `@Statistics 'PROCEDUREDETAIL' 0i` //procedure
 		let { result, error } = await execStoreProcedure(queryConfig, variables)
 
 		queryConfig.query = queryConfig.procedure
@@ -212,11 +212,9 @@ const analyze = async (queryConfig, variables) => {
 			return { queryConfig, error }
 		}
 
-		console.debug("Schema", result.schema)
-
 		buffer = result.data
 	} catch (err){
-		console.log("error", err)
+		console.error(err)
 	}
 
 	const analysis = {
@@ -324,8 +322,6 @@ const analyze = async (queryConfig, variables) => {
 		}
 	})
 
-	analysis.statement = analysis.statement.filter( s => s[0].statement !== '<ALL>')
-
 	let sum = 0
 	let total = 0
 	let min = Number.MAX_SAFE_INTEGER
@@ -340,12 +336,12 @@ const analyze = async (queryConfig, variables) => {
 		if ( e.time.max > max ) max = e.time.max
 	})
 
+	analysis.statement = analysis.statement.filter( s => s[0].statement !== '<ALL>')
+
 	analysis.summary = {
 		sample: total,
 		time: { min, max, avg: sum / total }
 	}
-
-	console.log({ analysis })
 
 	return { queryConfig, analysis }
 }

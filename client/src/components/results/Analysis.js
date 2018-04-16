@@ -68,13 +68,13 @@ const Summary = ({ summary, name }) => ({
 const StatisticsDetail = ({ data }) => ({
 	render(){
 		const detail = (row, key) => <tr key={key}>
-			<th>{row.node}</th>
-			<th>{row.partition}</th>
-			<th>{row.statement}</th>
-			<th>{row.sample}</th>
-			<th>{toMillis(row.time.min)}</th>
-			<th>{toMillis(row.time.avg)}</th>
-			<th>{toMillis(row.time.max)}</th>
+			<td>{row.node}</td>
+			<td>{row.partition}</td>
+			<td>{row.statement}</td>
+			<td>{row.sample}</td>
+			<td>{toMillis(row.time.min)}</td>
+			<td>{toMillis(row.time.avg)}</td>
+			<td>{toMillis(row.time.max)}</td>
 		</tr>
 
 		const detailList = data.map( detail )
