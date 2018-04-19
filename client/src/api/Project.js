@@ -110,6 +110,8 @@ export const renameNode = (project, path, newName, dontMutate) => {
 
 	const steps = path.split("/").splice(1)
 
+	console.log("Rename", project.root, { steps, newName })
+
     if ( steps.length === 1 ) {
         //path => /ProjectName
         project.activePath = project.activePath.replace(path,"/"+newName)

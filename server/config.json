@@ -5,5 +5,5 @@
     "port" : 8084,
     "voltdbPort" : 21212,
     "loginDelay": 1200,
-    "timeout":10000
+    "timeout":60000
 }

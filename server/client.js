@@ -97,6 +97,8 @@ router.get('/disconnect', (req, res, next) => {
 	const { cid, name } = req.session
 
 	logger.log("LogOutRequest", { name, cid })
+	logger.audit("Logout", { name })
+
 	disconnect(req)
 
 	logger.log("LogOutResponse", { name, status: 0 })
@@ -129,6 +131,7 @@ router.post('/connect', (req, res, next) => {
 		disconnects.set(connection.id, disconnect)
 
 		logger.log("LogInResponse",{ user, status: 0 })
+		logger.audit("LogIn", { user })
 		sendMw(res, { status: 0 })
 	}).catch( err => {
 		req.session.name = undefined
@@ -139,11 +142,16 @@ router.post('/connect', (req, res, next) => {
 })
 
 router.post('/query', (req, res, next) => {
-	const { session: { cid } ,  body: { query }} = req
-
-	logger.log("QueryRequest",{ query, cid })
+	const { session: { cid, name } ,  body: { query }} = req
+	const { ip } = req
+	
+	logger.audit("Query", { query, name, ip })
 	if ( cid ){
 		const connection = connections.get(cid)
+		const username = connection.client.config[0].username
+
+		logger.log("QueryRequest",{ query })
+		logger.audit("QueryRequest",{ query, ip, username })
 		
 		connection.executeQuery(query).then( r => {
 			const { table, err } = r

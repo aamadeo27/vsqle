@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
-import { Panel, Table, Grid, Row, Col, Button, Glyphicon, Nav, NavItem } from 'react-bootstrap'
-import Download from '../common/Download.js'
-import * as api from '../../api/api'
+import { Panel, Table, Grid, Row, Col, Glyphicon, Nav, NavItem } from 'react-bootstrap'
 
+/*
 const pad = x => x.length === 1 ? "0" + x : x
 const getUTCString = date => {
 	let value = date.getUTCFullYear() + "-"
@@ -14,6 +13,7 @@ const getUTCString = date => {
 
 	return value
 }
+*/
 
 const toMillis = t => ((Math.round( t / 1000 ) / 1000 ) + "ms")
 

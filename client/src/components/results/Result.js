@@ -24,12 +24,26 @@ export default class extends Component {
 				csv: false,
 				xls: false,
 				sql: false
-			}
+			},
+			hidden: []
 		}
 	}
 
 	onClick(){
 		this.setState({ expanded: !this.state.expanded })
+	}
+
+	toggleColumn(name){
+		const { hidden } = this.state
+		const newHidden = [...hidden]
+
+		if ( hidden[name] ){	
+			delete newHidden[name]	
+		} else {
+			newHidden[name] = true
+		}
+
+		this.setState({ hidden: newHidden })
 	}
 
 	componentWillReceiveProps(props){
@@ -181,10 +195,27 @@ export default class extends Component {
 
 	render(){
 		const { queryConfig, all, more, result } = this.props
-		const { expanded } = this.state
+		const { expanded, hidden } = this.state
 		const onClick = this.onClick.bind(this)
 
-		const headers = result.schema.map( (ci, i) => <th key={i}>{ci.name.toLowerCase()}</th> )
+		const toggle = i => this.toggleColumn(i)
+
+		const headers = result.schema.map( (ci, i) => {
+			const toggleBtn = <Button bsSize="xsmall" onClick={() => toggle(i)}>
+				<Glyphicon glyph={ hidden[i] ? "menu-right" : "menu-left" }/>
+			</Button>
+
+			if ( hidden[i] ) {
+				return <th key={i}>
+					{toggleBtn}
+				</th>
+			}
+
+			return <th key={i}>
+				{ci.name.toLowerCase()}
+				{toggleBtn}
+			</th>
+		})
 
 		const csv = this.getCSV(result)
 		const xls = this.getXLS(result)
@@ -203,12 +234,16 @@ export default class extends Component {
 			const columns = []
 
 			for( let j = 0 ; j < row.length; j++ ){
-				let value = this.getValue(row, result.schema, j)
+				let value = ''
 
-				if ( result.schema[j].type === 'date' ){
-					value = <span>{value}</span> 
+				if( ! hidden[j] ){
+					value = this.getValue(row, result.schema, j)
+
+					if ( result.schema[j].type === 'date' ){
+						value = <span>{value}</span> 
+					}
 				}
-
+				
 				columns.push(<td key={j}>{value}</td>)
 			}
 

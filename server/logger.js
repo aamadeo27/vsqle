@@ -13,5 +13,12 @@ module.exports = {
         new (winston.transports.Console)(),
         new (winston.transports.File)({ filename: 'server.error.log' })
         ]
-    }).error
+    }).error,
+
+    audit: new (winston.Logger)({
+        transports: [
+        new (winston.transports.Console)(),
+        new (winston.transports.File)({ filename: 'audit.log' })
+        ]
+    }).info
 }

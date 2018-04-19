@@ -1,0 +1,69 @@
+{"user":"amadeoa","level":"error","message":"LogIn","timestamp":"2018-04-19T20:13:39.548Z"}
+{"query":"select * from bolsas limit 7 offset 0","name":"desarrollo","ip":"xxx","level":"error","message":"Query","timestamp":"2018-04-19T20:13:48.906Z"}
+{"level":"error","message":"Logout","timestamp":"2018-04-19T20:14:37.512Z"}
+{"user":"amadeoa","level":"error","message":"LogIn","timestamp":"2018-04-19T20:14:43.892Z"}
+{"query":"select * from bolsas limit 7 offset 0","name":"desarrollo","ip":"xxx","level":"error","message":"Query","timestamp":"2018-04-19T20:14:45.101Z"}
+{"level":"error","message":"Logout","timestamp":"2018-04-19T20:16:46.380Z"}
+{"user":"amadeoa","level":"error","message":"LogIn","timestamp":"2018-04-19T20:16:52.348Z"}
+{"query":"select * from bolsas limit 7 offset 0","name":"desarrollo","ip":"xxx","level":"error","message":"Query","timestamp":"2018-04-19T20:16:53.210Z"}
+{"user":"rodrijua","level":"error","message":"LogIn","timestamp":"2018-04-19T20:19:32.272Z"}
+{"query":"select * from celdas limit 7 offset 0","name":"asdf","ip":"xxx","level":"error","message":"Query","timestamp":"2018-04-19T20:19:40.877Z"}
+{"query":"select * from celdas limit 7 offset 7","name":"asdf","ip":"xxx","level":"error","message":"Query","timestamp":"2018-04-19T20:19:44.610Z"}
+{"level":"error","message":"Logout","timestamp":"2018-04-19T20:21:07.898Z"}
+{"user":"amadeoa","level":"error","message":"LogIn","timestamp":"2018-04-19T20:21:14.072Z"}
+{"query":"select * from bolsas limit 7 offset 0","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"error","message":"Query","timestamp":"2018-04-19T20:21:15.391Z"}
+{"level":"info","message":"Logout","timestamp":"2018-04-19T20:24:09.247Z"}
+{"user":"amadeoa","level":"info","message":"LogIn","timestamp":"2018-04-19T20:24:15.251Z"}
+{"query":"select * from bolsas limit 7 offset 0","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-19T20:24:16.484Z"}
+{"query":"select * from bolsas limit 7 offset 0","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-19T20:24:16.486Z"}
+{"user":"rodrijua","level":"info","message":"LogIn","timestamp":"2018-04-19T20:25:12.062Z"}
+{"query":"select * from celdas limit 7 offset 0","name":"asdf","ip":"::ffff:10.150.55.151","level":"info","message":"Query","timestamp":"2018-04-19T20:25:21.891Z"}
+{"query":"select * from celdas limit 7 offset 0","ip":"::ffff:10.150.55.151","username":"rodrijua","level":"info","message":"QueryRequest","timestamp":"2018-04-19T20:25:21.892Z"}
+{"query":"select * from celdas limit 7 offset 0","name":"asdf","ip":"::ffff:10.150.55.151","level":"info","message":"Query","timestamp":"2018-04-19T20:25:23.455Z"}
+{"query":"select * from celdas limit 7 offset 0","ip":"::ffff:10.150.55.151","username":"rodrijua","level":"info","message":"QueryRequest","timestamp":"2018-04-19T20:25:23.456Z"}
+{"query":"ALTER TABLE reservas DROP PRIMARY KEY;","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-19T20:54:40.136Z"}
+{"query":"ALTER TABLE reservas DROP PRIMARY KEY;","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-19T20:54:40.137Z"}
+{"query":"ALTER TABLE reservas ADD PRIMARY KEY (codigo_abonado, jerarquia, codigo_objeto, owner, proceso);","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-19T20:54:53.939Z"}
+{"query":"ALTER TABLE reservas ADD PRIMARY KEY (codigo_abonado, jerarquia, codigo_objeto, owner, proceso);","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-19T20:54:53.940Z"}
+{"query":"ALTER TABLE reservas ADD PRIMARY KEY (codigo_abonado, jerarquia, codigo_objeto, owner, proceso);","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-19T20:55:01.141Z"}
+{"query":"ALTER TABLE reservas ADD PRIMARY KEY (codigo_abonado, jerarquia, codigo_objeto, owner, proceso);","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-19T20:55:01.142Z"}
+{"query":"ALTER TABLE reservas DROP PRIMARY KEY;","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-19T20:55:55.047Z"}
+{"query":"ALTER TABLE reservas DROP PRIMARY KEY;","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-19T20:55:55.048Z"}
+{"query":"ALTER TABLE reservas ADD PRIMARY KEY (codigo_abonado, jerarquia, codigo_objeto, owner, proceso);","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-19T20:55:55.050Z"}
+{"query":"ALTER TABLE reservas ADD PRIMARY KEY (codigo_abonado, jerarquia, codigo_objeto, owner, proceso);","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-19T20:55:55.051Z"}
+{"query":"ALTER TABLE reservas ADD PRIMARY KEY (codigo_abonado, jerarquia, codigo_objeto, owner, proceso);","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-19T20:56:03.803Z"}
+{"query":"ALTER TABLE reservas ADD PRIMARY KEY (codigo_abonado, jerarquia, codigo_objeto, owner, proceso);","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-19T20:56:03.804Z"}
+{"query":"ALTER TABLE reservas ADD PRIMARY KEY (codigo_abonado, jerarquia, codigo_objeto, owner, proceso);","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-19T20:56:14.077Z"}
+{"query":"ALTER TABLE reservas ADD PRIMARY KEY (codigo_abonado, jerarquia, codigo_objeto, owner, proceso);","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-19T20:56:14.078Z"}
+{"level":"info","message":"Logout","timestamp":"2018-04-19T20:57:13.057Z"}
+{"user":"amadeoa","level":"info","message":"LogIn","timestamp":"2018-04-19T20:57:19.364Z"}
+{"query":"ALTER TABLE reservas ADD PRIMARY KEY (codigo_abonado, jerarquia, codigo_objeto, owner, proceso);","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-19T20:57:42.982Z"}
+{"query":"ALTER TABLE reservas ADD PRIMARY KEY (codigo_abonado, jerarquia, codigo_objeto, owner, proceso);","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-19T20:57:42.983Z"}
+{"query":"delete reservas;","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-19T20:58:46.912Z"}
+{"query":"delete reservas;","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-19T20:58:46.914Z"}
+{"query":"delete from reservas;","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-19T20:58:57.544Z"}
+{"query":"delete from reservas;","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-19T20:58:57.545Z"}
+{"query":"ALTER TABLE reservas ADD PRIMARY KEY (codigo_abonado, jerarquia, codigo_objeto, owner, proceso);","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-19T20:58:59.906Z"}
+{"query":"ALTER TABLE reservas ADD PRIMARY KEY (codigo_abonado, jerarquia, codigo_objeto, owner, proceso);","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-19T20:58:59.907Z"}
+{"query":"ALTER TABLE reservas DROP PRIMARY KEY;","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-19T21:03:20.203Z"}
+{"query":"ALTER TABLE reservas DROP PRIMARY KEY;","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-19T21:03:20.203Z"}
+{"query":"ALTER TABLE reservas ADD PRIMARY KEY (codigo_abonado, jerarquia, codigo_objeto, owner, proceso);","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-19T21:03:40.199Z"}
+{"query":"ALTER TABLE reservas ADD PRIMARY KEY (codigo_abonado, jerarquia, codigo_objeto, owner, proceso);","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-19T21:03:40.201Z"}
+{"query":"delete from reservas;","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-19T21:03:58.612Z"}
+{"query":"delete from reservas;","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-19T21:03:58.614Z"}
+{"query":"ALTER TABLE reservas ADD PRIMARY KEY (codigo_abonado, jerarquia, codigo_objeto, owner, proceso);","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-19T21:04:00.246Z"}
+{"query":"ALTER TABLE reservas ADD PRIMARY KEY (codigo_abonado, jerarquia, codigo_objeto, owner, proceso);","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-19T21:04:00.247Z"}
+{"user":"amadeoa","level":"info","message":"LogIn","timestamp":"2018-04-19T21:14:35.600Z"}
+{"query":"select * from bolsas limit 7 offset 0","name":"desarrollo","ip":"::1","level":"info","message":"Query","timestamp":"2018-04-19T21:17:49.024Z"}
+{"query":"select * from bolsas limit 7 offset 0","ip":"::1","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-19T21:17:49.025Z"}
+{"query":"select * from bolsas limit 7 offset 0","name":"desarrollo","ip":"::1","level":"info","message":"Query","timestamp":"2018-04-19T21:20:26.383Z"}
+{"query":"select * from bolsas limit 7 offset 0","ip":"::1","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-19T21:20:26.384Z"}
+{"query":"select * From locks where transaction_id = 99888216381760883 limit 7 offset 0","name":"desarrollo","ip":"::1","level":"info","message":"Query","timestamp":"2018-04-19T21:27:35.607Z"}
+{"query":"select * From locks where transaction_id = 99888216381760883 limit 7 offset 0","ip":"::1","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-19T21:27:35.608Z"}
+{"query":"select * From locks where id_transaccion = 99888216381760883 limit 7 offset 0","name":"desarrollo","ip":"::1","level":"info","message":"Query","timestamp":"2018-04-19T21:27:46.495Z"}
+{"query":"select * From locks where id_transaccion = 99888216381760883 limit 7 offset 0","ip":"::1","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-19T21:27:46.497Z"}
+{"query":"select * From locks where id_transaccion = 99888221358780433 limit 7 offset 0","name":"desarrollo","ip":"::1","level":"info","message":"Query","timestamp":"2018-04-19T21:28:32.043Z"}
+{"query":"select * From locks where id_transaccion = 99888221358780433 limit 7 offset 0","ip":"::1","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-19T21:28:32.064Z"}
+{"user":"amadeoa","level":"info","message":"LogIn","timestamp":"2018-04-19T21:35:23.541Z"}
+{"query":"select * from bolsas limit 7 offset 0","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-19T21:39:19.771Z"}
+{"query":"select * from bolsas limit 7 offset 0","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-19T21:39:19.771Z"}
