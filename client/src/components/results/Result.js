@@ -194,26 +194,24 @@ export default class extends Component {
 	}
 
 	render(){
-		const { queryConfig, all, more, result } = this.props
+		const { queryConfig, all, more, result, config } = this.props
 		const { expanded, hidden } = this.state
 		const onClick = this.onClick.bind(this)
 
-		const toggle = i => this.toggleColumn(i)
+		const toggle = i => e => {
+			e.preventDefault()
+			this.toggleColumn(i)
+		}
 
 		const headers = result.schema.map( (ci, i) => {
-			const toggleBtn = <Button bsSize="xsmall" onClick={() => toggle(i)}>
-				<Glyphicon glyph={ hidden[i] ? "menu-right" : "menu-left" }/>
-			</Button>
-
 			if ( hidden[i] ) {
-				return <th key={i}>
-					{toggleBtn}
+				return <th key={i} onContextMenu={toggle(i)}>
+					&nbsp;
 				</th>
 			}
 
-			return <th key={i}>
+			return <th key={i} onContextMenu={toggle(i)}>
 				{ci.name.toLowerCase()}
-				{toggleBtn}
 			</th>
 		})
 
@@ -237,7 +235,7 @@ export default class extends Component {
 				let value = ''
 
 				if( ! hidden[j] ){
-					value = this.getValue(row, result.schema, j)
+					value = this.getValue(row, result.schema, j, config.fullColumn)
 
 					if ( result.schema[j].type === 'date' ){
 						value = <span>{value}</span> 

@@ -5,5 +5,6 @@ client/node_modules/*
 server/node_modules/*
 server/public/*
 server/server.log
+server/audit.log
 server/server.error.log
 server/localhost.*

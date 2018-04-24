@@ -67,3 +67,72 @@
 {"user":"amadeoa","level":"info","message":"LogIn","timestamp":"2018-04-19T21:35:23.541Z"}
 {"query":"select * from bolsas limit 7 offset 0","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-19T21:39:19.771Z"}
 {"query":"select * from bolsas limit 7 offset 0","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-19T21:39:19.771Z"}
+{"user":"rodrijua","level":"info","message":"LogIn","timestamp":"2018-04-19T22:02:20.847Z"}
+{"level":"info","message":"Logout","timestamp":"2018-04-20T15:33:52.757Z"}
+{"user":"amadeoa","level":"info","message":"LogIn","timestamp":"2018-04-20T15:33:58.567Z"}
+{"query":"select * from abonados_x_servicios_recargas where jerarquia like '%974438349' limit 7 offset 0","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-20T15:34:03.060Z"}
+{"query":"select * from abonados_x_servicios_recargas where jerarquia like '%974438349' limit 7 offset 0","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-20T15:34:03.061Z"}
+{"query":"select now from dual limit 7 offset 0","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-20T15:38:29.017Z"}
+{"query":"select now from dual limit 7 offset 0","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-20T15:38:29.019Z"}
+{"name":"desarrollo","level":"info","message":"Logout","timestamp":"2018-04-20T18:45:06.190Z"}
+{"user":"amadeoa","level":"info","message":"LogIn","timestamp":"2018-04-20T18:45:14.566Z"}
+{"query":"select * From eventos limit 7 offset 0","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-20T19:40:26.884Z"}
+{"query":"select * From eventos limit 7 offset 0","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-20T19:40:26.886Z"}
+{"query":"select * From eventos where tipo_evento = 'RAR' limit 7 offset 0","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-20T19:41:01.651Z"}
+{"query":"select * From eventos where tipo_evento = 'RAR' limit 7 offset 0","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-20T19:41:01.652Z"}
+{"query":"select * from categorias_x_estados_trafico limit 7 offset 0","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-20T20:45:01.131Z"}
+{"query":"select * from categorias_x_estados_trafico limit 7 offset 0","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-20T20:45:01.144Z"}
+{"name":"desarrollo","level":"info","message":"Logout","timestamp":"2018-04-20T20:45:14.306Z"}
+{"user":"amadeoa","level":"info","message":"LogIn","timestamp":"2018-04-20T20:45:20.889Z"}
+{"query":"select * from categorias_x_estados_trafico limit 7 offset 0","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-20T20:45:22.615Z"}
+{"query":"select * from categorias_x_estados_trafico limit 7 offset 0","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-20T20:45:22.617Z"}
+{"query":"select * from tipo_trafico_x_categorias_parametros limit 7 offset 0","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-20T20:46:09.415Z"}
+{"query":"select * from tipo_trafico_x_categorias_parametros limit 7 offset 0","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-20T20:46:09.416Z"}
+{"user":"amadeoa","level":"info","message":"LogIn","timestamp":"2018-04-20T22:00:53.118Z"}
+{"query":"select * from bolsas limit 7 offset 0","name":"desarrollo","ip":"::1","level":"info","message":"Query","timestamp":"2018-04-20T22:03:05.027Z"}
+{"query":"select * from bolsas limit 7 offset 0","ip":"::1","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-20T22:03:05.042Z"}
+{"query":"select * from bolsas limit 7 offset 0","name":"desarrollo","ip":"::1","level":"info","message":"Query","timestamp":"2018-04-20T22:07:13.933Z"}
+{"query":"select * from bolsas limit 7 offset 0","ip":"::1","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-20T22:07:13.950Z"}
+{"query":"select * from bolsas limit 7 offset 0","name":"desarrollo","ip":"::1","level":"info","message":"Query","timestamp":"2018-04-20T22:07:50.731Z"}
+{"query":"select * from bolsas limit 7 offset 0","ip":"::1","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-20T22:07:50.732Z"}
+{"level":"info","message":"Logout","timestamp":"2018-04-23T13:49:22.787Z"}
+{"user":"amadeoa","level":"info","message":"LogIn","timestamp":"2018-04-23T13:49:30.239Z"}
+{"user":"alvarens","level":"info","message":"LogIn","timestamp":"2018-04-23T15:04:27.081Z"}
+{"query":"select * from datos_reservas where session_id='a.ugwcde01;3733385361;808;82213' limit 7 offset 0","name":"falcondes","ip":"::ffff:10.150.55.133","level":"info","message":"Query","timestamp":"2018-04-23T15:05:00.901Z"}
+{"query":"select * from datos_reservas where session_id='a.ugwcde01;3733385361;808;82213' limit 7 offset 0","ip":"::ffff:10.150.55.133","username":"alvarens","level":"info","message":"QueryRequest","timestamp":"2018-04-23T15:05:00.903Z"}
+{"query":"select detalle_rating_groups from datos_reservas where session_id='a.ugwcde01;3733385361;808;82213' limit 7 offset 0","name":"falcondes","ip":"::ffff:10.150.55.133","level":"info","message":"Query","timestamp":"2018-04-23T15:06:02.369Z"}
+{"query":"select detalle_rating_groups from datos_reservas where session_id='a.ugwcde01;3733385361;808;82213' limit 7 offset 0","ip":"::ffff:10.150.55.133","username":"alvarens","level":"info","message":"QueryRequest","timestamp":"2018-04-23T15:06:02.370Z"}
+{"name":"desarrollo","level":"info","message":"Logout","timestamp":"2018-04-23T18:12:09.079Z"}
+{"query":"select * from comportamientos_bolsa limit 7 offset 0","ip":"::1","level":"info","message":"Query","timestamp":"2018-04-23T18:13:07.426Z"}
+{"user":"amadeoa","level":"info","message":"LogIn","timestamp":"2018-04-23T18:13:13.167Z"}
+{"query":"select * from comportamientos_bolsa limit 7 offset 0","name":"desarrollo","ip":"::1","level":"info","message":"Query","timestamp":"2018-04-23T18:13:16.957Z"}
+{"query":"select * from comportamientos_bolsa limit 7 offset 0","ip":"::1","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-23T18:13:16.958Z"}
+{"query":"select * from comportamientos_bolsa where clase_bolsa like '%P' limit 7 offset 0","name":"desarrollo","ip":"::1","level":"info","message":"Query","timestamp":"2018-04-23T18:13:33.305Z"}
+{"query":"select * from comportamientos_bolsa where clase_bolsa like '%P' limit 7 offset 0","ip":"::1","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-23T18:13:33.307Z"}
+{"query":"update comportamientos_bolsa set accion = 'C' where clase_bolsa like '%P';","name":"desarrollo","ip":"::1","level":"info","message":"Query","timestamp":"2018-04-23T18:13:55.993Z"}
+{"query":"update comportamientos_bolsa set accion = 'C' where clase_bolsa like '%P';","ip":"::1","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-23T18:13:55.995Z"}
+{"query":"select * from comportamientos_bolsa where clase_bolsa like '%P' limit 7 offset 0","name":"desarrollo","ip":"::1","level":"info","message":"Query","timestamp":"2018-04-23T18:13:58.951Z"}
+{"query":"select * from comportamientos_bolsa where clase_bolsa like '%P' limit 7 offset 0","ip":"::1","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-23T18:13:58.953Z"}
+{"query":"select * from comportamientos_bolsa where clase_bolsa like '%P' offset 7","name":"desarrollo","ip":"::1","level":"info","message":"Query","timestamp":"2018-04-23T18:14:03.767Z"}
+{"query":"select * from comportamientos_bolsa where clase_bolsa like '%P' offset 7","ip":"::1","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-23T18:14:03.768Z"}
+{"user":"amadeoa","level":"info","message":"LogIn","timestamp":"2018-04-23T18:21:21.585Z"}
+{"query":"select * from parametros where responsable = 'saldo' limit 7 offset 0","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-23T18:21:29.931Z"}
+{"query":"select * from parametros where responsable = 'saldo' limit 7 offset 0","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-23T18:21:29.932Z"}
+{"query":"insert into parametros (nombre, responsable, valor, tipo, longitud, decimales, descripcion) values ('TOPE_BOLSAS_POR_OWNER', 'saldo', '2', 'INTEGER', 1, '0', 'Tope de bolsas por owner');","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-23T18:22:23.001Z"}
+{"query":"insert into parametros (nombre, responsable, valor, tipo, longitud, decimales, descripcion) values ('TOPE_BOLSAS_POR_OWNER', 'saldo', '2', 'INTEGER', 1, '0', 'Tope de bolsas por owner');","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-23T18:22:23.003Z"}
+{"user":"amadeoa","level":"info","message":"LogIn","timestamp":"2018-04-23T22:02:09.636Z"}
+{"query":"select * From parametros where responsable = 'saldo' limit 7 offset 0","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-23T22:02:22.857Z"}
+{"query":"select * From parametros where responsable = 'saldo' limit 7 offset 0","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-23T22:02:22.859Z"}
+{"query":"select * from comportamientos_bolsa where accion = 'C' limit 7 offset 0","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-23T22:03:03.935Z"}
+{"query":"select * from comportamientos_bolsa where accion = 'C' limit 7 offset 0","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-23T22:03:03.936Z"}
+{"query":"select * from comportamientos_bolsa where accion = 'C' and comportamiento = 'P' limit 7 offset 0","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-23T22:03:14.703Z"}
+{"query":"select * from comportamientos_bolsa where accion = 'C' and comportamiento = 'P' limit 7 offset 0","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-23T22:03:14.704Z"}
+{"query":"select * from comportamientos_bolsa set accion = 'P' where accion = 'C' and comportamiento = 'P' limit 7 offset 0","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-23T22:03:29.730Z"}
+{"query":"select * from comportamientos_bolsa set accion = 'P' where accion = 'C' and comportamiento = 'P' limit 7 offset 0","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-23T22:03:29.732Z"}
+{"query":"update comportamientos_bolsa set accion = 'P' where accion = 'C' and comportamiento = 'P';","name":"desarrollo","ip":"::ffff:10.150.55.146","level":"info","message":"Query","timestamp":"2018-04-23T22:03:42.149Z"}
+{"query":"update comportamientos_bolsa set accion = 'P' where accion = 'C' and comportamiento = 'P';","ip":"::ffff:10.150.55.146","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-23T22:03:42.152Z"}
+{"user":"amadeoa","level":"info","message":"LogIn","timestamp":"2018-04-24T15:11:53.428Z"}
+{"query":"select detalle_rating_groups from datos_reservas limit 7 offset 0","name":"desarrollo","ip":"::1","level":"info","message":"Query","timestamp":"2018-04-24T15:12:49.997Z"}
+{"query":"select detalle_rating_groups from datos_reservas limit 7 offset 0","ip":"::1","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-24T15:12:49.998Z"}
+{"query":"select detalle_rating_groups from datos_reservas limit 7 offset 0","name":"desarrollo","ip":"::1","level":"info","message":"Query","timestamp":"2018-04-24T15:13:45.156Z"}
+{"query":"select detalle_rating_groups from datos_reservas limit 7 offset 0","ip":"::1","username":"amadeoa","level":"info","message":"QueryRequest","timestamp":"2018-04-24T15:13:45.157Z"}

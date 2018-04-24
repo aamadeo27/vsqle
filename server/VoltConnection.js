@@ -84,7 +84,15 @@ module.exports = userConfig => {
             client.connect( (code, event, result) => {
 				if( code ) {
 					if ( ! connection.connecting ){
-						if ( connection.client ) return connection.client.exit()
+						if ( connection.client ) {
+							try {
+								connection.client.exit()
+							} catch (err) {
+								console.error("Error on log out")
+							}
+
+							return
+						}
 					}
 
 					connected[result.config.host] = false

@@ -145,7 +145,6 @@ router.post('/query', (req, res, next) => {
 	const { session: { cid, name } ,  body: { query }} = req
 	const { ip } = req
 	
-	logger.audit("Query", { query, name, ip })
 	if ( cid ){
 		const connection = connections.get(cid)
 		const username = connection.client.config[0].username
