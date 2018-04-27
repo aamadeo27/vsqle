@@ -25,7 +25,7 @@ module.exports = userConfig => {
         nodeConfig.host = node
         nodeConfig.port = defaults.voltdbPort || config.voltDBPort
         nodeConfig.username = userConfig.user
-        nodeConfig.password = userConfig.password
+		nodeConfig.password = userConfig.password
 		confs.push(nodeConfig)
 	})
 
@@ -35,19 +35,28 @@ module.exports = userConfig => {
 		connected: () => {
 			if ( ! connection.client ) return false
 			
-			const conn = connection.client._getConnection()
-			if ( ! conn ) return false 
-			if ( ! conn.isValidConnection() ) return false
-
-			return true
+			return connection.client._connections.reduce( (r, c) => r || !c || !c.destroyed, false )
 		},
 
-		close: () => connection.client.exit(),
+		close: () => {
+			try {
+				connection.client.exit()
+			} catch (err) {
+				connection.client.connectionStats()
+				console.log({
+					counter: connection.client._connectionCounter
+				})
+				console.error("Error on log out")
+			}
+		},
 
 		handler: {
 			err : {
-				connection: (code, event, message) => {
-					console.log("Connection to database was lost\n", code, message)
+				connection: (code, event, conn) => {
+					console.log("Connection to database was lost")
+					console.log("Node: ", conn.config.host)
+					console.log(code, event)
+					conn.socket.destroy()
 				},
 
 				query: (code, event, message) => console.log("QueryError", {
@@ -68,8 +77,7 @@ module.exports = userConfig => {
 
 		connecting: false,
 
-        connect: () => new Promise( (resolve, reject) => {
-			client.on(VoltConstants.SESSION_EVENT.CONNECTION, (event, code, message) => {})
+        connect: () => {
 			client.on(VoltConstants.SESSION_EVENT.CONNECTION_ERROR, connection.handler.err.connection)
 			client.on(VoltConstants.SESSION_EVENT.QUERY_RESPONSE_ERROR, connection.handler.err.query)
 			client.on(VoltConstants.SESSION_EVENT.QUERY_DISPATCH_ERROR, connection.handler.err.query)
@@ -79,54 +87,16 @@ module.exports = userConfig => {
 			let failed = 0
 			let finished = 0
 
-			connection.connecting = true
+			return new Promise( (resolve, reject) => {
+				connection.connecting = true
 
-            client.connect( (code, event, result) => {
-				if( code ) {
-					if ( ! connection.connecting ){
-						if ( connection.client ) {
-							try {
-								connection.client.exit()
-							} catch (err) {
-								console.error("Error on log out")
-							}
-
-							return
-						}
-					}
-
-					connected[result.config.host] = false
-					failed++
-					console.log("Could not connect to " + result.config.host + "\nError:", VoltConstants.STATUS_CODE_STRINGS[code])
-					result.close()
-					result.validConnection = false
-
-					if ( failed === nodes.length ){
-						reject({ status: ERR_NOT_CONNECTED })
-					}
-				} else {
-					connected[result.config.host] = true
-					setTimeout(() => {
-						if ( connected[result.config.host] ){
-							console.log("Connected to ", result.config.host)
-
-							if ( ! connection.connected() ) {
-								connection.client = client
-								connection.config = userConfig
-								resolve(connection)
-							}
-						}
-					}, config.loginDelay)
-				}
-
-				finished++
-				connection.connecting = finished < nodes.length
-			}, (code, event, results) => reject({ code, event, message: VoltConstants.STATUS_CODE_STRINGS[code] }) )
-			
-			setTimeout(() => {
-				connection.connecting = false 
-			},config.longDelay)
-		}),
+				client.connect( (code, event, result) => {
+					connection.connecting = false
+					connection.client = client
+					resolve(connection)
+				})
+			})
+		},
 
 		loadSchema: object => new Promise( (resolve, reject) => {
 			if ( !connection.connected() ) {
@@ -145,6 +115,7 @@ module.exports = userConfig => {
 		
 		executeQuery: query => new Promise( (resolve, reject) => {
 			if ( !connection.connected() ) {
+				console.log("Not Logged in")
 				return reject('Not Logged in')
 			}
 

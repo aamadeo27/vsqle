@@ -62,7 +62,6 @@ router.get('/schema', (req, res, next) => {
 
 	logger.log("Schema",{ object })
 
-
 	if ( cid ){
 		const connection = connections.get(cid)
 		
@@ -111,9 +110,9 @@ router.post('/connect', (req, res, next) => {
 
 	if ( cid ){
 		const connection = connections.get(cid)
+
 		if ( connection && connection.connected() ) {
-			return sendMw(res, { status: 0 })
-		} else {
+			if ( currSession === name ) return sendMw(res, { status: 0 })
 			disconnect(req)
 		}
 	}
@@ -133,9 +132,9 @@ router.post('/connect', (req, res, next) => {
 		logger.log("LogInResponse",{ user, status: 0 })
 		logger.audit("LogIn", { user })
 		sendMw(res, { status: 0 })
-	}).catch( err => {
+	}).catch( (err, code, message) => {
 		req.session.name = undefined
-		logger.log("LogInResponse -Catch-",{ user, error: err })
+		//logger.log("LogInResponse -Catch-",{ user, error: err })
 		console.log(err)
 		sendMw(res, { err })
 	})
