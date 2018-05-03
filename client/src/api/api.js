@@ -123,7 +123,7 @@ const dataOp = method => (url, data) => {
 const post = dataOp('POST')
 const get = url => fetch(url, conf).then( r => r.json() )
 
-const DEBUG_URL = 'https://localhost:8084'
+const DEBUG_URL = 'https://falcondes-app1.sis.personal.net.py:8089'
 const prefix = process.env.NODE_ENV === 'development' ? DEBUG_URL : ''
 
 const urls = {

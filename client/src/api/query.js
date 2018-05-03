@@ -231,8 +231,6 @@ const analyze = async (queryConfig, variables) => {
 		return { queryConfig, error: "No data found" }
 	}
 
-	console.log(buffer)
-
 	buffer.forEach( e => {
 		const row = parseAnalysis(e)
 
@@ -372,7 +370,7 @@ export const executeQuery = (queryConfig, serverConfig, schema, variables) => {
 	})
 }
 
-const prepareQueries = queries => {
+const prepareQueries = (queries, schema) => {
 	const queue = []
 
 	queries.forEach( query => {
@@ -409,12 +407,15 @@ const prepareQueries = queries => {
 			query = query.replace(/limit .+/i,"")
 			
 			if (! select.ordered ){
-				/*
 				const alias = select.from[0].alias
+				try {
+					const firstCol = schema.tables[select.from[0].table][1].name
+					query = `${query} order by ${( !alias ? select.from[0].table : alias )}.${firstCol}`
 
-				query += " order by " +	( alias === undefined || alias.length === 0 ? select.from[0].table : alias )																				
-				query += "." + getColumns(select.from[0].table)[0]
-				*/
+					console.debug("Query:", query)
+				} catch ( err ){
+					console.error(err)
+				}
 			}
 			
 			queryConfig.query = query
@@ -442,7 +443,7 @@ const executeSQL = (editor, config, variables, schema) => {
 	queryString = parseQuery( queryString, variables )
 
 	editor.setValue(IGNORE_PATTERN + queryString)
-	const queue = prepareQueries( getAllQueries(editor) )
+	const queue = prepareQueries( getAllQueries(editor), schema )
 	
 	const queryPromises = []
 	queue.forEach( query => queryPromises.push(executeQuery(query, config, schema, variables)) )
