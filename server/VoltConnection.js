@@ -102,7 +102,7 @@ module.exports = userConfig => {
 					} else {
 						fails++
 
-						if ( fails === 3 ) reject({ error: message })
+						if ( fails === nodes.length ) reject({ error: message })
 					}
 				})
 			})
