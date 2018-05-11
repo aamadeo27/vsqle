@@ -8,3 +8,4 @@ server/server.log
 server/audit.log
 server/server.error.log
 server/localhost.*
+./server/config.json

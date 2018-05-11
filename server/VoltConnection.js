@@ -18,7 +18,7 @@ const DISCONNECTED = 1
 
 module.exports = userConfig => {
     const confs = []
-	const nodes = userConfig.nodes.split(",")
+	const nodes = userConfig.nodes.replace(/\s/g,"").split(",")
 
     nodes.forEach( node => {
         const nodeConfig = new VoltConfiguration()
@@ -78,6 +78,7 @@ module.exports = userConfig => {
 		connecting: false,
 
         connect: () => {
+			
 			client.on(VoltConstants.SESSION_EVENT.CONNECTION_ERROR, connection.handler.err.connection)
 			client.on(VoltConstants.SESSION_EVENT.QUERY_RESPONSE_ERROR, connection.handler.err.query)
 			client.on(VoltConstants.SESSION_EVENT.QUERY_DISPATCH_ERROR, connection.handler.err.query)
@@ -90,10 +91,19 @@ module.exports = userConfig => {
 			return new Promise( (resolve, reject) => {
 				connection.connecting = true
 
-				client.connect( (code, event, result) => {
-					connection.connecting = false
-					connection.client = client
-					resolve(connection)
+				let fails = 0
+
+				client.connect( ( { loggedIn, message } ) => {
+					if ( loggedIn ){
+						connection.connecting = false
+						connection.client = client
+	
+						resolve(connection)
+					} else {
+						fails++
+
+						if ( fails === 3 ) reject({ error: message })
+					}
 				})
 			})
 		},

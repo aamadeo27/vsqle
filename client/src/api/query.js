@@ -131,7 +131,7 @@ const getSelectInfo = queryString => {
 const describe = (queryConfig, schema) => new Promise( (resolve, reject) => {
 	if ( ! schema.tables ) resolve({ queryConfig, error: 'Schema not loaded' })
 
-	if ( !schema.tables[queryConfig.table] ) resolve({ queryConfig, error: "Table doesn't exists" })
+	if ( !schema.tables[queryConfig.table.toLowerCase()] ) resolve({ queryConfig, error: "Table doesn't exists" })
 
 	resolve({
 		queryConfig,
@@ -408,13 +408,16 @@ const prepareQueries = (queries, schema) => {
 			
 			if (! select.ordered ){
 				const alias = select.from[0].alias
-				try {
-					const firstCol = schema.tables[select.from[0].table][1].name
-					query = `${query} order by ${( !alias ? select.from[0].table : alias )}.${firstCol}`
 
-					console.debug("Query:", query)
-				} catch ( err ){
-					console.error(err)
+				if ( query.match(/select\s+.*\*/) ){
+					try {	
+						const firstCol = schema.tables[select.from[0].table][1].name
+						query = `${query} order by ${( !alias ? select.from[0].table : alias )}.${firstCol}`
+	
+						console.debug("Query:", query)
+					} catch ( err ){
+						console.error(err)
+					}
 				}
 			}
 			
