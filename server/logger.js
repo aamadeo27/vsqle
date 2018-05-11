@@ -18,7 +18,7 @@ module.exports = {
     audit: new (winston.Logger)({
         transports: [
         new (winston.transports.Console)(),
-        new (winston.transports.File)({ filename: 'audit.log' })
+        new (winston.transports.File)({ filename: 'audit.log', timestamp: false })
         ]
     }).info
 }

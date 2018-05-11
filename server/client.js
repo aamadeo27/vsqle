@@ -96,7 +96,7 @@ router.get('/disconnect', (req, res, next) => {
 	const { cid, name } = req.session
 
 	logger.log("LogOutRequest", { name, cid })
-	logger.audit("Logout", { name, timestamp: new Date().toLocaleDateString() })
+	logger.audit("Logout", { name, timestamp: new Date().toLocaleString() })
 
 	disconnect(req)
 
@@ -130,7 +130,7 @@ router.post('/connect', (req, res, next) => {
 		disconnects.set(connection.id, disconnect)
 
 		logger.log("LogInResponse",{ user, status: 0 })
-		logger.audit("LogIn", { user, timestamp: new Date().toLocaleDateString() })
+		logger.audit("LogIn", { user, timestamp: new Date().toLocaleString() })
 		sendMw(res, { status: 0 })
 	}).catch( (err, code, message) => {
 		req.session.name = undefined
@@ -149,7 +149,7 @@ router.post('/query', (req, res, next) => {
 		const username = connection.client.config[0].username
 
 		logger.log("QueryRequest",{ query })
-		logger.audit("QueryRequest",{ query, ip, username, timestamp: new Date().toLocaleDateString() })
+		logger.audit("QueryRequest",{ query, ip, username, timestamp: new Date().toLocaleString() })
 		
 		connection.executeQuery(query).then( r => {
 			const { table, err } = r
@@ -188,7 +188,7 @@ router.post('/store-procedure', (req, res, next) => {
 		const connection = connections.get(cid)
 		const username = connection.client.config[0].username
 
-		logger.audit("StoreProcedureRequest",{ procedure, args, ip, username, timestamp: new Date().toLocaleDateString() })		
+		logger.audit("StoreProcedureRequest",{ procedure, args, ip, username, timestamp: new Date().toLocaleString() })		
 		
 		connection.callProcedure(procedure, args).then( r => {
 			const { table, err } = r
