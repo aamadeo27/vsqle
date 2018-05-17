@@ -145,15 +145,20 @@ const describe = (queryConfig, schema) => new Promise( (resolve, reject) => {
 
 // exec @AdHoc 'select * from dual' 123 456L
 const nameRegex = /^([@\w\d]+)/
-const argsRegex = /(?:\s+('.*'[tT]?|\d+[LliIFf]|\d+\.\d+[FfDd]|\{.+\}))/g
+const argsRegex = /(?:\s+('.*?'[tT]?|\d+[LliI]|\d+\.\d+[FfDd]|\{.+\}))/g
 const execStoreProcedure = (queryConfig, variables) => {
 	let buffer = trimQuery(queryConfig.invocation)
+
+	console.log(1, buffer)
 	buffer = parseQuery(buffer, variables)
+	console.log(2, buffer)
 
 	const procedure = buffer.match(nameRegex)[1]
 	buffer = buffer.replace(procedure,'')
+	console.log(3, buffer)
 
 	let args = buffer.match(argsRegex)
+	console.log(args)
 
 	if ( ! args ) args = []
 
