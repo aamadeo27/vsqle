@@ -147,9 +147,10 @@ router.post('/query', (req, res, next) => {
 	if ( cid ){
 		const connection = connections.get(cid)
 		const username = connection.client.config[0].username
+		const nodes = connection.client.config.map( e => e.host )
 
 		logger.log("QueryRequest",{ query })
-		logger.audit("QueryRequest",{ query, ip, username, timestamp: new Date().toLocaleString() })
+		logger.audit("QueryRequest",{ query, ip, username, timestamp: new Date().toLocaleString(), nodes })
 		
 		connection.executeQuery(query).then( r => {
 			const { table, err } = r
@@ -187,8 +188,9 @@ router.post('/store-procedure', (req, res, next) => {
 	if ( cid ){
 		const connection = connections.get(cid)
 		const username = connection.client.config[0].username
+		const nodes = connection.client.config.map( e => e.host )
 
-		logger.audit("StoreProcedureRequest",{ procedure, args, ip, username, timestamp: new Date().toLocaleString() })		
+		logger.audit("StoreProcedureRequest",{ procedure, args, ip, username, timestamp: new Date().toLocaleString(), nodes })
 		
 		connection.callProcedure(procedure, args).then( r => {
 			const { table, err } = r
