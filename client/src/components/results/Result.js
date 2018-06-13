@@ -10,7 +10,20 @@ const getUTCString = date => {
 	value += pad("" + date.getUTCDate()) + " "
 	value += pad("" + date.getUTCHours()) + ":"
 	value += pad("" + date.getUTCMinutes()) + ":"
-	value += pad("" + date.getUTCSeconds())
+	value += pad("" + date.getUTCSeconds()) + "."
+	value += date.getTime() %  1000
+
+	return value
+}
+
+const getLocalString = date => {
+	let value = date.getFullYear() + "-"
+	value += pad("" + (date.getMonth()+1)) + "-"
+	value += pad("" + date.getDate()) + " "
+	value += pad("" + date.getHours()) + ":"
+	value += pad("" + date.getMinutes()) + ":"
+	value += pad("" + date.getSeconds()) + "."
+	value += date.getTime() %  1000
 
 	return value
 }
@@ -78,12 +91,7 @@ export default class extends Component {
 				const date = value
 
 				if ( config.useLocalTime ){
-					value = date.getFullYear() + "-"
-					value += pad("" + (date.getMonth()+1)) + "-"
-					value += pad("" + date.getDate()) + " "
-					value += pad("" + date.getHours()) + ":"
-					value += pad("" + date.getMinutes()) + ":"
-					value += pad("" + date.getSeconds())
+					value = getLocalString(date)
 				} else {
 					value = getUTCString(date)
 				}
@@ -198,6 +206,8 @@ export default class extends Component {
 		const { expanded, hidden } = this.state
 		const onClick = this.onClick.bind(this)
 
+		console.log({ expanded })
+
 		const toggle = i => e => {
 			e.preventDefault()
 			this.toggleColumn(i)
@@ -276,11 +286,10 @@ export default class extends Component {
 			<MenuItem eventKey="1" onClick={() => this.download('sql')}>as SQL</MenuItem>
 			<MenuItem divider />
 			<MenuItem eventKey="1" onClick={() => this.newTab(sql, filename)}>as SQL in new tab</MenuItem>
-			<MenuItem eventKey="1" onClick={() => this.newVar(voltTable)}>as VoltTable in new tab</MenuItem>
+			<MenuItem eventKey="1" onClick={() => this.newVar(voltTable)}>as a VoltTable variable</MenuItem>
     	</DropdownButton>
 
-
-		return <Panel expanded={expanded} bsStyle="success" onToggle={() =>{}}>
+		return <Panel expanded={expanded} bsStyle="success" onToggle={onClick} >
 			<Panel.Heading>{title}</Panel.Heading>
 			<Panel.Body>
 				<Table striped hover bordered condensed responsive>
@@ -290,10 +299,10 @@ export default class extends Component {
 								<ButtonGroup className="pull-left">
 									{exportBtn}
 									<Button onClick={() => more(queryConfig)} title="more" bsSize="xsmall">
-										<Glyphicon glyph="forward" /> 
+										<Glyphicon glyph="forward" />
 									</Button>
 									<Button onClick={() => all(queryConfig)} title="all" bsSize="xsmall">
-										<Glyphicon glyph="fast-forward" /> 
+										<Glyphicon glyph="fast-forward" />
 									</Button>
 								</ButtonGroup>
 							</td>

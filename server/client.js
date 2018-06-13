@@ -33,7 +33,9 @@ const valueOf = v => {
 	if ( typeof v !== 'object' || !v ) return v
 	
 	//BigInteger
-	if ( v['0'] !== undefined ) return v['0']
+	if ( v['0'] !== undefined ) {
+		return parseInt(v.toString())
+	}
 
 	return v.getTime()
 }
