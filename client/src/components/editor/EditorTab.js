@@ -144,13 +144,14 @@ class EditorTab extends Component {
 
 		const executeLine = () => {
 			clearResults()
+
 			query.executeLine(tab.editor, config, vars.list, schema).then( response => {
 				if ( response.error === 'Not logged in' ){
 					logout()
 				}
 
 				addResult(response)
-			})
+			}).catch( err => console.log(err))
 		}
 
 		addCommand(tab.editor,{ name: "executeLine", win: "F4", mac: "Cmd+L", action: executeLine } )

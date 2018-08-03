@@ -277,7 +277,7 @@ export default class extends Component {
 			title: <Glyphicon glyph="floppy-disk" />,
 			key: "exportBtn",
 			id: "exportBtn",
-			bsSize: "xsmall" 
+			bsSize: "xsmall"
 		}
 
 		const exportBtn = <DropdownButton {...exportBtnProps}>
@@ -291,31 +291,33 @@ export default class extends Component {
 
 		return <Panel expanded={expanded} bsStyle="success" onToggle={onClick} >
 			<Panel.Heading>{title}</Panel.Heading>
-			<Panel.Body>
-				<Table striped hover bordered condensed responsive>
-					<thead>
-						<tr>
-							<td colSpan={headers.length}>
-								<ButtonGroup className="pull-left">
-									{exportBtn}
-									<Button onClick={() => more(queryConfig)} title="more" bsSize="xsmall">
-										<Glyphicon glyph="forward" />
-									</Button>
-									<Button onClick={() => all(queryConfig)} title="all" bsSize="xsmall">
-										<Glyphicon glyph="fast-forward" />
-									</Button>
-								</ButtonGroup>
-							</td>
-						</tr>
-						<tr>{headers}</tr>
-					</thead>
-					<tbody>{rows}</tbody>
-				</Table>
-				<Download content={csv} name={filename+ ".csv"} download={this.state.download.csv}/>
-				<Download content={xls} name={filename+ ".xls"} download={this.state.download.xls}/>
-				<Download content={sql} name={filename+ ".sql"} download={this.state.download.sql}/>
-				<input type="hidden" id="clipboard" />
-			</Panel.Body>
+			<Panel.Collapse>
+				<Panel.Body>
+					<Table striped hover bordered condensed responsive>
+						<thead>
+							<tr>
+								<td colSpan={headers.length}>
+									<ButtonGroup className="pull-left">
+										{exportBtn}
+										<Button onClick={() => more(queryConfig)} title="more" bsSize="xsmall">
+											<Glyphicon glyph="forward" />
+										</Button>
+										<Button onClick={() => all(queryConfig)} title="all" bsSize="xsmall">
+											<Glyphicon glyph="fast-forward" />
+										</Button>
+									</ButtonGroup>
+								</td>
+							</tr>
+							<tr>{headers}</tr>
+						</thead>
+						<tbody>{rows}</tbody>
+					</Table>
+					<Download content={csv} name={filename+ ".csv"} download={this.state.download.csv}/>
+					<Download content={xls} name={filename+ ".xls"} download={this.state.download.xls}/>
+					<Download content={sql} name={filename+ ".sql"} download={this.state.download.sql}/>
+					<input type="hidden" id="clipboard" />
+				</Panel.Body>
+			</Panel.Collapse>
 		</Panel>
 	}
 }

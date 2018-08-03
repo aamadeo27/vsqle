@@ -202,10 +202,6 @@ a { text-decoration: none !important }
   border: 0px;
 }
 
-.table-responsive {
-  min-height: 200px
-}
-
 .analysis tr td {
   width: 75vw;
 }

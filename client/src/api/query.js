@@ -144,7 +144,7 @@ const describe = (queryConfig, schema) => new Promise( (resolve, reject) => {
 })
 
 // exec @AdHoc 'select * from dual' 123 456L
-const nameRegex = /^([@\w\d]+)/
+const nameRegex = /^([@\w\d\.]+)/
 const argsRegex = /(?:\s+('.*?'[tT]?|\d+[LliI]|\d+\.\d+[FfDd]|\{.+\}))/g
 const execStoreProcedure = (queryConfig, variables) => {
 	let buffer = trimQuery(queryConfig.invocation)
@@ -471,15 +471,17 @@ export const executeLine = (editor, config, variables, schema) => {
 		query = query.substring(0,query.length-1)
 	}
 
+	query = parseQuery( query, variables )
+
 	const queue = prepareQueries([query])
 
 	const queryPromises = []
 
-	queue.forEach( query => queryPromises.push(executeQuery(query, config)) )
+	queue.forEach( query => queryPromises.push(executeQuery(query, config, schema, variables)) )
 
 	console.log("Executing : ", queue[0])
 
-	return executeQuery(queue[0],config, schema)
+	return queryPromises[0]
 }
 
 export const execute = (editor, config, variables, schema) => executeSQL( editor, config, variables, schema )
