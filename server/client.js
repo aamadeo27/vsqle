@@ -1,224 +1,277 @@
-const express = require('express')
-const router = express.Router()
-const getVoltConnection = require('./VoltConnection')
-const sendMw = (res,object) => res.send(JSON.stringify(object))
-const { BigInteger } = require('bignumber')
-const logger = require('./logger')
+const express = require('express');
+const router = express.Router();
+const VoltDAO = require('./VoltDAO');
+const logger = require('./logger');
+const multipartMiddleware = require('connect-multiparty')();//for files upload
 
-const connections = new Map()
-const disconnects = new Map()
+const connections = new Map();
+const disconnects = new Map();
 
 const disconnect = (req) => {
-	const { cid, name } = req.session
+	const { cid } = req.session;
 
 	if ( cid ) {
-		delete req.session.cid
-		delete req.session.name
+		delete req.session.cid;
+		delete req.session.name;
 
-		const connection = connections.get(cid)
-		if ( connection && connection.connected() ){
-			connection.close()
-			connections.delete(cid)
+		const voltDAO = connections.get(cid);
+
+		if ( voltDAO ){
+			voltDAO.close();
+			connections.delete(cid);
 		}
 
-		const disconnect = disconnects.get(cid)
+		const disconnect = disconnects.get(cid);
 		if ( disconnect ){
-			clearTimeout(disconnect)
-			delete req.session.disconnect
+			clearTimeout(disconnect);
+			delete req.session.disconnect;
 		}
 	}
-}
+};
+
+const parseVoltTable = vt => {
+	const schema = vt.columnTypes.map( (t,i) => ({ name: vt.columnNames[i], type : t }) );
+	const data = vt.data.map( row => 
+		vt.columnNames.map( (t,i) => 
+			valueOf(row[vt.columnNames[i]]) 
+		)
+	);
+
+	return { data, schema };
+};
 
 const valueOf = v => {
-	if ( typeof v !== 'object' || !v ) return v
+	if ( typeof v !== 'object' || !v ) return v;
 	
 	//BigInteger
 	if ( v['0'] !== undefined ) {
-		return parseInt(v.toString())
+		return parseInt(v.toString());
 	}
 
-	return v.getTime()
-}
+	return v.getTime();
+};
 
-router.get('/session', (req, res, next) => {
-	const { cid, name } = req.session
+router.get('/session', (req, res) => {
+	const { cid, name } = req.session;
 
 	if ( cid ){
-		const connection = connections.get(cid)
+		const voltDAO = connections.get(cid);
 
-		let response = { name }
-		if ( connection && connection.connected() ) {
-			response = { name, user: connection.client.config[0].username }
+		let response = { name };
+		if ( voltDAO && voltDAO.isConnected() ) {
+			response = { name, user: voltDAO.client.config[0].username };
 		}
 
-		sendMw(res, response)
-		logger.log("GetSession", response)
+		res.json(response);
+		logger.log('GetSession', response);
 	} else {
-		sendMw(res, {})
+		res.json({});
 	}
-})
+});
 
-router.get('/schema', (req, res, next) => {
-	const { cid, name } = req.session
-	const { object } = req.query
+router.get('/schema', (req, res) => {
+	const { cid } = req.session;
+	const { object } = req.query;
 
-	logger.log("Schema",{ object })
+	logger.log('Schema',{ object });
 
 	if ( cid ){
-		const connection = connections.get(cid)
+		const voltDAO = connections.get(cid);
 		
-		connection.loadSchema(object).then( r => {
-			const { table, err } = r
+		voltDAO.loadSchema(object).then( tables => {
+			let data = undefined, schema = undefined;
 
-			let data = undefined, schema = undefined
-			if ( table.length > 0 ){
-				schema = table[0].columnTypes.map( (t,i) => ({ name: table[0].columnNames[i], type : t }) )
-				data = table[0].map( r => table[0].columnNames.map( (t,i) => valueOf(r[table[0].columnNames[i]]) ))
+			if ( tables.length > 0 ){
+				schema = tables[0].columnTypes.map( (t,i) => ({ name: tables[0].columnNames[i], type : t }) );
+				data = tables[0].data.map( row => 
+					tables[0].columnNames.map( (t,i) => 
+						valueOf(row[tables[0].columnNames[i]]) 
+					)
+				);
 				
-				delete data.columnNames
-				delete data.columnTypes
+				delete data.columnNames;
+				delete data.columnTypes;
 			}
 
-			const response = { data, schema, error: r.status !== 1 ? r.statusString : undefined }
-			logger.log("Schema OK")
-			sendMw(res, response )
-		}).catch( err => {
-			logger.error("Schema",{ error: err.toString() })
-			sendMw(res, { error: err })
-		})
+			const response = { data, schema };
+			logger.log('Schema OK');
+			res.json(response );
+		}).catch( error => {
+			logger.error('Schema',{ error });
+			res.json({ error });
+		});
 		
 	} else {
-		const response = { error: "Not logged in" }
-		logger.error("QueryResponse", response )
-		sendMw(res, response)
+		const response = { error: 'Not logged in' };
+		logger.error('QueryResponse', response );
+		res.json(response);
 	}
-})
+});
 
-router.get('/disconnect', (req, res, next) => {
-	const { cid, name } = req.session
+router.get('/disconnect', (req, res) => {
+	const { cid, name } = req.session;
 
-	logger.log("LogOutRequest", { name, cid })
-	logger.audit("Logout", { name, timestamp: new Date().toLocaleString() })
+	logger.log('LogOutRequest', { name, cid });
+	logger.audit('Logout', { name, timestamp: new Date().toLocaleString() });
 
-	disconnect(req)
+	disconnect(req);
 
-	logger.log("LogOutResponse", { name, status: 0 })
-	sendMw(res, { status: 0 })
-})
+	logger.log('LogOutResponse', { name, status: 0 });
+	res.json({ status: 0 });
+});
 
-router.post('/connect', (req, res, next) => {
-	const { cid, name: currSession } = req.session
-	const { user , nodes, name } = req.body
+router.post('/connect', (req, res) => {
+	const { cid, name: currSession } = req.session;
+	const { user , nodes, name } = req.body;
 
 	if ( cid ){
-		const connection = connections.get(cid)
+		const voltDAO = connections.get(cid);
 
-		if ( connection && connection.connected() ) {
-			if ( currSession === name ) return sendMw(res, { status: 0 })
-			disconnect(req)
+		if ( voltDAO && voltDAO.isConnected() ) {
+			if ( currSession === name ) return res.json({ status: 0 });
+			disconnect(req);
 		}
 	}
 	
-	logger.log("LogInRequest", { user, nodes })
+	logger.log('LogInRequest', { user, nodes });
 	
-	const conn = getVoltConnection(req.body)
-	conn.connect().then( connection => {
-		connection.id = `${req.headers.cookie.substring(14)}`
-		req.session.cid = connection.id
-		req.session.name = name
+	const voltDAO = new VoltDAO(req.body);
+	
+	voltDAO.connect().then( () => {
+		voltDAO.id = `${req.headers.cookie.substring(14)}`;
+		req.session.cid = voltDAO.id;
+		req.session.name = name;
 
-		const disconnect = setTimeout(() => connections.delete(connection.id), req.session.cookie.maxAge)
-		connections.set(connection.id, connection)
-		disconnects.set(connection.id, disconnect)
+		const disconnect = setTimeout(() => connections.delete(voltDAO.id), req.session.cookie.maxAge);
+		connections.set(voltDAO.id, voltDAO);
+		disconnects.set(voltDAO.id, disconnect);
 
-		logger.log("LogInResponse",{ user, status: 0 })
-		logger.audit("LogIn", { user, timestamp: new Date().toLocaleString() })
-		sendMw(res, { status: 0 })
-	}).catch( (err, code, message) => {
-		req.session.name = undefined
-		//logger.log("LogInResponse -Catch-",{ user, error: err })
-		console.log(err)
-		sendMw(res, { err })
-	})
-})
+		logger.log('LogInResponse',{ user, status: 0 });
+		logger.audit('LogIn', { user, timestamp: new Date().toLocaleString() });
 
-router.post('/query', (req, res, next) => {
-	const { session: { cid, name } ,  body: { query }} = req
-	const { ip } = req
+		res.json({ status: 0 });
+	}).catch( (errors) => {
+		req.session.name = undefined;
+		
+		logger.log('LogInResponse [ERRORS]',{ user, errors });
+		res.json({ errors });
+	});
+});
+
+router.post('/query', (req, res) => {
+	const { session: { cid }, body: { query }} = req;
+	const { ip } = req;
 	
 	if ( cid ){
-		const connection = connections.get(cid)
-		const username = connection.client.config[0].username
-		const nodes = connection.client.config.map( e => e.host )
+		const voltDAO = connections.get(cid);
+		const username = voltDAO.client.config[0].username;
+		const nodes = voltDAO.client.config.map( e => e.host );
 
-		logger.log("QueryRequest",{ query })
-		logger.audit("QueryRequest",{ query, ip, username, timestamp: new Date().toLocaleString(), nodes })
+		logger.log('QueryRequest',{ query });
+		logger.audit('QueryRequest',{ query, ip, username, timestamp: new Date().toLocaleString(), nodes });
 		
-		connection.executeQuery(query).then( r => {
-			const { table, err } = r
+		voltDAO.query(query).then( tables => {
+			let data = undefined, schema = undefined;
 
-			let data = undefined, schema = undefined
-			if ( table.length > 0 ){
-				schema = table[0].columnTypes.map( (t,i) => ({ name: table[0].columnNames[i], type : t }) )
-				data = table[0].map( r => table[0].columnNames.map( (t,i) => valueOf(r[table[0].columnNames[i]]) ))
+			if ( tables.length > 0 ){
+				schema = tables[0].columnTypes.map( (t,i) => ({ name: tables[0].columnNames[i], type : t }) );
+				data = tables[0].data.map( row => 
+					tables[0].columnNames.map( (t,i) => 
+						valueOf(row[tables[0].columnNames[i]]) 
+					)
+				);
 				
-				delete data.columnNames
-				delete data.columnTypes
+				delete data.columnNames;
+				delete data.columnTypes;
 			}
 
-			const response = { data, schema, error: r.status !== 1 ? r.statusString : undefined }
-			logger.log("QueryResponse OK", { query })
-			sendMw(res, response )
-		}).catch( err => {
-			logger.error("QueryResponse", err)
-			sendMw(res, { error: err })
-		})
+			const response = { data, schema };
+			logger.log('QueryResponse OK', { query });
+			res.json(response );
+		}).catch( error => {
+			logger.error('QueryResponse', error);
+			res.json({ error });
+		});
 		
 	} else {
-		const response = { error: "Not logged in" }
-		logger.error("QueryResponse", response )
-		sendMw(res, response)
+		const response = { error: 'Not logged in' };
+		logger.error('QueryResponse', response );
+		res.json(response);
 	}
-})
+});
 
-router.post('/store-procedure', (req, res, next) => {
-	const { session: { cid } ,  body: { procedure, args }} = req
-	const { ip } = req
+router.post('/store-procedure', (req, res) => {
+	const { session: { cid } ,  body: { procedure, args }} = req;
+	const { ip } = req;
 
-	logger.log("StoreProcedureRequest",{ procedure, args, cid })
+	logger.log('StoreProcedureRequest',{ procedure, args, cid });
 
 	if ( cid ){
-		const connection = connections.get(cid)
-		const username = connection.client.config[0].username
-		const nodes = connection.client.config.map( e => e.host )
+		const voltDAO = connections.get(cid);
+		const username = voltDAO.client.config[0].username;
+		const nodes = voltDAO.client.config.map( e => e.host );
 
-		logger.audit("StoreProcedureRequest",{ procedure, args, ip, username, timestamp: new Date().toLocaleString(), nodes })
+		logger.audit('StoreProcedureRequest',{ procedure, args, ip, username, timestamp: new Date().toLocaleString(), nodes });
 		
-		connection.callProcedure(procedure, args).then( r => {
-			const { table, err } = r
+		voltDAO.callProcedure(procedure, args).then( tables => {
+			let data = undefined, schema = undefined;
 
-			let data = undefined, schema = undefined
-			if ( table.length > 0 ){
-				schema = table[0].columnTypes.map( (t,i) => ({ name: table[0].columnNames[i], type : t }) )
-				data = table[0].map( r => table[0].columnNames.map( (t,i) => valueOf(r[table[0].columnNames[i]]) ))
+			if ( tables.length > 0 ){
+				schema = tables[0].columnTypes.map( (t,i) => ({ name: tables[0].columnNames[i], type : t }) );
+				data = tables[0].data.map( row => 
+					tables[0].columnNames.map( (t,i) => 
+						valueOf(row[tables[0].columnNames[i]])
+					)
+				);
 				
-				delete data.columnNames
-				delete data.columnTypes
+				delete data.columnNames;
+				delete data.columnTypes;
 			}
 
-			const response = { data, schema, error: r.status !== 1 ? r.statusString : undefined }
-			logger.log("QueryResponse OK", { procedure, args })
-			sendMw(res, response )
-		}).catch( err => {
-			logger.error("QueryResponse", err)
-			sendMw(res, { error: err.toString() })
-		})
+			const response = { data, schema };
+			logger.log('QueryResponse OK', { procedure, args });
+			res.json(response);
+		}).catch( error => {
+			logger.error('QueryResponse', error);
+			res.json({ error });
+		});
 		
 	} else {
-		const response = { error: "Not logged in" }
-		logger.error("QueryResponse", response )
-		sendMw(res, response)
+		const response = { error: 'Not logged in' };
+		logger.error('QueryResponse', response );
+		res.json(response);
 	}
-})
+});
 
-module.exports = router
+
+
+router.post('/load-classes', multipartMiddleware, function(req, res) {
+	let buffer = [];
+
+	const { session: { cid } ,  body: { procedure, args }} = req;
+	const { ip } = req;
+
+	if ( !cid ) {
+		return res.json({ error: 'Not logged in' });
+	}
+
+	logger.log('Load Classes',{ procedure, args, cid, ip });
+
+	req.on('data', chunk => {
+		buffer.push(chunk);
+	});
+
+	req.on('end', () => {
+		buffer = Buffer.concat(buffer);
+
+		logger.log('File length', buffer.length);
+
+		const voltDAO = connections.get(cid);
+
+		voltDAO.loadClasses(buffer).then( tables => {
+			res.json(parseVoltTable(tables[0]));
+		}).catch( error => res.json({ error }));
+	});
+});
+
+module.exports = router;

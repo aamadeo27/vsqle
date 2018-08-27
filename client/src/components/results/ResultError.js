@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Panel, Glyphicon } from 'react-bootstrap'
+import { Alert, Glyphicon, Collapse, Label } from 'react-bootstrap'
 
 export default class extends Component {
 	constructor(props){
@@ -22,24 +22,25 @@ export default class extends Component {
 	render(){
 		const { queryConfig, error } = this.props
 		const { expanded } = this.state
-		const onClick = this.onClick.bind(this)
-		const glyph = expanded ? "expand" : "collapse-down"
-		
-		const style = {
-			fontWeight: "bold",
-			cursor: "pointer"
-		}
+		const onToggleShow = this.onClick.bind(this)
+		const glyph = expanded ? "collapse-up" : "collapse-down"
 
-		const title = <div className="text-left" style={style}  onClick={onClick} >
-			<Glyphicon glyph={glyph} />
-			{' ' + ((queryConfig.select && queryConfig.select.original) || queryConfig.query)}
+		let title = ((queryConfig.select && queryConfig.select.original) || queryConfig.query)
+		title = title.substring(0, 100) +  (title.length < 200 ? '' : '...')
+		title = <div className="text-left result-bar">
+			<div className="result-title" onClick={onToggleShow}>
+				<Glyphicon bsStyle="danger" glyph={glyph} />
+				<span>{title}</span>
+				<Label bsStyle="danger">error</Label>
+			</div>
 		</div>
-
-		return <Panel expanded={expanded} bsStyle="danger" onToggle={() =>{}}>
-			<Panel.Heading>{title}</Panel.Heading>
-			<Panel.Body>
-			<span className="pull-left">{error}</span>
-			</Panel.Body>
-		</Panel>
+		
+		return <div>
+			{title}
+			<Collapse in={expanded}>
+				<Alert bsStyle="danger">{error}</Alert>
+			</Collapse>
+			<hr />
+		</div> 
 	}
 }

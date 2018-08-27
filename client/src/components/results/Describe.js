@@ -1,10 +1,10 @@
 import React from 'react'
-import { Table, Panel, Glyphicon } from 'react-bootstrap'
+import { Table, Collapse, Glyphicon } from 'react-bootstrap'
 
 class Describe extends React.Component {
 	constructor(props){
 		super(props)
-		this.state = { expanded: true }
+		this.state = { expanded: this.props.expanded }
 	}
 
 	onClick(){
@@ -15,7 +15,6 @@ class Describe extends React.Component {
 		const { table: {columns, pk}, name } = this.props
 		const { expanded } = this.state
 		const style = { textAlign: 'left' }
-		const glyph = expanded ? "expand" : "collapse-down"
 
 		const description = columns.map( column => <tr key={column.name}>
 			<td>{column.name}</td>
@@ -25,9 +24,12 @@ class Describe extends React.Component {
 			<td>{column.partitionKey ? "YES" : ""}</td>
 		</tr>)
 
-		const title = <div className="text-left" style={style}  onClick={this.onClick.bind(this)} >
-			<Glyphicon glyph={glyph} />
-			{name}
+		const glyph = expanded ? "collapse-up" : "collapse-down"
+		let title = <div className="text-left panel-success result-bar">
+			<div className="result-title" onClick={() => this.onClick()}>
+				<Glyphicon glyph={glyph} />
+				<span>Describe {name}</span>
+			</div>
 		</div>
 
 		let primaryKey = ""
@@ -36,26 +38,30 @@ class Describe extends React.Component {
 			primaryKey = <span>PrimaryKey : {primaryKey}</span>
 		}
 
-		return <Panel expanded={expanded} bsStyle="success" onToggle={() =>{}}>
-			<Panel.Heading>{title}</Panel.Heading>
-			<Panel.Body>
-				<Table style={style} striped hover bordered responsive>
-					<thead>
-						<tr>
-							<td>Column</td>
-							<td>DataType</td>
-							<td>Size</td>
-							<td>Nullable</td>
-							<td>PartitionKey</td>
-						</tr>
-					</thead>
-					<tbody>
-						{description}
-					</tbody>
-				</Table>
-				{primaryKey}
-			</Panel.Body>
-		</Panel>
+		return <div>
+			{title}
+			<Collapse in={expanded} className="result-collapse">
+				<div>
+					<Table style={style} striped hover bordered responsive>
+						<thead>
+							<tr>
+								<td>Column</td>
+								<td>DataType</td>
+								<td>Size</td>
+								<td>Nullable</td>
+								<td>PartitionKey</td>
+							</tr>
+						</thead>
+						<tbody>
+							{description}
+						</tbody>
+					</Table>
+					{primaryKey}
+				</div>
+			</Collapse>
+
+			<hr />
+		</div> 
 	}
 }
 

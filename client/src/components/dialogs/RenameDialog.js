@@ -31,6 +31,9 @@ export default class RenameDialog extends React.Component {
 	save(){
 		/*new file in fullpath*/
 		const { save: rename, close, project } = this.props
+
+		console.log({ activePath: project.activePath, name: this.state.name })
+
 		const callback = () => rename(project.activePath, this.state.name)
 
 		api.renameNode(project.name, project.activePath, this.state.name, callback)

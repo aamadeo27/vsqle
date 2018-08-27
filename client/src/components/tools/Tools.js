@@ -51,6 +51,7 @@ class Tools extends React.Component {
 
 		query.execute(activeTab.editor, config, variables, schema).forEach( promise => {
 			promise.then( response => {
+				console.log("r",response)
 				if ( response.error === 'Not logged in' ){
 					logout()
 				}
@@ -77,6 +78,31 @@ class Tools extends React.Component {
 		}
 
 		readFile(target, load, console.error )
+	}
+
+	loadClasses(e){
+		const name = e.target.value.split("\\").join("/").split("/").pop()
+
+		console.log("Load Classes ", name);
+		const { addResult, clearResults, logout } = this.props;
+
+		clearResults();
+
+		api.loadClasses(e.target.files[0])
+			.then( response => {
+				console.log("r",response)
+				if ( response.error === 'Not logged in' ){
+					logout()
+				}
+
+				addResult({
+					queryConfig: {
+						id: 0,
+						query: 'Load Classes ' + name
+					},
+					result: response
+				})
+			})
 	}
 
 	download(){
@@ -147,7 +173,13 @@ class Tools extends React.Component {
 						</ButtonGroup>
 						<ButtonGroup bsSize="small">
 							<Button bsStyle="info" onClick={this.props.toggleShowVars}>
-								<span className="tool">{"${vars}"}</span>
+								<Glyphicon glyph="usd"/>
+							</Button>
+							<Button bsStyle="info" onClick={this.props.loadClasses}>
+								<div className='fileUpload'>
+									<Glyphicon glyph="export"/>
+									<input type='file' id='jarfile' onChange={this.loadClasses.bind(this)}  onClick={ e => e.target.value = null}/>
+								</div>
 							</Button>
 							<Button title="help" bsStyle="info" onClick={openWikiPage}>
 								<Glyphicon glyph="question-sign"/>

@@ -1,24 +1,24 @@
-const winston = require("winston")
+const winston = require('winston');
 
 module.exports = {
-    log: new (winston.Logger)({
-        transports: [
-        new (winston.transports.Console)(),
-        new (winston.transports.File)({ filename: 'server.log' })
-        ]
-    }).info,
+	log: new (winston.Logger)({
+		transports: [
+			new (winston.transports.Console)(),
+			new (winston.transports.File)({ filename: 'server.log' })
+		]
+	}).info,
 
-    error: new (winston.Logger)({
-        transports: [
-        new (winston.transports.Console)(),
-        new (winston.transports.File)({ filename: 'server.error.log' })
-        ]
-    }).error,
+	error: new (winston.Logger)({
+		transports: [
+			new (winston.transports.Console)(),
+			new (winston.transports.File)({ filename: 'server.error.log' })
+		]
+	}).error,
 
-    audit: new (winston.Logger)({
-        transports: [
-        new (winston.transports.Console)(),
-        new (winston.transports.File)({ filename: 'audit.log', timestamp: false })
-        ]
-    }).info
-}
+	audit: new (winston.Logger)({
+		transports: [
+			new (winston.transports.Console)(),
+			new (winston.transports.File)({ filename: 'audit.log', timestamp: false })
+		]
+	}).info
+};

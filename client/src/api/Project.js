@@ -38,13 +38,18 @@ export const _renameNode = ( node, path, newName ) => {
 
         const regex = new RegExp("\\/"+target.name+"$")
 		const oldPath = target.filepath
-        const newPath = oldPath.replace(regex,`/${newName}`)
+		const newPath = oldPath.replace(regex,`/${newName}`)
+		
+		if ( ! newName ){
+			console.error("Intentando renombrar a undefined a ", target)
+			return
+		}
 
 		target.name = newName
 		target.filepath = newPath
 		replaceFilePath(node.children[index], oldPath, newPath )
 	} else if ( index >= 0 ){
-		_renameNode(node.children[index], path)
+		_renameNode(node.children[index], path, newName)
 	}
 }
 

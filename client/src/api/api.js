@@ -131,7 +131,8 @@ const urls = {
     login: prefix + "/connect",
     logout: prefix + "/disconnect",
     query: prefix + "/query",
-    storeProcedure: prefix + "/store-procedure",
+		storeProcedure: prefix + "/store-procedure",
+		loadClasses: prefix + "/load-classes",
     schema: o => (prefix+"/schema?object=" + o)
 }
 
@@ -142,3 +143,17 @@ export const loadObject = object => get(urls.schema(object))
 
 export const executeQuery = query => post(urls.query, { query })
 export const execStoreProcedure = data => post(urls.storeProcedure, data)
+
+export const loadClasses = jar => {
+	const callConf = {
+		body: jar, 
+		method: 'POST',
+		credentials: 'include',
+		headers: {
+			"accept" : "application/json",
+			"content-type" : "application/octet-stream"
+		}
+	};
+
+	return fetch(urls.loadClasses, callConf).then(r => r.json() ).catch( console.error )
+}

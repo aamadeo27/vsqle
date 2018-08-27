@@ -131,14 +131,15 @@ const getSelectInfo = queryString => {
 const describe = (queryConfig, schema) => new Promise( (resolve, reject) => {
 	if ( ! schema.tables ) resolve({ queryConfig, error: 'Schema not loaded' })
 
-	if ( !schema.tables[queryConfig.table.toLowerCase()] ) resolve({ queryConfig, error: "Table doesn't exists" })
+	const table = queryConfig.table.toLowerCase()
+	if ( !schema.tables[table] ) resolve({ queryConfig, error: "Table doesn't exists" })
 
 	resolve({
 		queryConfig,
 		describe: true,
 		table: {
-			columns: schema.tables[queryConfig.table],
-			pk: schema.pks[queryConfig.table]
+			columns: schema.tables[table],
+			pk: schema.pks[table]
 		}
 	})
 })

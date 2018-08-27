@@ -16,6 +16,12 @@ import { readFile } from '../../api/File.js'
 const Folder = ({ folder, depth, handlers, expanded }) => ({
   render(){
     const children = this.props.folder.children.map( node => {
+
+      if ( ! node.name ){
+        console.error("Nodo no tiene nombre", node)
+        return
+      }
+
       if ( node.content ) return <TreeNode name={node.name} depth={depth+1} leaf key={node.name}/>
 
       return <Folder folder={node} depth={depth+1} key={node.name}/>
@@ -29,8 +35,8 @@ const Folder = ({ folder, depth, handlers, expanded }) => ({
 
 const Project = ({ project, handlers }) => ({
   render(){
-    return <div className="Navigator"
-      ><Folder folder={this.props.project.root} depth={0} handlers={handlers} expanded={true}/>
+    return <div className="Navigator">
+      <Folder folder={this.props.project.root} depth={0} handlers={handlers} expanded={true}/>
     </div>
   }
 })

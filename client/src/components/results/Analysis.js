@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Panel, Table, Grid, Row, Col, Glyphicon, Nav, NavItem } from 'react-bootstrap'
+import { Collapse, Table, Grid, Row, Col, Glyphicon, Nav, NavItem } from 'react-bootstrap'
 
 /*
 const pad = x => x.length === 1 ? "0" + x : x
@@ -150,19 +150,12 @@ export default class extends Component {
 		const { analysis } = this.props
 		const { expanded, view, data } = this.state
 
-		const style = {
-			fontWeight: "bold",
-			cursor: "pointer"
-		}
-
-		const onClick = this.onClick.bind(this)
-		const glyph = expanded ? "expand" : "collapse-down"
-
-		let title = analysis.procedure
-		title = title.substring(0, 100) +  (title.length < 100 ? '' : '...')
-		title = <div className="text-left" style={style}  onClick={onClick} >
+		const glyph = expanded ? "collapse-up" : "collapse-down"
+		let title = <div className="text-left panel-success result-bar">
+		<div className="result-title" onClick={() => this.onClick()}>
 			<Glyphicon glyph={glyph} />
-			{' ' + title}
+			<span>{analysis.procedure}</span>
+		</div>
 		</div>
 
 		let viewData = <br />
@@ -176,9 +169,9 @@ export default class extends Component {
 			viewData = <StatisticsDetail data={data} />
 		}
 
-		return <Panel expanded={expanded} bsStyle="success">
-			<Panel.Heading>{title}</Panel.Heading>
-			<Panel.Body>
+		return <div>
+			{title}
+			<Collapse in={expanded} className="result-collapse">
 				<Grid fluid={true}>
 					<Row>
 						<Col xs={2}>
@@ -205,7 +198,8 @@ export default class extends Component {
 						</Col>
 					</Row>
 				</Grid>
-			</Panel.Body>
-		</Panel>
+			</Collapse>
+			<hr />
+		</div> 
 	}
 }

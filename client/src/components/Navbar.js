@@ -1,4 +1,4 @@
-import { Glyphicon, NavItem, Nav, Navbar } from 'react-bootstrap'
+import { Glyphicon, NavItem, Nav, Navbar, NavDropdown, MenuItem } from 'react-bootstrap'
 import React, { Component } from 'react'
 import logo from '../logo.svg'
 import { connect } from 'react-redux'
@@ -22,16 +22,20 @@ class AppNavbar extends Component {
 
         const session = connection.user ? `${connection.user}@${connection.name}` : ""
         const logintItem = connection.user ? (
-            <NavItem eventKey={2} href="#" onClick={logout}>
-                <span className="login">log out</span>
-                <Glyphicon glyph="log-out"/>
-            </NavItem>
-         ) : (
-            <NavItem eventKey={3} href="#" onClick={() => this.props.showLoginDialog()}>
-                <span className="login">log in</span>
-                <Glyphicon glyph="log-in"/>
-            </NavItem>
-         )
+					<NavItem eventKey={2} href="#" onClick={logout}>
+							<span className="login">log out</span>
+							<Glyphicon glyph="log-out"/>
+					</NavItem>
+				) : (
+					<NavItem eventKey={3} href="#" onClick={() => this.props.showLoginDialog()}>
+							<span className="login">log in</span>
+							<Glyphicon glyph="log-in"/>
+					</NavItem>
+				)
+				 
+				const sessions = connection.user ? <NavDropdown eventKey={3} title={session} id="basic-nav-dropdown">
+					<MenuItem eventKey={3.0}>{session}</MenuItem>
+				</NavDropdown> : "";
 
         return (
             <Navbar>
@@ -44,9 +48,7 @@ class AppNavbar extends Component {
                     </Navbar.Brand>
                 </Navbar.Header>
                 <Nav pullRight>
-                    {connection.user ? <NavItem eventKey={1} href="#" onClick={() => this.props.showLoginDialog()}>
-                        <span className="connection-status">{session}</span>
-                    </NavItem> : ""}
+                    {sessions}
                     {logintItem}
                 </Nav>
             </Navbar>

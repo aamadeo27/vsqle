@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Panel, Table, ButtonGroup, Button, DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap'
+import { Table, ButtonGroup, Button, DropdownButton, MenuItem, Glyphicon, Collapse } from 'react-bootstrap'
 import Download from '../common/Download.js'
 import * as api from '../../api/api'
 
@@ -32,7 +32,7 @@ export default class extends Component {
 	constructor(props){
 		super(props)
 		this.state = { 
-			expanded: props.queryConfig.id === 0,
+			expanded: props.expanded,
 			download: {
 				csv: false,
 				xls: false,
@@ -204,9 +204,7 @@ export default class extends Component {
 	render(){
 		const { queryConfig, all, more, result, config } = this.props
 		const { expanded, hidden } = this.state
-		const onClick = this.onClick.bind(this)
-
-		console.log({ expanded })
+		const onToggleShow = this.onClick.bind(this)
 
 		const toggle = i => e => {
 			e.preventDefault()
@@ -259,65 +257,63 @@ export default class extends Component {
 			return <tr key={rowID}>{columns}</tr>
 		}, '')
 
-		const glyph = expanded ? "expand" : "collapse-down"
-		
-		const style = {
-			fontWeight: "bold",
-			cursor: "pointer"
-		}
-
-		let title = ((queryConfig.select && queryConfig.select.original) || queryConfig.query)
-		title = title.substring(0, 100) +  (title.length < 100 ? '' : '...')
-		title = <div className="text-left" style={style}  onClick={onClick} >
-			<Glyphicon glyph={glyph} />
-			{' ' + title}
-		</div>
-
 		const exportBtnProps = {
 			title: <Glyphicon glyph="floppy-disk" />,
 			key: "exportBtn",
 			id: "exportBtn",
-			bsSize: "xsmall"
+			bsSize: "small",
+			bsStyle: "primary"
 		}
 
 		const exportBtn = <DropdownButton {...exportBtnProps}>
-      		<MenuItem eventKey="1" onClick={() => this.download('xls')}>as XLS</MenuItem>
+			<MenuItem eventKey="1" onClick={() => this.download('xls')}>as XLS</MenuItem>
 			<MenuItem eventKey="1" onClick={() => this.download('csv')}>as CSV</MenuItem>
 			<MenuItem eventKey="1" onClick={() => this.download('sql')}>as SQL</MenuItem>
 			<MenuItem divider />
 			<MenuItem eventKey="1" onClick={() => this.newTab(sql, filename)}>as SQL in new tab</MenuItem>
 			<MenuItem eventKey="1" onClick={() => this.newVar(voltTable)}>as a VoltTable variable</MenuItem>
-    	</DropdownButton>
+		</DropdownButton>
 
-		return <Panel expanded={expanded} bsStyle="success" onToggle={onClick} >
-			<Panel.Heading>{title}</Panel.Heading>
-			<Panel.Collapse>
-				<Panel.Body>
-					<Table striped hover bordered condensed responsive>
-						<thead>
-							<tr>
-								<td colSpan={headers.length}>
-									<ButtonGroup className="pull-left">
-										{exportBtn}
-										<Button onClick={() => more(queryConfig)} title="more" bsSize="xsmall">
-											<Glyphicon glyph="forward" />
-										</Button>
-										<Button onClick={() => all(queryConfig)} title="all" bsSize="xsmall">
-											<Glyphicon glyph="fast-forward" />
-										</Button>
-									</ButtonGroup>
-								</td>
-							</tr>
-							<tr>{headers}</tr>
-						</thead>
-						<tbody>{rows}</tbody>
+		const glyph = expanded ? "collapse-up" : "collapse-down"
+
+		let title = ((queryConfig.select && queryConfig.select.original) || queryConfig.query)
+		title = title.substring(0, 100) +  (title.length < 200 ? '' : '...')
+		title = <div className="text-left panel-success result-bar">
+			<div className="result-title" onClick={onToggleShow}>
+				<Glyphicon glyph={glyph} />
+				<span>{title}</span>
+			</div>
+		</div>
+
+		return <div>
+			{title}
+			<Collapse in={expanded} className="result-collapse">
+				<div>
+					<Table striped hover bordered responsive style={{ clear: "both" }}>
+							<thead>
+									<tr><th colspan={headers.length}>
+										<ButtonGroup className="pull-left">
+											{exportBtn}
+											<Button onClick={() => more(queryConfig)} title="more" bsSize="small" bsStyle="primary">
+												<Glyphicon glyph="forward" />
+											</Button>
+											<Button onClick={() => all(queryConfig)} title="all" bsSize="small" bsStyle="primary">
+												<Glyphicon glyph="fast-forward" />
+											</Button>
+										</ButtonGroup>
+									</th></tr>
+									<tr>{headers}</tr>
+									</thead>
+							<tbody>{rows}</tbody>
 					</Table>
-					<Download content={csv} name={filename+ ".csv"} download={this.state.download.csv}/>
-					<Download content={xls} name={filename+ ".xls"} download={this.state.download.xls}/>
-					<Download content={sql} name={filename+ ".sql"} download={this.state.download.sql}/>
-					<input type="hidden" id="clipboard" />
-				</Panel.Body>
-			</Panel.Collapse>
-		</Panel>
+				</div>
+			</Collapse>
+			
+			<Download content={csv} name={filename+ ".csv"} download={this.state.download.csv}/>
+			<Download content={xls} name={filename+ ".xls"} download={this.state.download.xls}/>
+			<Download content={sql} name={filename+ ".sql"} download={this.state.download.sql}/>
+			<input type="hidden" id="clipboard" />
+			<hr />
+		</div> 
 	}
 }

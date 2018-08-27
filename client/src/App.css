@@ -125,6 +125,28 @@ a { text-decoration: none !important }
   text-align: left;
 }
 
+.result-collapse {
+	clear: both;
+}
+
+.result-bar {
+	clear: both;
+	margin-bottom: 1vh;
+}
+
+.result-title{
+	font-weight: bold;
+	cursor: pointer;
+	font-size: 13pt;
+	
+	margin-right: 15pt;
+	display: block;
+}
+
+.result-title span {
+	margin: 5pt;
+}
+
 .table-body{ 
   max-height: 40vh;
   overflow-y: hidden;
