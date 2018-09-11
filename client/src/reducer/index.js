@@ -16,6 +16,8 @@ import {
 	ADD_TAB,
 	UPDATE_TAB,
 	
+	UPDATE_QUEUE,
+
 	ADD_RESULT,
 	UPDATE_RESULT,
 	CLEAR_RESULTS,
@@ -102,6 +104,12 @@ const tabs = (state = [], action) => {
 	}
 
 	return state
+}
+
+const queue = (state = [], action) => {
+	if( action.type !== UPDATE_QUEUE ) return state
+
+	return action.queue
 }
 
 const results = (state = [], action) => {
@@ -192,6 +200,7 @@ const main = combineReducers({
 	activeTab,
 	showDialog,
 	project,
+	queue,
 	results,
 	tabs,
 	config,

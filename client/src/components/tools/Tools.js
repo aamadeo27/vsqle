@@ -43,22 +43,39 @@ class Tools extends React.Component {
 		}).catch( handleError )
 	}
 
-	execute(){
-		const { tabs, addResult, clearResults, config, variables, schema, logout } = this.props
+	execute(asyncExec){
+		const { 
+			tabs, 
+			addResult, clearResults, updateQueue,
+			variables, 
+			schema, 
+			logout } = this.props
 		const activeTab = tabs[this.props.activeTab]
 
-		clearResults()
+		if (asyncExec){
+			clearResults()
 
-		query.execute(activeTab.editor, config, variables, schema).forEach( promise => {
-			promise.then( response => {
-				console.log("r",response)
-				if ( response.error === 'Not logged in' ){
-					logout()
-				}
-
-				addResult(response)
+			query.execute(activeTab.editor, variables, schema).forEach( promise => {
+				promise.then( response => {
+					console.log("r",response)
+					if ( response.error === 'Not logged in' ){
+						logout()
+					}
+	
+					addResult(response)
+				})
 			})
-		})
+
+			return
+		}
+		
+		if ( this.props.queue.length === 0 ){
+			clearResults()
+			const queue = query.execute(activeTab.editor, variables, schema, false)
+			updateQueue(queue)
+		} else {
+			updateQueue([])
+		}
 	}
 
 	upload(e){
@@ -128,7 +145,7 @@ class Tools extends React.Component {
 	}
 
   render() {
-		const { tabs, project, changeDialog } = this.props
+		const { tabs, project, changeDialog, queue } = this.props
 		const activeTab = tabs[this.props.activeTab] || { filepath: "", content: "" }
 		const tabName = activeTab.filepath.split("/").pop() + ".sql"
 		
@@ -138,6 +155,8 @@ class Tools extends React.Component {
 		const loadSchema = this.loadSchema.bind(this)
 
 		const openWikiPage = () => window.open("https://github.com/aamadeo27/vsqle/wiki/Guide","_blank")
+		const executing = queue.length > 0;
+		const syncExecGlyph = executing ? 'remove-circle' : 'play-circle'
 		
     return (
 			<div className="Tools">
@@ -150,8 +169,11 @@ class Tools extends React.Component {
 							<Button title="reload schema" bsStyle="warning" onClick={loadSchema}>
 								<Glyphicon glyph="refresh"/>
 							</Button>
-							<Button title="execute" bsStyle="warning" onClick={this.execute.bind(this)}>
+							<Button title="async execute" bsStyle="warning" onClick={() => this.execute(true)} disabled={executing}>
 								<Glyphicon glyph="play"/>
+							</Button>
+							<Button title="sync execute" bsStyle="warning" onClick={() => this.execute(false)}>
+								<Glyphicon glyph={syncExecGlyph}/>
 							</Button>
 						</ButtonGroup>
 						<ButtonGroup bsSize="small">
@@ -178,7 +200,7 @@ class Tools extends React.Component {
 							<Button bsStyle="info" onClick={this.props.loadClasses}>
 								<div className='fileUpload'>
 									<Glyphicon glyph="export"/>
-									<input type='file' id='jarfile' onChange={this.loadClasses.bind(this)}  onClick={ e => e.target.value = null}/>
+									<input type='file' id='jarfile' onChange={this.loadClasses.bind(this)} onClick={ e => e.target.value = null}/>
 								</div>
 							</Button>
 							<Button title="help" bsStyle="info" onClick={openWikiPage}>
@@ -195,13 +217,14 @@ class Tools extends React.Component {
   }
 }
 
-const mapStateToProps = ({ tabs, activeTab, project, config, vars, schema }) => ({ 
+const mapStateToProps = ({ tabs, activeTab, project, config, vars, schema, queue }) => ({ 
 	activeTab: tabs.findIndex( t => t.id === activeTab ),
 	tabs,
 	project,
 	config,
 	variables: vars.list,
-	schema
+	schema,
+	queue
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -213,6 +236,8 @@ const mapDispatchToProps = dispatch => ({
 	addResult: result => dispatch(actions.addResult(result)),
 	clearResults: () => dispatch(actions.clearResults),
 	logout: () => dispatch(actions.updateConnection({})),
+
+	updateQueue: queue => dispatch(actions.updateQueue(queue)),
 
 	changeDialog: dialog => dispatch(actions.changeDialog(dialog)),
 	toggleShowVars: () => dispatch(actions.toggleShowVars),

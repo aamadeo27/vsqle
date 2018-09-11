@@ -132,7 +132,7 @@ class Navigator extends Component {
 		return <div>
       <Row><Col xsOffset={1} xs={11}>
         <ButtonToolbar>
-          <ButtonGroup  bsSize="small">
+          <ButtonGroup  bsSize="xsmall">
             <Button title="new folder" bsStyle="success" onClick={() => this.props.changeDialog('NewFolder')}>
               <Glyphicon glyph="folder-close"/>
             </Button>
@@ -145,7 +145,7 @@ class Navigator extends Component {
             <Button title="download project" bsStyle="success" onClick={this.download.bind(this)}>
               <Glyphicon glyph="cloud-download"/>
             </Button>
-            <Button title="upload project" bsStyle="success" >
+            <Button title="upload project" bsStyle="success" bsSize="xsmall">
 							<div className='fileUpload'>
 								<Glyphicon glyph="cloud-upload"/>
 								<input type='file' id='file' onChange={this.upload.bind(this)}/>

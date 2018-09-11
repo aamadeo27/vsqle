@@ -3,6 +3,8 @@ import { Row, Tab, Tabs, Glyphicon } from 'react-bootstrap'
 import { connect } from 'react-redux'
 
 import EditorTab from './EditorTab.js'
+import QueueConsumer from './QueueConsumer.js'
+
 import * as actions from '../../Actions'
 import * as api from '../../api/api.js'
 import * as schema from '../../api/schema.js'
@@ -200,10 +202,11 @@ class Editor extends React.Component {
     return (
 		<Row className="section">
 			<div className="Editor">
-			<Tabs {...props} >
-				{editorTabs}
-				<Tab eventKey="newtab" title={<Glyphicon glyph="plus"/>} key="newtab" bsStyle="info"/>
-			</Tabs>
+				<Tabs {...props} >
+					{editorTabs}
+					<Tab eventKey="newtab" title={<Glyphicon glyph="plus"/>} key="newtab" bsStyle="info"/>
+				</Tabs>
+				<QueueConsumer />
 			</div>
 		</Row>
     )

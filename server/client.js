@@ -150,7 +150,7 @@ router.post('/connect', (req, res) => {
 		logger.audit('LogIn', { user, timestamp: new Date().toLocaleString() });
 
 		res.json({ status: 0 });
-	}).catch( (errors) => {
+	}).catch( errors => {
 		req.session.name = undefined;
 		
 		logger.log('LogInResponse [ERRORS]',{ user, errors });

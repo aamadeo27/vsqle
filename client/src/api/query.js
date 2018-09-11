@@ -350,8 +350,7 @@ const analyze = async (queryConfig, variables) => {
 	return { queryConfig, analysis }
 }
 
-//Todo: quitar serverConfig
-export const executeQuery = (queryConfig, serverConfig, schema, variables) => {
+export const executeQuery = (queryConfig, schema, variables) => {
 	if ( queryConfig.describe ){
 		return describe(queryConfig, schema)
 	} else if ( queryConfig.exec ){
@@ -416,7 +415,7 @@ const prepareQueries = (queries, schema) => {
 				const alias = select.from[0].alias
 
 				if ( query.match(/select\s+.*\*/) ){
-					try {	
+					try {
 						const firstCol = schema.tables[select.from[0].table][1].name
 						query = `${query} order by ${( !alias ? select.from[0].table : alias )}.${firstCol}`
 	
@@ -439,7 +438,7 @@ const prepareQueries = (queries, schema) => {
 	return queue
 }
 
-const executeSQL = (editor, config, variables, schema) => {
+const executeSQL = (editor, variables, schema, asyncExec = true) => {
 	const editorContent = editor.getValue()
 	const curPos = editor.getCursorPosition()
 
@@ -453,18 +452,22 @@ const executeSQL = (editor, config, variables, schema) => {
 
 	editor.setValue(IGNORE_PATTERN + queryString)
 	const queue = prepareQueries( getAllQueries(editor), schema )
-	
-	const queryPromises = []
-	queue.forEach( query => queryPromises.push(executeQuery(query, config, schema, variables)) )
-    
+
 	editor.setValue(editorContent)
 	editor.selection.clearSelection()
 	editor.selection.moveCursorTo(curPos.row, curPos.column)
 
-	return queryPromises
+	if ( asyncExec ){
+		const queryPromises = []
+		queue.forEach( query => queryPromises.push(executeQuery(query, schema, variables)) )
+
+		return queryPromises
+	}
+
+	return queue;
 }
 
-export const executeLine = (editor, config, variables, schema) => {
+export const executeLine = (editor, variables, schema) => {
 	const curPos = editor.getCursorPosition()
 	let query = getQueryInLine(editor, curPos).content
 
@@ -474,15 +477,16 @@ export const executeLine = (editor, config, variables, schema) => {
 
 	query = parseQuery( query, variables )
 
-	const queue = prepareQueries([query])
+	const queue = prepareQueries([query], schema)
 
 	const queryPromises = []
 
-	queue.forEach( query => queryPromises.push(executeQuery(query, config, schema, variables)) )
+	queue.forEach( query => queryPromises.push(executeQuery(query, schema, variables)) )
 
 	console.log("Executing : ", queue[0])
 
 	return queryPromises[0]
 }
 
-export const execute = (editor, config, variables, schema) => executeSQL( editor, config, variables, schema )
+export const execute = (editor, variables, schema, asyncExecution) => 
+		executeSQL( editor, variables, schema, asyncExecution )

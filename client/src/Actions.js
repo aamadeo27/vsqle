@@ -13,7 +13,9 @@ import {
     CLOSE_TAB,
     CHANGE_TAB_CONTENT,
     ADD_TAB,
-    UPDATE_TAB,
+		UPDATE_TAB,
+		
+		UPDATE_QUEUE,
     
     ADD_RESULT,
     UPDATE_RESULT,
@@ -22,9 +24,9 @@ import {
     UPDATE_CONFIG,
     UPDATE_SCHEMA,
 
-	ADD_VARIABLE,
-	UPDATE_VARIABLE,
-	REMOVE_VARIABLE,
+		ADD_VARIABLE,
+		UPDATE_VARIABLE,
+		REMOVE_VARIABLE,
 	
     TOGGLE_SHOWVARS,
     UPDATE_CONNECTION
@@ -45,6 +47,8 @@ export const updateFile = file => ({ type: UPDATE_FILE, file })
 export const changeActivePath = path => ({ type: CHANGE_ACTIVE_FILEPATH, path })
 export const deleteNode = nodepath => ({ type: DELETE_NODE, nodepath })
 export const renameNode = (path, newName) => ({ type: RENAME_NODE, path, newName })
+
+export const updateQueue = queue => ({ type: UPDATE_QUEUE, queue })
 
 export const addResult = result => ({ type: ADD_RESULT, result })
 export const updateResult = result => ({ type: UPDATE_RESULT, result })

@@ -291,7 +291,7 @@ export default class extends Component {
 				<div>
 					<Table striped hover bordered responsive style={{ clear: "both" }}>
 							<thead>
-									<tr><th colspan={headers.length}>
+									<tr><th colSpan={headers.length}>
 										<ButtonGroup className="pull-left">
 											{exportBtn}
 											<Button onClick={() => more(queryConfig)} title="more" bsSize="small" bsStyle="primary">

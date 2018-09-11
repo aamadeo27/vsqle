@@ -8,19 +8,6 @@ import * as query from '../../api/query.js'
 import * as actions from '../../Actions.js'
 import { IGNORE_PATTERN } from '../../Constants.js'
 
-const addCommand = (editor, command) => editor.commands.addCommand({
-	name: command.name,
-	bindKey: {
-		win: command.win,
-		mac: command.mac,
-		sender: 'editor|cli'
-	},
-	exec: function(env, args, request) {
-		//event.preventDefault()
-		command.action()
-	}
-})
-
 class EditorTab extends Component {
 	/*shouldComponentUpdate({ activeTab	}){
 		return activeTab === this.props.id
@@ -53,12 +40,68 @@ class EditorTab extends Component {
 		return this.props
 	}
 
+	execute(asyncExecution){
+    const {
+      vars,
+      addResult, clearResults, updateQueue,
+			schema,
+			logout
+    } = this.props
+
+    const editor = this.refs.AceEditor.editor
+		
+		if ( asyncExecution ){
+			clearResults()
+
+			query.execute(editor, vars.list, schema, asyncExecution).forEach( promise => {
+				promise.then( response => {
+					if ( response.error === 'Not logged in' ){
+						logout()
+					}
+	
+					addResult(response)
+				}).catch( err => console.log(err))
+			})
+
+			return
+		}
+		
+		if ( this.props.queue.length === 0 ){
+			clearResults()
+			const queue = query.execute(editor, vars.list, schema, asyncExecution)
+			updateQueue(queue)
+		} else {
+			updateQueue([])
+		}
+	}
+
+	executeLine(){
+    const {
+      vars,
+      addResult, clearResults,
+			schema,
+			logout
+    } = this.props
+
+  	const editor = this.refs.AceEditor.editor
+
+		clearResults()
+
+		query.executeLine(editor, vars.list, schema).then( response => {
+			if ( response.error === 'Not logged in' ){
+				logout()
+			}
+
+			addResult(response)
+		}).catch( err => console.log(err))
+	}
+
   componentDidMount(){
     const {
-      file, config, vars, close,
-      updateTab, addResult, clearResults, changeDialog, toggleVars,
-			newTab,
-			schema
+      file, close,
+			updateTab, changeDialog, toggleVars,
+			updateFile,
+			newTab
     } = this.props
 
     const tab = Object.assign({}, file)
@@ -68,18 +111,6 @@ class EditorTab extends Component {
     	enableBasicAutocompletion: true,
 			enableLiveAutocompletion: true
     })
-		
-		const execute = e => {
-			clearResults()
-			query.execute(tab.editor, config, vars.list, schema).forEach( promise => {
-				promise.then( addResult )
-			})
-		}
-
-		const executeLine = () => {
-			clearResults()
-			query.executeLine(tab.editor, config, vars.list, schema).then( addResult )
-		}
 
 		const getRelativeTab = this.getRelativeTab.bind(this)
 		const gotoTab = this.gotoTab.bind(this)
@@ -91,71 +122,42 @@ class EditorTab extends Component {
 
 		const save = () => {
 			const { projectName } = getProps()
+
 			const tab = thisTab()
+			
       if ( tab.newTab ){
         changeDialog("NewFile")
       } else {
-        api.updateFile(projectName, tab)
+        api.updateFile(projectName, tab, () => updateFile(tab))
       }
-    }
+		}
 
-		addCommand(tab.editor,{ name: "executeLine", win: "F4", mac: "Cmd+L", action: executeLine } )
-		addCommand(tab.editor,{ name: "execute", win: "F5", mac: "Cmd+Enter", action: execute } )
-		addCommand(tab.editor,{ name: "save", win: "Ctrl+S", mac: "Cmd+S", action: save } )
-		addCommand(tab.editor,{ name: "rightTab", win: "Ctrl+Right", mac: "", action: rightTab } )
-		addCommand(tab.editor,{ name: "leftTab", win: "Ctrl+Left", mac: "", action: leftTab } )
-		addCommand(tab.editor,{ name: "newTab", win: "Alt+T", mac: "Cmd+T", action: newTab } )
-		addCommand(tab.editor,{ name: "closeTab", win: "Alt+W", mac: "Cmd+W", action: close } )
-		addCommand(tab.editor,{ name: "variables", win: "F3", mac: "F3", action: toggleVars } )
+		this.addCommand("executeLine","F4", "Cmd+L", () => this.executeLine() )
+		this.addCommand("async execute","F5", "Cmd+Enter", () => this.execute(true) )
+		this.addCommand("sync execute","F6", "Ctrl+Cmd+Enter", () => this.execute(false) )
+		this.addCommand("save","Ctrl+S", "Cmd+S", save )
+		this.addCommand("rightTab","Ctrl+Right", "", rightTab )
+		this.addCommand("leftTab","Ctrl+Left", "", leftTab )
+		this.addCommand("newTab","Alt+T", "Cmd+T", newTab )
+		this.addCommand("closeTab","Alt+W", "Cmd+W", close )
+		this.addCommand("variables","F3", "F3", toggleVars )
 
 		updateTab( tab )
 		this.props.setCompleters(tab.editor)
-  }
-
-	componentDidUpdate(prevProps){
-		const { activeTab, file, vars, config, schema } = this.props
-
-		if( activeTab === file.id && vars === prevProps.vars ){
-			this.refs.AceEditor.editor.focus()
-		}
-
-		if ( prevProps.config === config && vars === prevProps.vars && prevProps.schema === schema ) return
-
-		if ( prevProps.schema !== schema ) console.log("New Schema", schema )
-
-    const { addResult, clearResults, logout } = this.props
-
-    const tab = Object.assign({}, file)
-		tab.editor = this.refs.AceEditor.editor
-
-		const execute = e => {
-			clearResults()
-
-			query.execute(tab.editor, config, vars.list, schema).forEach( promise => {
-				promise.then( response => {
-					if ( response.error === 'Not logged in' ){
-						logout()
-					}
+	}
 	
-					addResult(response)
-				}).catch( err => console.log(err))
-			})
-		}
+	addCommand(name,win,mac,action){
+    const editor = this.refs.AceEditor.editor
 
-		const executeLine = () => {
-			clearResults()
-
-			query.executeLine(tab.editor, config, vars.list, schema).then( response => {
-				if ( response.error === 'Not logged in' ){
-					logout()
-				}
-
-				addResult(response)
-			}).catch( err => console.log(err))
-		}
-
-		addCommand(tab.editor,{ name: "executeLine", win: "F4", mac: "Cmd+L", action: executeLine } )
-		addCommand(tab.editor,{ name: "execute", win: "F5", mac: "Cmd+Enter", action: execute } )
+		editor.commands.addCommand({
+			name: name,
+			bindKey: {
+				win: win,
+				mac: mac,
+				sender: 'editor|cli'
+			},
+			exec: action
+		})
 	}
 
   render(){
@@ -212,19 +214,22 @@ const mapDispatchToProps = dispatch => ({
   updateTab: tab => dispatch(actions.updateTab(tab)),
 	changeTab: id => dispatch(actions.changeTab(id)),
 
+	updateQueue: queue => dispatch(actions.updateQueue(queue)),
+
   changeDialog: dialog => dispatch(actions.changeDialog(dialog)),
 
 	toggleVars: () => dispatch(actions.toggleShowVars)
 })
 
-const mapStateToProps = ({ activeTab, tabs, config, project, schema, vars }, props) => ({
+const mapStateToProps = ({ activeTab, tabs, config, project, schema, vars, queue }, props) => ({
 	activeTab,
 	file: tabs.find( t => t.id === props.id),
   tabs, 
 	config,
 	projectName: project.name,
 	schema,
-	vars
+	vars,
+	queue
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditorTab)

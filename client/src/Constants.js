@@ -14,6 +14,8 @@ export const CHANGE_TAB_CONTENT = "CHANGE_TAB_CONTENT"
 export const UPDATE_TAB = "UPDATE_TAB"
 export const ADD_TAB = "ADD_TAB"
 
+export const UPDATE_QUEUE = "UPDATE_QUEUE"
+
 export const ADD_RESULT = "ADD_RESULT"
 export const UPDATE_RESULT = "UPDATE_RESULT"
 export const CLEAR_RESULTS = "CLEAR_RESULTS"
