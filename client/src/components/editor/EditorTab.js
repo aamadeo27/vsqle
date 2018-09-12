@@ -45,12 +45,14 @@ class EditorTab extends Component {
       vars,
       addResult, clearResults, updateQueue,
 			schema,
-			logout
+			logout,
     } = this.props
 
     const editor = this.refs.AceEditor.editor
 		
 		if ( asyncExecution ){
+			if ( this.props.queue.length > 0 ) return;
+
 			clearResults()
 
 			query.execute(editor, vars.list, schema, asyncExecution).forEach( promise => {
@@ -80,10 +82,12 @@ class EditorTab extends Component {
       vars,
       addResult, clearResults,
 			schema,
-			logout
+			logout,
+			queue,
     } = this.props
 
-  	const editor = this.refs.AceEditor.editor
+		const editor = this.refs.AceEditor.editor
+		if ( queue.length > 0 ) return;
 
 		clearResults()
 

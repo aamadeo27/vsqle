@@ -163,16 +163,16 @@ class Tools extends React.Component {
 				<Row><Col xsOffset={0} xs={12}>
 					<ButtonToolbar>
 						<ButtonGroup bsSize="small">
-							<Button title="configuration" bsStyle="warning" onClick={() => changeDialog("Config")}>
+							<Button title="configuration" bsStyle="warning" onClick={() => changeDialog("Config")} disabled={executing}>
 								<Glyphicon glyph="cog"/>
 							</Button>
-							<Button title="reload schema" bsStyle="warning" onClick={loadSchema}>
+							<Button title="reload schema" bsStyle="warning" onClick={loadSchema} disabled={executing}>
 								<Glyphicon glyph="refresh"/>
 							</Button>
 							<Button title="async execute" bsStyle="warning" onClick={() => this.execute(true)} disabled={executing}>
 								<Glyphicon glyph="play"/>
 							</Button>
-							<Button title="sync execute" bsStyle="warning" onClick={() => this.execute(false)}>
+							<Button title="sync execute" bsStyle="warning" onClick={() => this.execute(false)} disabled={executing}>
 								<Glyphicon glyph={syncExecGlyph}/>
 							</Button>
 						</ButtonGroup>
@@ -186,7 +186,7 @@ class Tools extends React.Component {
 							<Button title="download" bsStyle="warning" onClick={this.download.bind(this)}>
 								<Glyphicon glyph="save"/>
 							</Button>
-							<Button title="upload" bsStyle="warning">
+							<Button title="upload" bsStyle="warning" disabled={executing}>
 								<div className='fileUpload'>
 									<Glyphicon glyph="open"/>
 									<input type='file' id='file' onChange={this.upload.bind(this)}/>
@@ -194,10 +194,10 @@ class Tools extends React.Component {
 							</Button>
 						</ButtonGroup>
 						<ButtonGroup bsSize="small">
-							<Button bsStyle="info" onClick={this.props.toggleShowVars}>
+							<Button bsStyle="info" onClick={this.props.toggleShowVars} disabled={executing}>
 								<Glyphicon glyph="usd"/>
 							</Button>
-							<Button bsStyle="info" onClick={this.props.loadClasses}>
+							<Button bsStyle="info" onClick={this.props.loadClasses} disabled={executing}>
 								<div className='fileUpload'>
 									<Glyphicon glyph="export"/>
 									<input type='file' id='jarfile' onChange={this.loadClasses.bind(this)} onClick={ e => e.target.value = null}/>
