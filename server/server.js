@@ -35,7 +35,7 @@ app.disable('x-powered-by');
 https.createServer({
 	key: fs.readFileSync(config.key),
 	cert: fs.readFileSync(config.cert)
-}, app).listen({ port: PORT }, () => appLogger.log('vsqle-be listening on ' + PORT));
+}, app).listen({ port: PORT }, () => appLogger.log('Init', { PORT } ) );
 
 app.use(compression());
 app.use(function (req, res, next) {
