@@ -23,7 +23,7 @@ class Results extends React.Component {
 						return
 					}
 					
-					updateResult(result)
+					updateResult(result[0])
 				})
 			},
 
@@ -37,7 +37,7 @@ class Results extends React.Component {
 						return
 					}
 
-					updateResult(result)
+					updateResult(result[0])
 				})
 			},
 

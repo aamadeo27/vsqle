@@ -146,7 +146,7 @@ export default class extends Component {
 	getSQL(result, queryConfig){
 		if ( !queryConfig.select ) return null
 	
-		const table = queryConfig.select.from[0].tabletable
+		const table = queryConfig.select.from[0].table
 
 		let columns = result.schema.reduce( (content, h) => content + h.name.toLowerCase() + ", ", "")
 		columns = columns.substring(0, columns.length-2)
