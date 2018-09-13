@@ -23,7 +23,8 @@ class Results extends React.Component {
 						return
 					}
 					
-					updateResult(result[0])
+					const { queryConfig } = result;
+					updateResult({ queryConfig, result: result.results[0]})
 				})
 			},
 
@@ -37,7 +38,8 @@ class Results extends React.Component {
 						return
 					}
 
-					updateResult(result[0])
+					const { queryConfig } = result;
+					updateResult({ queryConfig, result: result.results[0]})
 				})
 			},
 
