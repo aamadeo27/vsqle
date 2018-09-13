@@ -43,6 +43,22 @@ class Tools extends React.Component {
 		}).catch( handleError )
 	}
 
+	executeBatch(){
+		const { 
+			tabs, 
+			addResult, clearResults,
+			variables, 
+			schema, 
+			logout } = this.props
+		const activeTab = tabs[this.props.activeTab]
+	
+		if ( this.props.queue.length === 0 ){
+			clearResults()
+			query.executeBatch(activeTab.editor, variables, schema)
+				.then( response => query.handleResponse(response, logout, addResult)  )
+		}
+	}
+
 	execute(asyncExec){
 		const { 
 			tabs, 
@@ -56,14 +72,7 @@ class Tools extends React.Component {
 			clearResults()
 
 			query.execute(activeTab.editor, variables, schema).forEach( promise => {
-				promise.then( response => {
-					console.log("r",response)
-					if ( response.error === 'Not logged in' ){
-						logout()
-					}
-	
-					addResult(response)
-				})
+				promise.then( response => query.handleResponse(response, logout, addResult)  )
 			})
 
 			return
@@ -172,8 +181,11 @@ class Tools extends React.Component {
 							<Button title="async execute" bsStyle="warning" onClick={() => this.execute(true)} disabled={executing}>
 								<Glyphicon glyph="play"/>
 							</Button>
-							<Button title="sync execute" bsStyle="warning" onClick={() => this.execute(false)} disabled={executing}>
+							<Button title="sync execute" bsStyle="warning" onClick={() => this.execute(false)} >
 								<Glyphicon glyph={syncExecGlyph}/>
+							</Button>
+							<Button title="batch execute" bsStyle="warning" onClick={() => this.executeBatch()} >
+								<Glyphicon glyph="list-alt"/>
 							</Button>
 						</ButtonGroup>
 						<ButtonGroup bsSize="small">

@@ -56,13 +56,8 @@ class EditorTab extends Component {
 			clearResults()
 
 			query.execute(editor, vars.list, schema, asyncExecution).forEach( promise => {
-				promise.then( response => {
-					if ( response.error === 'Not logged in' ){
-						logout()
-					}
-	
-					addResult(response)
-				}).catch( err => console.log(err))
+				promise.then( response => query.handleResponse(response, logout, addResult)  )
+					.catch( err => console.log(err))
 			})
 
 			return
@@ -91,13 +86,9 @@ class EditorTab extends Component {
 
 		clearResults()
 
-		query.executeLine(editor, vars.list, schema).then( response => {
-			if ( response.error === 'Not logged in' ){
-				logout()
-			}
-
-			addResult(response)
-		}).catch( err => console.log(err))
+		query.executeLine(editor, vars.list, schema)
+			.then( response => query.handleResponse(response, logout, addResult)  )
+			.catch( err => console.log(err))
 	}
 
   componentDidMount(){

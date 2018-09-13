@@ -108,6 +108,8 @@ export default class extends Component {
 	}
 
 	getCSV(result){
+		console.log({ result })
+
 		const csvHeader = result.schema.reduce( (content, h) => content + h.name.toLowerCase() + ",", "" ) + "\n"
 
 		return csvHeader + result.data.reduce( (content,row, i) => {
@@ -144,7 +146,7 @@ export default class extends Component {
 	getSQL(result, queryConfig){
 		if ( !queryConfig.select ) return null
 	
-		const table = queryConfig.select.from[0].table
+		const table = queryConfig.select.from[0].tabletable
 
 		let columns = result.schema.reduce( (content, h) => content + h.name.toLowerCase() + ", ", "")
 		columns = columns.substring(0, columns.length-2)
@@ -276,7 +278,7 @@ export default class extends Component {
 
 		const glyph = expanded ? "collapse-up" : "collapse-down"
 
-		let title = ((queryConfig.select && queryConfig.select.original) || queryConfig.query)
+		let title = (queryConfig.name || (queryConfig.select && queryConfig.select.original) || queryConfig.query)
 		title = title.substring(0, 100) +  (title.length < 200 ? '' : '...')
 		title = <div className="text-left panel-success result-bar">
 			<div className="result-title" onClick={onToggleShow}>

@@ -158,7 +158,9 @@ const execStoreProcedure = (queryConfig, variables) => {
 	buffer = buffer.replace(procedure,'')
 	console.log(3, buffer)
 
+	buffer = buffer.replace(/''/g,'#SINGLEQUOTES#');
 	let args = buffer.match(argsRegex)
+	args = args.map( arg => arg.replace(/#SINGLEQUOTES#/g,"'") );
 	console.log(args)
 
 	if ( ! args ) args = []
@@ -173,7 +175,7 @@ const execStoreProcedure = (queryConfig, variables) => {
 			localStorage.setItem("LastResponse", JSON.stringify(response.error))
 			return { queryConfig, error: response.error }
 		} else {
-			return { queryConfig, result: response }
+			return { queryConfig, results: response }
 		}
 	})
 }
@@ -294,7 +296,6 @@ const analyze = async (queryConfig, variables) => {
 		}
 	})
 
-
 	const list = []
 	for( let name in analysis.statement ){
 		list.push(analysis.statement[name])
@@ -350,7 +351,7 @@ const analyze = async (queryConfig, variables) => {
 	return { queryConfig, analysis }
 }
 
-export const executeQuery = (queryConfig, schema, variables) => {
+export const executeQuery = (queryConfig, schema, variables, trim = true) => {
 	if ( queryConfig.describe ){
 		return describe(queryConfig, schema)
 	} else if ( queryConfig.exec ){
@@ -359,7 +360,7 @@ export const executeQuery = (queryConfig, schema, variables) => {
 		return analyze( queryConfig, variables )
 	}
 
-	let query = trimQuery(queryConfig.query)
+	let query = trim ? trimQuery(queryConfig.query) : queryConfig.query;
 
 	if ( queryConfig.paginable ){
 		query += queryConfig.limit ? (" limit " + queryConfig.limit) : ""
@@ -370,9 +371,32 @@ export const executeQuery = (queryConfig, schema, variables) => {
 		if ( response.error ){
 			return { queryConfig, error: response.error }
 		} else {
-			return { queryConfig, result: response }
+			console.log( "response", response )
+
+			return { queryConfig, results: response }
 		}
 	})
+}
+
+export const handleResponse = (data, logout, addResult) => {
+	if (data.error){
+		if ( data.error === 'Not logged in' ){
+			logout()
+		}
+		
+		addResult(data)
+	} else {
+		console.log("QueryHandleResponse data", data );
+
+		if ( data.results.length === 1) return addResult({ queryConfig: data.queryConfig, result: data.results[0] });
+
+		data.results.forEach( (result,i) => {
+			const name = ( data.queryConfig.name || data.queryConfig.invocation ) + ':' + i;
+			const queryConfig = {...data.queryConfig, name };
+			
+			addResult( { queryConfig, result });
+		});
+	}
 }
 
 const prepareQueries = (queries, schema) => {
@@ -486,6 +510,31 @@ export const executeLine = (editor, variables, schema) => {
 	console.log("Executing : ", queue[0])
 
 	return queryPromises[0]
+}
+
+export const executeBatch = (editor, variables, schema ) => {
+	const editorContent = editor.getValue()
+	const curPos = editor.getCursorPosition()
+
+	let queryString = editor.getSelectedText()
+        
+	if ( queryString === undefined || queryString === '' ) {
+		queryString = editor.getValue()
+	}
+
+	queryString = parseQuery( queryString, variables )
+
+	editor.setValue(IGNORE_PATTERN + queryString)
+	
+	const queryConfig = { id: 0, paginable: false }
+	queryConfig.query = queryString + ";\n"
+	queryConfig.name = 'Batch Execution'
+
+	editor.setValue(editorContent)
+	editor.selection.clearSelection()
+	editor.selection.moveCursorTo(curPos.row, curPos.column)
+
+	return executeQuery(queryConfig, schema, variables, false)
 }
 
 export const execute = (editor, variables, schema, asyncExecution) => 

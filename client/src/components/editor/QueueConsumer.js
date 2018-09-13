@@ -16,11 +16,7 @@ class QueueConsumer extends React.Component {
 	}
 
 	handleResult(response){
-		const { logout, queue, updateQueue } = this.props
-
-		if ( response.error === 'Not logged in' ){
-			logout()
-		}
+		const { queue, updateQueue } = this.props
 
 		if ( queue.length === 0 ) return
 		
@@ -32,14 +28,14 @@ class QueueConsumer extends React.Component {
 	}
 
 	consume(){
-		const { addResult, variables, schema, queue } = this.props
+		const { addResult, variables, schema, queue, logout } = this.props
 
 		if ( queue.length === 0 ) return;
 
 		const queryConfig = queue[0];
 
 		query.executeQuery(queryConfig, schema, variables).then( response => {
-			addResult(response)
+			query.handleResponse(response, logout, addResult)
 			
 			this.handleResult(response)
 		})

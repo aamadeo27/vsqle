@@ -171,21 +171,22 @@ router.post('/query', (req, res) => {
 		logger.audit('QueryRequest',{ query, ip, username, timestamp: new Date().toLocaleString(), nodes });
 		
 		voltDAO.query(query).then( tables => {
-			let data = undefined, schema = undefined;
+			const response = [];
 
-			if ( tables.length > 0 ){
-				schema = tables[0].columnTypes.map( (t,i) => ({ name: tables[0].columnNames[i], type : t }) );
-				data = tables[0].data.map( row => 
-					tables[0].columnNames.map( (t,i) => 
-						valueOf(row[tables[0].columnNames[i]]) 
+			for( let i = 0 ; i < tables.length ; i++ ){
+				let schema = tables[i].columnTypes.map( (t,j) => ({ name: tables[i].columnNames[j], type : t }) );
+				let data = tables[i].data.map( row => 
+					tables[i].columnNames.map( (t,j) => 
+						valueOf(row[tables[i].columnNames[j]])
 					)
 				);
 				
 				delete data.columnNames;
 				delete data.columnTypes;
+
+				response.push({ data, schema });
 			}
 
-			const response = { data, schema };
 			logger.log('QueryResponse OK', { query });
 			res.json(response );
 		}).catch( error => {
@@ -215,20 +216,22 @@ router.post('/store-procedure', (req, res) => {
 		
 		voltDAO.callProcedure(procedure, args).then( tables => {
 			let data = undefined, schema = undefined;
+			const response = [];
 
-			if ( tables.length > 0 ){
-				schema = tables[0].columnTypes.map( (t,i) => ({ name: tables[0].columnNames[i], type : t }) );
-				data = tables[0].data.map( row => 
-					tables[0].columnNames.map( (t,i) => 
-						valueOf(row[tables[0].columnNames[i]])
+			for( let i = 0 ; i < tables.length ; i++ ){
+				schema = tables[i].columnTypes.map( (t,j) => ({ name: tables[i].columnNames[j], type : t }) );
+				data = tables[i].data.map( row => 
+					tables[i].columnNames.map( (t,j) => 
+						valueOf(row[tables[i].columnNames[j]])
 					)
 				);
 				
 				delete data.columnNames;
 				delete data.columnTypes;
+
+				response.push({ data, schema });
 			}
 
-			const response = { data, schema };
 			logger.log('QueryResponse OK', { procedure, args });
 			res.json(response);
 		}).catch( error => {
