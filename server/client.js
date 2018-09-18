@@ -7,6 +7,37 @@ const multipartMiddleware = require('connect-multiparty')();//for files upload
 const connections = new Map();
 const disconnects = new Map();
 
+const valueOf = v => {
+	if ( typeof v !== 'object' || !v ) return v;
+	
+	//BigInteger
+	if ( v['0'] !== undefined ) {
+		return v.toString();
+	}
+
+	return v.getTime();
+};
+
+const mapTables = (tables) => {
+	const mappedTables = [];
+
+	for( let i = 0 ; i < tables.length ; i++ ){
+		let schema = tables[i].columnTypes.map( (t,j) => ({ name: tables[i].columnNames[j], type : t }) );
+		let data = tables[i].data.map( row => 
+			tables[i].columnNames.map( (t,j) => 
+				valueOf(row[tables[i].columnNames[j]])
+			)
+		);
+		
+		delete data.columnNames;
+		delete data.columnTypes;
+
+		mappedTables.push({ data, schema });
+	}
+
+	return mappedTables;
+};
+
 const disconnect = (req) => {
 	const { cid } = req.session;
 
@@ -38,17 +69,6 @@ const parseVoltTable = vt => {
 	);
 
 	return { data, schema };
-};
-
-const valueOf = v => {
-	if ( typeof v !== 'object' || !v ) return v;
-	
-	//BigInteger
-	if ( v['0'] !== undefined ) {
-		return parseInt(v.toString());
-	}
-
-	return v.getTime();
 };
 
 router.get('/session', (req, res) => {
@@ -171,21 +191,7 @@ router.post('/query', (req, res) => {
 		logger.audit('QueryRequest',{ query, ip, username, timestamp: new Date().toLocaleString(), nodes });
 		
 		voltDAO.query(query).then( tables => {
-			const response = [];
-
-			for( let i = 0 ; i < tables.length ; i++ ){
-				let schema = tables[i].columnTypes.map( (t,j) => ({ name: tables[i].columnNames[j], type : t }) );
-				let data = tables[i].data.map( row => 
-					tables[i].columnNames.map( (t,j) => 
-						valueOf(row[tables[i].columnNames[j]])
-					)
-				);
-				
-				delete data.columnNames;
-				delete data.columnTypes;
-
-				response.push({ data, schema });
-			}
+			const response = mapTables(tables);
 
 			logger.log('QueryResponse OK', { query });
 			res.json(response );
@@ -215,33 +221,18 @@ router.post('/store-procedure', (req, res) => {
 		logger.audit('StoreProcedureRequest',{ procedure, args, ip, username, timestamp: new Date().toLocaleString(), nodes });
 		
 		voltDAO.callProcedure(procedure, args).then( tables => {
-			let data = undefined, schema = undefined;
-			const response = [];
+			const response = mapTables(tables);
 
-			for( let i = 0 ; i < tables.length ; i++ ){
-				schema = tables[i].columnTypes.map( (t,j) => ({ name: tables[i].columnNames[j], type : t }) );
-				data = tables[i].data.map( row => 
-					tables[i].columnNames.map( (t,j) => 
-						valueOf(row[tables[i].columnNames[j]])
-					)
-				);
-				
-				delete data.columnNames;
-				delete data.columnTypes;
-
-				response.push({ data, schema });
-			}
-
-			logger.log('QueryResponse OK', { procedure, args });
+			logger.log('StoredProcedureResponse', { procedure, args, status: 'ok' });
 			res.json(response);
 		}).catch( error => {
-			logger.error('QueryResponse', error);
+			logger.error('StoredProcedureResponse', error);
 			res.json({ error });
 		});
 		
 	} else {
 		const response = { error: 'Not logged in' };
-		logger.error('QueryResponse', response );
+		logger.error('StoredProcedureResponse', response );
 		res.json(response);
 	}
 });

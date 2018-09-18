@@ -90,6 +90,18 @@ const getSelectInfo = queryString => {
 		whereStr = currPos++
 	}
 
+	let groupByStr = -1
+	if ( queryString.match(new RegExp(regexpStr + "group by(.+)","i")) ){
+		regexpStr += "group by(.+)"
+		groupByStr = currPos++
+	}
+
+	let havingStr = -1
+	if ( queryString.match(new RegExp(regexpStr + "having(.+)","i")) ){
+		regexpStr += "having(.+)"
+		havingStr = currPos++
+	}
+
 	let orderStr = -1
 	if ( queryString.match(new RegExp(regexpStr + "order by(.+)","i")) ){
 		regexpStr += "order by(.+)"
@@ -120,6 +132,8 @@ const getSelectInfo = queryString => {
 		original: queryString,
 		from: fromStr,
 		where: matches[whereStr],
+		groupBy: matches[groupByStr],
+		having: matches[havingStr],
 		ordered: orderStr > -1,
 		limit: parseInt(matches[limitStr] || 7,10),
 		offset: parseInt(matches[offsetStr] || 0,10)
@@ -385,9 +399,9 @@ export const handleResponse = (data, logout, addResult) => {
 		}
 		
 		addResult(data)
+	} else if ( data.describe || data.analyze) {
+		addResult(data);
 	} else {
-		console.log("QueryHandleResponse data", data );
-
 		if ( data.results.length === 1) return addResult({ queryConfig: data.queryConfig, result: data.results[0] });
 
 		data.results.forEach( (result,i) => {
@@ -426,22 +440,31 @@ const prepareQueries = (queries, schema) => {
 		} else if ( query.match(selectRegex) ){
 			let select = getSelectInfo(query)
 
-			queryConfig.paginable = true
 			queryConfig.select = select
+			queryConfig.paginable = !! select.groupBy;			
+			queryConfig.limit = select.limit;
+			queryConfig.offset = select.offset;
 			
-			queryConfig.limit = select.limit
-			queryConfig.offset = select.offset
-			
-			query = query.replace(/offset .+/i,"")
-			query = query.replace(/limit .+/i,"")
+			if ( queryConfig.paginable ){
+				query = query.replace(/offset .+/i,"")
+				query = query.replace(/limit .+/i,"")
+				
+			}
 			
 			if (! select.ordered ){
-				const alias = select.from[0].alias
-
 				if ( query.match(/select\s+.*\*/) ){
 					try {
-						const firstCol = schema.tables[select.from[0].table][1].name
-						query = `${query} order by ${( !alias ? select.from[0].table : alias )}.${firstCol}`
+						let orderBy = null;
+
+						if ( select.groupBy ){
+							orderBy = select.groupBy;
+						} else {
+							const alias = select.from[0].alias;
+							const firstCol = schema.tables[select.from[0].table][1].name;
+							orderBy = ( !alias ? select.from[0].table : alias ) + '.' + firstCol;	
+						}
+
+						query = `${query} order by ${orderBy}`;
 	
 						console.debug("Query:", query)
 					} catch ( err ){
