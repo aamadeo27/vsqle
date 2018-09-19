@@ -287,6 +287,13 @@ export default class extends Component {
 			</div>
 		</div>
 
+		const paginateBtns = [<Button onClick={() => more(queryConfig)} title="more" bsSize="small" bsStyle="primary" key="more">
+			<Glyphicon glyph="forward" />
+		</Button>,
+		<Button onClick={() => all(queryConfig)} title="all" bsSize="small" bsStyle="primary" key="all">
+			<Glyphicon glyph="fast-forward" />
+		</Button>];
+
 		return <div>
 			{title}
 			<Collapse in={expanded} className="result-collapse">
@@ -296,12 +303,7 @@ export default class extends Component {
 									<tr><th colSpan={headers.length}>
 										<ButtonGroup className="pull-left">
 											{exportBtn}
-											<Button onClick={() => more(queryConfig)} title="more" bsSize="small" bsStyle="primary">
-												<Glyphicon glyph="forward" />
-											</Button>
-											<Button onClick={() => all(queryConfig)} title="all" bsSize="small" bsStyle="primary">
-												<Glyphicon glyph="fast-forward" />
-											</Button>
+											{queryConfig.paginable ? paginateBtns : ""}
 										</ButtonGroup>
 									</th></tr>
 									<tr>{headers}</tr>

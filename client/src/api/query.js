@@ -442,7 +442,7 @@ const prepareQueries = (queries, schema) => {
 			let select = getSelectInfo(query)
 
 			queryConfig.select = select
-			queryConfig.paginable = !! select.groupBy;			
+			queryConfig.paginable = !select.groupBy;			
 			queryConfig.limit = select.limit;
 			queryConfig.offset = select.offset;
 			
