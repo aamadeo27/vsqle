@@ -217,7 +217,7 @@ const parseAnalysis = row => ({
 		max: row[schema.maxTime]
 	},
 
-	sample: row[schema.sample]
+	sample: parseInt(row[schema.sample],10)
 })
 
 const analyze = async (queryConfig, variables) => {
@@ -226,7 +226,7 @@ const analyze = async (queryConfig, variables) => {
 
 	try {
 		queryConfig.invocation = `@Statistics 'PROCEDUREDETAIL' 0i` //procedure
-		let { result, error } = await execStoreProcedure(queryConfig, variables)
+		let { results, error } = await execStoreProcedure(queryConfig, variables)
 
 		queryConfig.query = queryConfig.procedure
 	
@@ -234,7 +234,7 @@ const analyze = async (queryConfig, variables) => {
 			return { queryConfig, error }
 		}
 
-		buffer = result.data
+		buffer = results[0].data
 	} catch (err){
 		console.error(err)
 	}
@@ -276,7 +276,7 @@ const analyze = async (queryConfig, variables) => {
 			if ( e.statement !== '<ALL>' ) return 
 
 			sum += e.time.avg * e.sample
-			total += e.sample
+			total += parseInt(e.sample, 10);
 
 			if ( e.time.min < min ) min = e.time.min
 			if ( e.time.max > max ) max = e.time.max
@@ -399,7 +399,8 @@ export const handleResponse = (data, logout, addResult) => {
 		}
 		
 		addResult(data)
-	} else if ( data.describe || data.analyze) {
+	} else if ( data.describe || data.analysis) {
+		console.log({ data })
 		addResult(data);
 	} else {
 		if ( data.results.length === 1) return addResult({ queryConfig: data.queryConfig, result: data.results[0] });
