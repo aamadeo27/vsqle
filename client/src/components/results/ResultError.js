@@ -26,6 +26,7 @@ export default class extends Component {
 		const glyph = expanded ? "collapse-up" : "collapse-down"
 
 		let title = ((queryConfig.select && queryConfig.select.original) || queryConfig.query)
+		title = title || queryConfig.describe ? queryConfig.table : queryConfig.invocation
 		title = title.substring(0, 100) +  (title.length < 200 ? '' : '...')
 		title = <div className="text-left result-bar">
 			<div className="result-title" onClick={onToggleShow}>

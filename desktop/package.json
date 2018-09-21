@@ -1,0 +1,30 @@
+{
+  "name": "vsqle-desktop",
+  "version": "1.0.0",
+  "description": "Voltdb SQL Editor Desktop",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aamadeo27/vsqle.git"
+  },
+  "keywords": [
+    "voltdb",
+    "sql",
+    "editor",
+    "desktop",
+    "react",
+    "electron"
+  ],
+  "author": "aamadeo27",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aamadeo27/vsqle/issues"
+  },
+  "homepage": "https://github.com/aamadeo27/vsqle#readme",
+  "dependencies": {
+    "electron": "^2.0.10"
+  }
+}
