@@ -4,7 +4,8 @@
   "description": "Voltdb SQL Editor Desktop",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "start": "nodemon --watch client.js --exec electron ."
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,11 @@
   },
   "homepage": "https://github.com/aamadeo27/vsqle#readme",
   "dependencies": {
-    "electron": "^2.0.10"
+    "electron": "^2.0.10",
+    "voltjs": "git+https://github.com/aamadeo27/voltdb-client-nodejs.git#feature/promises",
+    "winston": "^3.1.0"
+  },
+  "devDependencies": {
+    "electron-rebuild": "^1.8.2"
   }
 }

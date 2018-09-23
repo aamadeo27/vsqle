@@ -1,4 +1,5 @@
 import * as Project from './Project.js'
+import uuid from 'uuid/v1';
 
 export const getProjectString = name => localStorage.getItem(name) 
 export const getProject = name => JSON.parse(localStorage.getItem(name))
@@ -103,6 +104,46 @@ export const updateVar = variable => {
 }
 export const removeVar = variable => setVars(getVars().filter(v => v.id !== variable.id))
 
+let _fetch = fetch
+
+if ( window.ipcRenderer ){
+  console.log("Desktop Front End")
+
+  _fetch = (url, options) => {
+    const method = options.method || 'GET';
+
+    const data = (options.body && JSON.parse(options.body)) || {};
+    url = url.replace(/https:\/\/.+:\d.+\//,'');
+    
+    const query = {}
+    const queryIdx = url.indexOf('?');
+
+    if ( queryIdx > 0 ){
+      const tmp = url.substring(queryIdx+1).split('&');
+      tmp.forEach( e => {
+        const q = e.split('=');
+        query[q[0]] = q[1];
+      });
+      url = url.substring(0, queryIdx);
+    }
+
+    const id = uuid();
+    const channel = `${method}#${url}`;
+
+    window.ipcRenderer.send(channel, { id, data, query });
+
+    console.log({ channel, id, data, query });
+    return new Promise( (rs,rj) => window.ipcRenderer.once(id, (event, response) => {
+      console.log('Response', response);
+      rs(response);
+    }));
+    //Promise.resolve().then( () => ({ json: () => console.log({ data, method, url }) }) );
+  }
+} else {
+  _fetch = (url,options) => fetch(url,options).then( r => r.json() );
+  console.log("Web Front End")
+}
+
 const headers = new Headers()
 headers.append('Accept','application/json')
 headers.append('Content-Type','application/json')
@@ -115,13 +156,11 @@ const conf = {
 const dataOp = method => (url, data) => {
     const callConf = { ...conf, body: JSON.stringify(data), method }
 
-    return fetch(url, callConf).then( r => r.json() ).then( r => {
-        return r
-    })
+    return _fetch(url, callConf)
 }
 
 const post = dataOp('POST')
-const get = url => fetch(url, conf).then( r => r.json() )
+const get = url => _fetch(url, conf)
 
 const DEBUG_URL = 'https://localhost:8089'
 const prefix = process.env.NODE_ENV === 'development' ? DEBUG_URL : ''
@@ -155,5 +194,5 @@ export const loadClasses = jar => {
 		}
 	};
 
-	return fetch(urls.loadClasses, callConf).then(r => r.json() ).catch( console.error )
+	return _fetch(urls.loadClasses, callConf).catch( console.error )
 }

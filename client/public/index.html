@@ -26,6 +26,13 @@
     <noscript>
       You need to enable JavaScript to run this app.
     </noscript>
+    <script type="text/JavaScript">
+      try {
+        window.ipcRenderer = require('electron').ipcRenderer;
+      } catch (e){
+      }
+      
+    </script>
     <div id="root"></div>
     <!--
       This HTML file is a template.

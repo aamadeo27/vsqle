@@ -187,7 +187,7 @@ const show = (state = false, action) => {
 const connection = ( state = {}, action ) => {
 	switch(action.type){
 		case UPDATE_CONNECTION:
-			return action.connection
+			return action.connection || state
 		default:
 			return state
 	}
