@@ -1,0 +1,15 @@
+[9/23/2018, 3:44:38 PM][][disconnected][LogIn][@AdHoc]  
+[9/23/2018, 3:46:16 PM][][disconnected][LogIn][@AdHoc]  
+[9/23/2018, 3:49:23 PM][][disconnected][Logout][@AdHoc]  
+[9/23/2018, 3:49:30 PM][][disconnected][LogIn][@AdHoc]  
+[9/23/2018, 3:59:45 PM][][disconnected][LogIn][@AdHoc]  
+[9/23/2018, 4:25:22 PM][][disconnected][LogIn][@AdHoc]  
+[9/23/2018, 4:25:32 PM][operator][volthost][QueryRequest][@AdHoc] - select * from items order by 1 limit 7 offset 0 
+[9/23/2018, 5:13:42 PM][][disconnected][LogIn][@AdHoc]  
+[9/23/2018, 5:15:39 PM][][disconnected][LogIn][@AdHoc]  
+[9/23/2018, 5:19:29 PM][][disconnected][LogIn][@AdHoc]  
+[9/23/2018, 5:54:06 PM][][disconnected][LogIn][@AdHoc]  
+[9/23/2018, 5:58:35 PM][operator][volthost][QueryRequest][@AdHoc] - select * from items order by 1 limit 7 offset 0 
+[9/23/2018, 5:59:06 PM][operator][volthost][StoreProcedureRequest][@Statistics]  - 'PROCEDUREDETAIL',0i
+[9/23/2018, 5:59:18 PM][operator][volthost][StoreProcedureRequest][@Statistics]  - 'PROCEDUREDETAIL',0i
+[9/23/2018, 6:03:55 PM][operator][volthost][StoreProcedureRequest][@Statistics]  - 'PROCEDUREDETAIL',0i

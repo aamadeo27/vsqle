@@ -1,0 +1,187 @@
+[9/23/2018, 2:58:00 PM][info][LogInRequest] - { user: undefined, nodes: undefined }
+[9/23/2018, 3:02:32 PM][info][LogInRequest] - { user: undefined, nodes: undefined }
+[9/23/2018, 3:03:41 PM][info][LogInRequest] - { user: undefined, nodes: undefined }
+[9/23/2018, 3:35:29 PM][info][LogInRequest] - { user: "operator", nodes: "volthost" }
+[9/23/2018, 3:35:29 PM][info][LogInResponse [ERRORS]] - { user: "operator", errors: {} }
+[9/23/2018, 3:37:50 PM][info][LogInRequest] - { user: "operator", nodes: "volthost" }
+[9/23/2018, 3:37:50 PM][info][LogInResponse] - { user: "operator", errors: {} }
+[9/23/2018, 3:39:33 PM][info][LogInRequest] - { user: "operator", nodes: "volthost" }
+[9/23/2018, 3:39:33 PM][info][LogInResponse] - { user: "operator", errors: {} }
+[9/23/2018, 3:40:32 PM][info][LogInRequest] - { user: "operator", nodes: "volthost" }
+[9/23/2018, 3:40:32 PM][info][LogInResponse] - { user: "operator", errors: {} }
+[9/23/2018, 3:42:11 PM][info][LogInRequest] - { user: "operator", nodes: "volthost" }
+[9/23/2018, 3:42:11 PM][info][LogInResponse] - { user: "operator", errors: {} }
+[9/23/2018, 3:43:13 PM][info][LogInRequest] - { user: "operator", nodes: "volthost" }
+[9/23/2018, 3:43:13 PM][info][Connected] - {  }
+[9/23/2018, 3:43:13 PM][info][LogInResponse] - { user: "operator", errors: {} }
+[9/23/2018, 3:44:16 PM][info][LogInRequest] - { user: "operator", nodes: "volthost" }
+[9/23/2018, 3:44:17 PM][info][Connected] - {  }
+[9/23/2018, 3:44:17 PM][info][LogInResponse] - { user: "operator", error: "ReferenceError: config is not defined" }
+[9/23/2018, 3:44:37 PM][info][LogInRequest] - { user: "operator", nodes: "volthost" }
+[9/23/2018, 3:44:38 PM][info][Connected] - {  }
+[9/23/2018, 3:44:38 PM][info][LogInResponse] - { user: "operator", status: 0 }
+[9/23/2018, 3:46:16 PM][info][LogInRequest] - { user: "operator", nodes: "volthost" }
+[9/23/2018, 3:46:16 PM][info][Connected] - {  }
+[9/23/2018, 3:46:16 PM][info][LogInResponse] - { user: "operator", status: 0 }
+[9/23/2018, 3:49:20 PM][info][GetSession] - { name: "desarrollo", user: "operator" }
+[9/23/2018, 3:49:21 PM][info][Schema] - { object: undefined }
+[9/23/2018, 3:49:21 PM][info][Schema] - { object: undefined }
+[9/23/2018, 3:49:21 PM][info][Schema] - { object: undefined }
+[9/23/2018, 3:49:23 PM][info][LogOutRequest] - { name: "desarrollo", cid: 1537731976942 }
+[9/23/2018, 3:49:23 PM][info][LogOutResponse] - { name: "desarrollo", status: 0 }
+[9/23/2018, 3:49:30 PM][info][LogInRequest] - { user: "operator", nodes: "volthost" }
+[9/23/2018, 3:49:30 PM][info][Connected] - {  }
+[9/23/2018, 3:49:30 PM][info][LogInResponse] - { user: "operator", status: 0 }
+[9/23/2018, 3:49:30 PM][info][Schema] - { object: undefined }
+[9/23/2018, 3:49:30 PM][info][Schema] - { object: undefined }
+[9/23/2018, 3:49:30 PM][info][Schema] - { object: undefined }
+[9/23/2018, 3:54:12 PM][info][GetSession] - { name: "desarrollo", user: "operator" }
+[9/23/2018, 3:54:12 PM][info][Schema] - { object: "PROCEDURECOLUMNS" }
+[9/23/2018, 3:54:12 PM][info][Schema] - { object: "COLUMNS" }
+[9/23/2018, 3:54:12 PM][info][Schema] - { object: "PRIMARYKEYS" }
+[9/23/2018, 3:54:13 PM][info][Schema OK] - {  }
+[9/23/2018, 3:54:13 PM][info][Schema OK] - {  }
+[9/23/2018, 3:54:13 PM][info][Schema OK] - {  }
+[9/23/2018, 3:55:14 PM][info][GetSession] - { name: "desarrollo", user: "operator" }
+[9/23/2018, 3:55:14 PM][info][Schema] - { object: "PROCEDURECOLUMNS" }
+[9/23/2018, 3:55:14 PM][info][Schema] - { object: "COLUMNS" }
+[9/23/2018, 3:55:14 PM][info][Schema] - { object: "PRIMARYKEYS" }
+[9/23/2018, 3:55:15 PM][info][Schema OK] - {  }
+[9/23/2018, 3:55:15 PM][info][Schema OK] - {  }
+[9/23/2018, 3:55:15 PM][info][Schema OK] - {  }
+[9/23/2018, 3:55:30 PM][info][GetSession] - { name: "desarrollo", user: "operator" }
+[9/23/2018, 3:55:30 PM][info][Schema] - { object: "PROCEDURECOLUMNS" }
+[9/23/2018, 3:55:30 PM][info][Schema] - { object: "COLUMNS" }
+[9/23/2018, 3:55:30 PM][info][Schema] - { object: "PRIMARYKEYS" }
+[9/23/2018, 3:55:31 PM][info][Schema OK] - {  }
+[9/23/2018, 3:55:31 PM][info][Schema OK] - {  }
+[9/23/2018, 3:55:31 PM][info][Schema OK] - {  }
+[9/23/2018, 3:57:02 PM][info][GetSession] - { name: "desarrollo", user: "operator" }
+[9/23/2018, 3:57:02 PM][info][Schema] - { object: "PROCEDURECOLUMNS" }
+[9/23/2018, 3:57:02 PM][info][Schema] - { object: "COLUMNS" }
+[9/23/2018, 3:57:02 PM][info][Schema] - { object: "PRIMARYKEYS" }
+[9/23/2018, 3:57:03 PM][info][Schema OK] - {  }
+[9/23/2018, 3:57:03 PM][info][Schema OK] - {  }
+[9/23/2018, 3:57:03 PM][info][Schema OK] - {  }
+[9/23/2018, 3:59:45 PM][info][LogInRequest] - { user: "operator", nodes: "volthost" }
+[9/23/2018, 3:59:45 PM][info][Connected] - {  }
+[9/23/2018, 3:59:45 PM][info][LogInResponse] - { user: "operator", status: 0 }
+[9/23/2018, 3:59:45 PM][info][Schema] - { object: "PROCEDURECOLUMNS" }
+[9/23/2018, 3:59:45 PM][info][Schema] - { object: "COLUMNS" }
+[9/23/2018, 3:59:45 PM][info][Schema] - { object: "PRIMARYKEYS" }
+[9/23/2018, 3:59:46 PM][info][Schema OK] - {  }
+[9/23/2018, 3:59:46 PM][info][Schema OK] - {  }
+[9/23/2018, 3:59:46 PM][info][Schema OK] - {  }
+[9/23/2018, 4:25:21 PM][info][LogInRequest] - { user: "operator", nodes: "volthost" }
+[9/23/2018, 4:25:22 PM][info][Connected] - {  }
+[9/23/2018, 4:25:22 PM][info][LogInResponse] - { user: "operator", status: 0 }
+[9/23/2018, 4:25:22 PM][info][Schema] - { object: "PROCEDURECOLUMNS" }
+[9/23/2018, 4:25:22 PM][info][Schema] - { object: "COLUMNS" }
+[9/23/2018, 4:25:22 PM][info][Schema] - { object: "PRIMARYKEYS" }
+[9/23/2018, 4:25:23 PM][info][Schema OK] - {  }
+[9/23/2018, 4:25:23 PM][info][Schema OK] - {  }
+[9/23/2018, 4:25:23 PM][info][Schema OK] - {  }
+[9/23/2018, 4:25:32 PM][info][QueryRequest] - { query: "select * from items order by 1 limit 7 offset 0" }
+[9/23/2018, 4:25:33 PM][info][QueryResponse OK] - { query: "select * from items order by 1 limit 7 offset 0" }
+[9/23/2018, 5:13:42 PM][info][LogInRequest] - { user: "operator", nodes: "volthost" }
+[9/23/2018, 5:13:42 PM][info][Connected] - {  }
+[9/23/2018, 5:13:42 PM][info][LogInResponse] - { user: "operator", status: 0 }
+[9/23/2018, 5:13:42 PM][info][Schema] - { object: "PROCEDURECOLUMNS" }
+[9/23/2018, 5:13:42 PM][info][Schema] - { object: "COLUMNS" }
+[9/23/2018, 5:13:42 PM][info][Schema] - { object: "PRIMARYKEYS" }
+[9/23/2018, 5:13:43 PM][info][Schema OK] - {  }
+[9/23/2018, 5:13:43 PM][info][Schema OK] - {  }
+[9/23/2018, 5:13:43 PM][info][Schema OK] - {  }
+[9/23/2018, 5:15:39 PM][info][LogInRequest] - { user: "operator", nodes: "volthost" }
+[9/23/2018, 5:15:39 PM][info][Connected] - {  }
+[9/23/2018, 5:15:39 PM][info][LogInResponse] - { user: "operator", status: 0 }
+[9/23/2018, 5:15:39 PM][info][Schema] - { object: "PROCEDURECOLUMNS" }
+[9/23/2018, 5:15:39 PM][info][Schema] - { object: "COLUMNS" }
+[9/23/2018, 5:15:39 PM][info][Schema] - { object: "PRIMARYKEYS" }
+[9/23/2018, 5:15:40 PM][info][Schema OK] - {  }
+[9/23/2018, 5:15:40 PM][info][Schema OK] - {  }
+[9/23/2018, 5:15:40 PM][info][Schema OK] - {  }
+[9/23/2018, 5:18:48 PM][info][GetSession] - { name: "desarrollo", user: "operator" }
+[9/23/2018, 5:18:48 PM][info][Schema] - { object: "PROCEDURECOLUMNS" }
+[9/23/2018, 5:18:48 PM][info][Schema] - { object: "COLUMNS" }
+[9/23/2018, 5:18:48 PM][info][Schema] - { object: "PRIMARYKEYS" }
+[9/23/2018, 5:18:49 PM][info][Schema OK] - {  }
+[9/23/2018, 5:18:49 PM][info][Schema OK] - {  }
+[9/23/2018, 5:18:49 PM][info][Schema OK] - {  }
+[9/23/2018, 5:18:56 PM][info][Load Classes] - { cid: 1537737339623 }
+[9/23/2018, 5:18:56 PM][info][File length] - {  }
+[9/23/2018, 5:19:29 PM][info][LogInRequest] - { user: "operator", nodes: "volthost" }
+[9/23/2018, 5:19:29 PM][info][Connected] - {  }
+[9/23/2018, 5:19:29 PM][info][LogInResponse] - { user: "operator", status: 0 }
+[9/23/2018, 5:19:29 PM][info][Schema] - { object: "PROCEDURECOLUMNS" }
+[9/23/2018, 5:19:29 PM][info][Schema] - { object: "COLUMNS" }
+[9/23/2018, 5:19:29 PM][info][Schema] - { object: "PRIMARYKEYS" }
+[9/23/2018, 5:19:30 PM][info][Schema OK] - {  }
+[9/23/2018, 5:19:30 PM][info][Schema OK] - {  }
+[9/23/2018, 5:19:30 PM][info][Schema OK] - {  }
+[9/23/2018, 5:19:33 PM][info][Load Classes] - { cid: 1537737569548 }
+[9/23/2018, 5:19:33 PM][info][File length] - {  }
+[9/23/2018, 5:20:46 PM][info][GetSession] - { name: "desarrollo", user: "operator" }
+[9/23/2018, 5:20:46 PM][info][Schema] - { object: "PROCEDURECOLUMNS" }
+[9/23/2018, 5:20:46 PM][info][Schema] - { object: "COLUMNS" }
+[9/23/2018, 5:20:46 PM][info][Schema] - { object: "PRIMARYKEYS" }
+[9/23/2018, 5:20:47 PM][info][Schema OK] - {  }
+[9/23/2018, 5:20:47 PM][info][Schema OK] - {  }
+[9/23/2018, 5:20:47 PM][info][Schema OK] - {  }
+[9/23/2018, 5:20:52 PM][info][Load Classes] - { cid: 1537737569548 }
+[9/23/2018, 5:20:52 PM][info][File length] - {  }
+[9/23/2018, 5:41:24 PM][info][GetSession] - { name: "desarrollo", user: "operator" }
+[9/23/2018, 5:41:24 PM][info][Schema] - { object: "PROCEDURECOLUMNS" }
+[9/23/2018, 5:41:24 PM][info][Schema] - { object: "COLUMNS" }
+[9/23/2018, 5:41:24 PM][info][Schema] - { object: "PRIMARYKEYS" }
+[9/23/2018, 5:41:25 PM][info][Schema OK] - {  }
+[9/23/2018, 5:41:25 PM][info][Schema OK] - {  }
+[9/23/2018, 5:41:25 PM][info][Schema OK] - {  }
+[9/23/2018, 5:42:09 PM][info][Load Classes] - { cid: 1537737569548 }
+[9/23/2018, 5:42:09 PM][info][File length] - {  }
+[9/23/2018, 5:45:48 PM][info][GetSession] - { name: "desarrollo", user: "operator" }
+[9/23/2018, 5:45:48 PM][info][Schema] - { object: "PROCEDURECOLUMNS" }
+[9/23/2018, 5:45:48 PM][info][Schema] - { object: "COLUMNS" }
+[9/23/2018, 5:45:48 PM][info][Schema] - { object: "PRIMARYKEYS" }
+[9/23/2018, 5:45:49 PM][info][Schema OK] - {  }
+[9/23/2018, 5:45:49 PM][info][Schema OK] - {  }
+[9/23/2018, 5:45:49 PM][info][Schema OK] - {  }
+[9/23/2018, 5:45:55 PM][info][Load Classes] - { cid: 1537737569548 }
+[9/23/2018, 5:45:55 PM][info][File length] - {  }
+[9/23/2018, 5:47:10 PM][info][GetSession] - { name: "desarrollo", user: "operator" }
+[9/23/2018, 5:47:11 PM][info][Schema] - { object: "PROCEDURECOLUMNS" }
+[9/23/2018, 5:47:11 PM][info][Schema] - { object: "COLUMNS" }
+[9/23/2018, 5:47:11 PM][info][Schema] - { object: "PRIMARYKEYS" }
+[9/23/2018, 5:47:11 PM][info][Schema OK] - {  }
+[9/23/2018, 5:47:11 PM][info][Schema OK] - {  }
+[9/23/2018, 5:47:11 PM][info][Schema OK] - {  }
+[9/23/2018, 5:47:16 PM][info][Load Classes] - { cid: 1537737569548 }
+[9/23/2018, 5:47:16 PM][info][File length] - {  }
+[9/23/2018, 5:48:59 PM][info][GetSession] - { name: "desarrollo", user: "operator" }
+[9/23/2018, 5:48:59 PM][info][Schema] - { object: "PROCEDURECOLUMNS" }
+[9/23/2018, 5:48:59 PM][info][Schema] - { object: "COLUMNS" }
+[9/23/2018, 5:48:59 PM][info][Schema] - { object: "PRIMARYKEYS" }
+[9/23/2018, 5:49:00 PM][info][Schema OK] - {  }
+[9/23/2018, 5:49:00 PM][info][Schema OK] - {  }
+[9/23/2018, 5:49:00 PM][info][Schema OK] - {  }
+[9/23/2018, 5:49:05 PM][info][Load Classes] - { cid: 1537737569548 }
+[9/23/2018, 5:49:05 PM][info][File length] - {  }
+[9/23/2018, 5:54:06 PM][info][LogInRequest] - { user: "operator", nodes: "volthost" }
+[9/23/2018, 5:54:06 PM][info][Connected] - {  }
+[9/23/2018, 5:54:06 PM][info][LogInResponse] - { user: "operator", status: 0 }
+[9/23/2018, 5:54:06 PM][info][Schema] - { object: "PROCEDURECOLUMNS" }
+[9/23/2018, 5:54:06 PM][info][Schema] - { object: "COLUMNS" }
+[9/23/2018, 5:54:06 PM][info][Schema] - { object: "PRIMARYKEYS" }
+[9/23/2018, 5:54:07 PM][info][Schema OK] - {  }
+[9/23/2018, 5:54:07 PM][info][Schema OK] - {  }
+[9/23/2018, 5:54:07 PM][info][Schema OK] - {  }
+[9/23/2018, 5:54:12 PM][info][Load Classes] - { cid: 1537739646367 }
+[9/23/2018, 5:54:12 PM][info][File length] - {  }
+[9/23/2018, 5:58:35 PM][info][QueryRequest] - { query: "select * from items order by 1 limit 7 offset 0" }
+[9/23/2018, 5:58:36 PM][info][QueryResponse OK] - { query: "select * from items order by 1 limit 7 offset 0" }
+[9/23/2018, 5:59:06 PM][info][StoreProcedureRequest] - { procedure: "@Statistics", args: ["'PROCEDUREDETAIL'","0i"], cid: 1537739646367 }
+[9/23/2018, 5:59:07 PM][info][StoredProcedureResponse] - { procedure: "@Statistics", args: ["'PROCEDUREDETAIL'","0i"], status: "ok" }
+[9/23/2018, 5:59:18 PM][info][StoreProcedureRequest] - { procedure: "@Statistics", args: ["'PROCEDUREDETAIL'","0i"], cid: 1537739646367 }
+[9/23/2018, 5:59:18 PM][info][StoredProcedureResponse] - { procedure: "@Statistics", args: ["'PROCEDUREDETAIL'","0i"], status: "ok" }
+[9/23/2018, 6:03:55 PM][info][StoreProcedureRequest] - { procedure: "@Statistics", args: ["'PROCEDUREDETAIL'","0i"], cid: 1537739646367 }
+[9/23/2018, 6:03:55 PM][info][StoredProcedureResponse] - { procedure: "@Statistics", args: ["'PROCEDUREDETAIL'","0i"], status: "ok" }

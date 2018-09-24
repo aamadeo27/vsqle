@@ -107,12 +107,22 @@ export const removeVar = variable => setVars(getVars().filter(v => v.id !== vari
 let _fetch = fetch
 
 if ( window.ipcRenderer ){
-  console.log("Desktop Front End")
+  console.log("Desktop Front End");
 
   _fetch = (url, options) => {
     const method = options.method || 'GET';
 
-    const data = (options.body && JSON.parse(options.body)) || {};
+    console.log({ body: options.body })
+
+    let data = {};
+    if ( typeof options.body === 'string' ){
+      data = JSON.parse(options.body);
+    } else if ( options.body instanceof Uint8Array ){
+      data = options.body;
+    }
+
+    console.log( { data })
+
     url = url.replace(/https:\/\/.+:\d.+\//,'');
     
     const query = {}
@@ -183,6 +193,7 @@ export const loadObject = object => get(urls.schema(object))
 export const executeQuery = query => post(urls.query, { query })
 export const execStoreProcedure = data => post(urls.storeProcedure, data)
 
+const reader = new FileReader();
 export const loadClasses = jar => {
 	const callConf = {
 		body: jar, 
@@ -192,7 +203,19 @@ export const loadClasses = jar => {
 			"accept" : "application/json",
 			"content-type" : "application/octet-stream"
 		}
-	};
+  };
+  
+  if ( window.ipcRenderer ){
+    return new Promise( (rs, rj) => {
+      reader.onload = e => {
+        callConf.body = Buffer.from(e.target.result);
 
-	return _fetch(urls.loadClasses, callConf).catch( console.error )
+        rs( _fetch(urls.loadClasses, callConf).catch( console.error ) )
+      };
+
+      reader.readAsArrayBuffer(jar);
+    });
+  }
+  
+  return _fetch(urls.loadClasses, callConf).catch( console.error )
 }

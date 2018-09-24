@@ -460,9 +460,7 @@ const prepareQueries = (queries, schema) => {
 						if ( select.groupBy ){
 							orderBy = select.groupBy;
 						} else {
-							const alias = select.from[0].alias;
-							const firstCol = schema.tables[select.from[0].table][1].name;
-							orderBy = ( !alias ? select.from[0].table : alias ) + '.' + firstCol;	
+							orderBy = 1;	
 						}
 
 						query = `${query} order by ${orderBy}`;
