@@ -230,12 +230,14 @@ export default class extends Component {
 		const sql = this.getSQL(result, queryConfig)
 		const voltTable = this.getVoltTable(result, queryConfig)
 
+    const now = new Date()
+		const id = `${now.getDate()}-${now.getMonth()}-${now.getFullYear()}`
 		let filename = ""
 		if ( queryConfig.select ){
-			const now = new Date()
-			const id = `${now.getDate()}-${now.getMonth()}-${now.getFullYear()}`
 			filename = queryConfig.select.from[0].table + "." + id
-		}
+		} else {
+      filename = "Result." + id
+    }
 
 		let rowID = 0
 		const rows = result.data.map( row => {
@@ -270,9 +272,9 @@ export default class extends Component {
 		const exportBtn = <DropdownButton {...exportBtnProps}>
 			<MenuItem eventKey="1" onClick={() => this.download('xls')}>as XLS</MenuItem>
 			<MenuItem eventKey="1" onClick={() => this.download('csv')}>as CSV</MenuItem>
-			<MenuItem eventKey="1" onClick={() => this.download('sql')}>as SQL</MenuItem>
+      {sql ? <MenuItem eventKey="1" onClick={() => this.download('sql')}>as SQL</MenuItem> : ''}
 			<MenuItem divider />
-			<MenuItem eventKey="1" onClick={() => this.newTab(sql, filename)}>as SQL in new tab</MenuItem>
+			{sql ? <MenuItem eventKey="1" onClick={() => this.newTab(sql, filename)}>as SQL in new tab</MenuItem> : ''}
 			<MenuItem eventKey="1" onClick={() => this.newVar(voltTable)}>as a VoltTable variable</MenuItem>
 		</DropdownButton>
 
