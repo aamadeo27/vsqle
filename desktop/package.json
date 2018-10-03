@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "test",
-    "start": "nodemon --watch client.js --exec electron ."
+    "start": "nodemon --watch client.js --exec electron .",
+    "postinstall": "electron-builder install-app-deps"
   },
   "repository": {
     "type": "git",
@@ -26,11 +27,12 @@
   },
   "homepage": "https://github.com/aamadeo27/vsqle#readme",
   "dependencies": {
-    "electron": "^2.0.10",
     "voltjs": "git+https://github.com/aamadeo27/voltdb-client-nodejs.git#feature/promises",
+    "vsqle-core": "file:../core",
     "winston": "^3.1.0"
   },
   "devDependencies": {
+    "electron": "^2.0.10",
     "electron-rebuild": "^1.8.2"
   }
 }

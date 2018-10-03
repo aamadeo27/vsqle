@@ -13,3 +13,6 @@
 [9/23/2018, 5:59:06 PM][operator][volthost][StoreProcedureRequest][@Statistics]  - 'PROCEDUREDETAIL',0i
 [9/23/2018, 5:59:18 PM][operator][volthost][StoreProcedureRequest][@Statistics]  - 'PROCEDUREDETAIL',0i
 [9/23/2018, 6:03:55 PM][operator][volthost][StoreProcedureRequest][@Statistics]  - 'PROCEDUREDETAIL',0i
+[9/28/2018, 12:08:41 PM][][disconnected][LogIn][@AdHoc]  
+[9/28/2018, 12:08:53 PM][operator][volthost][StoreProcedureRequest][@SystemCatalog]  - 'tables'
+[9/28/2018, 1:06:04 PM][operator][volthost][StoreProcedureRequest][@SystemCatalog]  - 'tables'

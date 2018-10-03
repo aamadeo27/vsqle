@@ -57,7 +57,8 @@
   },
   "scripts": {
     "start": "node scripts/start.js",
-    "build": "node scripts/build.js",
+    "build:desktop": "node scripts/build.js desktop",
+    "build:server": "node scripts/build.js server",
     "test": "node scripts/test.js --env=jsdom"
   },
   "jest": {

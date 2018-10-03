@@ -5,9 +5,11 @@ client/package-lock.json
 client/node_modules/*
 server/node_modules/*
 desktop/node_modules/*
+desktop/dist/*
+core/node_modules/*
 server/public/*
-server/server.log
-server/audit.log
-server/server.error.log
+desktop/public/*
+desktop/*.log
+server/*.log
 server/localhost.*
 ./server/config.json

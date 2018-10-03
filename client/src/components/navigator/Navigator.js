@@ -19,7 +19,7 @@ const Folder = ({ folder, depth, handlers, expanded }) => ({
 
       if ( ! node.name ){
         console.error("Nodo no tiene nombre", node)
-        return
+        return '';
       }
 
       if ( node.content ) return <TreeNode name={node.name} depth={depth+1} leaf key={node.name}/>

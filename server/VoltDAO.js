@@ -11,7 +11,7 @@ const defaults = {
 
 const MESSAGES = {
 	DISCONNECTED: 'Not Logged In'
-}
+};
 
 function VoltDAO(userAuth){
 	const confs = [];
