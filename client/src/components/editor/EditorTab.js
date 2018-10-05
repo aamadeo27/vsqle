@@ -45,29 +45,40 @@ class EditorTab extends Component {
       vars,
       addResult, clearResults, updateQueue,
 			schema,
-			logout,
+      logout,
+      updateLogoSpeed
     } = this.props
 
     const editor = this.refs.AceEditor.editor
-		
+    
 		if ( asyncExecution ){
 			if ( this.props.queue.length > 0 ) return;
 
+      updateLogoSpeed(0.35);
 			clearResults()
+      const promises = query.execute(editor, vars.list, schema, asyncExecution);
 
-			query.execute(editor, vars.list, schema, asyncExecution).forEach( promise => {
-				promise.then( response => query.handleResponse(response, logout, addResult)  )
-					.catch( err => console.log(err))
-			})
+      let resolved = 0;
+			promises.forEach( (promise) => {
+				promise.then( response => {
+          query.handleResponse(response, logout, addResult)  
+          resolved++
+          if ( resolved === promises.length ) {
+            updateLogoSpeed(60);
+          }
+        }).catch( err => console.log(err))	
+      })
 
 			return
 		}
 		
 		if ( this.props.queue.length === 0 ){
+      updateLogoSpeed(0.35);
 			clearResults()
 			const queue = query.execute(editor, vars.list, schema, asyncExecution)
 			updateQueue(queue)
 		} else {
+      updateLogoSpeed(0.35)
 			updateQueue([])
 		}
 	}
@@ -78,7 +89,8 @@ class EditorTab extends Component {
       addResult, clearResults,
 			schema,
 			logout,
-			queue,
+      queue,
+      updateLogoSpeed
     } = this.props
 
 		const editor = this.refs.AceEditor.editor
@@ -87,8 +99,13 @@ class EditorTab extends Component {
 		clearResults()
 
 		query.executeLine(editor, vars.list, schema)
-			.then( response => query.handleResponse(response, logout, addResult)  )
-			.catch( err => console.log(err))
+			.then( response => {
+        query.handleResponse(response, logout, addResult)  
+        updateLogoSpeed(60);
+      })
+      .catch( err => console.log(err))
+      
+    updateLogoSpeed(0.35);
 	}
 
   componentDidMount(){
@@ -213,7 +230,9 @@ const mapDispatchToProps = dispatch => ({
 
   changeDialog: dialog => dispatch(actions.changeDialog(dialog)),
 
-	toggleVars: () => dispatch(actions.toggleShowVars)
+  toggleVars: () => dispatch(actions.toggleShowVars),
+  
+  updateLogoSpeed: speed => dispatch(actions.updateLogoSpeed(speed))
 })
 
 const mapStateToProps = ({ activeTab, tabs, config, project, schema, vars, queue }, props) => ({

@@ -289,6 +289,8 @@ export default class extends Component {
 			</div>
 		</div>
 
+    if ( queryConfig.loadClasses ) return title;
+
 		const paginateBtns = [<Button onClick={() => more(queryConfig)} title="more" bsSize="small" bsStyle="primary" key="more">
 			<Glyphicon glyph="forward" />
 		</Button>,

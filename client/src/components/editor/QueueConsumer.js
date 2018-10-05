@@ -28,9 +28,9 @@ class QueueConsumer extends React.Component {
 	}
 
 	consume(){
-		const { addResult, variables, schema, queue, logout } = this.props
+		const { addResult, variables, schema, queue, logout, updateLogoSpeed } = this.props
 
-		if ( queue.length === 0 ) return;
+		if ( queue.length === 0 ) return updateLogoSpeed(60);
 
 		const queryConfig = queue[0];
 
@@ -55,7 +55,8 @@ const mapStateToProps = ({ vars, schema, queue }) => ({
 const mapDispatchToProps = dispatch => ({
 	addResult: result => dispatch(actions.addResult(result)),
 	logout: () => dispatch(actions.updateConnection({})),
-	updateQueue: queue => dispatch(actions.updateQueue(queue))
+  updateQueue: queue => dispatch(actions.updateQueue(queue)),
+  updateLogoSpeed: speed => dispatch(actions.updateLogoSpeed(speed))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(QueueConsumer)

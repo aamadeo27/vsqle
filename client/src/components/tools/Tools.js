@@ -49,13 +49,18 @@ class Tools extends React.Component {
 			addResult, clearResults,
 			variables, 
 			schema, 
-			logout } = this.props
+      logout,
+      updateLogoSpeed } = this.props
 		const activeTab = tabs[this.props.activeTab]
 	
 		if ( this.props.queue.length === 0 ){
-			clearResults()
+      clearResults()
+      updateLogoSpeed(0.35)
 			query.executeBatch(activeTab.editor, variables, schema)
-				.then( response => query.handleResponse(response, logout, addResult)  )
+				.then( response => {
+          query.handleResponse(response, logout, addResult)
+          updateLogoSpeed(60)
+        })
 		}
 	}
 
@@ -65,24 +70,36 @@ class Tools extends React.Component {
 			addResult, clearResults, updateQueue,
 			variables, 
 			schema, 
-			logout } = this.props
+      logout,
+      updateLogoSpeed
+     } = this.props
 		const activeTab = tabs[this.props.activeTab]
 
 		if (asyncExec){
 			clearResults()
+      updateLogoSpeed(0.35)
 
-			query.execute(activeTab.editor, variables, schema).forEach( promise => {
-				promise.then( response => query.handleResponse(response, logout, addResult)  )
+      const promises = query.execute(activeTab.editor, variables, schema)
+      let resolved = 0
+      promises.forEach( promise => {
+				promise.then( response => {
+          query.handleResponse(response, logout, addResult)
+          resolved++;
+
+          if ( resolved === promises.length ) updateLogoSpeed(60)
+        })
 			})
 
 			return
 		}
 		
 		if ( this.props.queue.length === 0 ){
+      updateLogoSpeed(0.35)
 			clearResults()
 			const queue = query.execute(activeTab.editor, variables, schema, false)
 			updateQueue(queue)
 		} else {
+      updateLogoSpeed(60)
 			updateQueue([])
 		}
 	}
@@ -110,24 +127,27 @@ class Tools extends React.Component {
 		const name = e.target.value.split("\\").join("/").split("/").pop()
 
 		console.log("Load Classes ", name);
-		const { addResult, clearResults, logout } = this.props;
+		const { addResult, clearResults, logout, updateLogoSpeed } = this.props;
 
-		clearResults();
+    clearResults();
+    updateLogoSpeed(0.35)
 
 		api.loadClasses(e.target.files[0])
 			.then( response => {
 				console.log("r",response)
 				if ( response.error === 'Not logged in' ){
 					logout()
-				}
+        }
 
 				addResult({
 					queryConfig: {
-						id: 0,
-						query: 'Load Classes ' + name
+            id: 0,
+            loadClasses: true,
+						query: 'Load Classes ' + name + ' exitoso'
 					},
 					result: response
-				})
+        })
+        updateLogoSpeed(60)
 			})
 	}
 
@@ -254,7 +274,9 @@ const mapDispatchToProps = dispatch => ({
 	changeDialog: dialog => dispatch(actions.changeDialog(dialog)),
 	toggleShowVars: () => dispatch(actions.toggleShowVars),
 
-	updateSchema: (tables, procedures, columns, pks) => dispatch(actions.updateSchema(tables, procedures, columns, pks))
+  updateSchema: (tables, procedures, columns, pks) => dispatch(actions.updateSchema(tables, procedures, columns, pks)),
+
+  updateLogoSpeed: speed => dispatch(actions.updateLogoSpeed(speed))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Tools)

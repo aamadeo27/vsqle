@@ -28,6 +28,7 @@ export const REMOVE_VARIABLE = "REMOVE_VARIABLE"
 export const TOGGLE_SHOWVARS = "TOGGLE_SHOWVARS"
 
 export const UPDATE_CONNECTION = "UPDATE_CONNECTION"
+export const UPDATE_SPEED_LOGO = "UPDATE_SPEED_LOGO"
 
 export const EMPTY_PROJECT = {
   name: "Project",

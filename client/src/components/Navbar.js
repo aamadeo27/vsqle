@@ -13,7 +13,7 @@ class AppNavbar extends Component {
     }
 
     render(){
-        const { connection } = this.props
+        const { connection, logoSpeed } = this.props
         const logout = () => {
             api.logout().then( r => {
                 this.props.updateConnection({})
@@ -35,7 +35,11 @@ class AppNavbar extends Component {
 				 
 				const sessions = connection.user ? <NavDropdown eventKey={3} title={session} id="basic-nav-dropdown">
 					<MenuItem eventKey={3.0}>{session}</MenuItem>
-				</NavDropdown> : "";
+        </NavDropdown> : "";
+
+        const style = {
+          animation: `App-logo-spin infinite ${logoSpeed}s linear`
+        };
 
         return (
             <Navbar>
@@ -43,7 +47,7 @@ class AppNavbar extends Component {
                     <Navbar.Brand>
                         <span className="app-brand">vsqle2</span>
                         <a href="#index">
-                            <img src={logo} className="App-logo" alt="logo" />
+                            <img src={logo} className="App-logo" alt="logo" style={style}/>
                         </a>
                     </Navbar.Brand>
                 </Navbar.Header>
@@ -56,7 +60,7 @@ class AppNavbar extends Component {
     }
 }
 
-const mstp = ({ connection }) => ({ connection })
+const mstp = ({ connection, logoSpeed }) => ({ connection, logoSpeed })
 const mdtp = dispatch => ({
     updateConnection: connection => dispatch(actions.updateConnection(connection)),
     showLoginDialog: () => dispatch(actions.changeDialog("Login"))

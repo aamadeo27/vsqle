@@ -34,7 +34,9 @@ import {
 	
 	TOGGLE_SHOWVARS,
 
-	UPDATE_CONNECTION
+  UPDATE_CONNECTION,
+  
+  UPDATE_SPEED_LOGO
 } from '../Constants.js'
 
 import { 
@@ -56,7 +58,6 @@ const activeTab = (state = 0, action) => {
 
 	return state
 }
-
 
 const _projectReducer = {
 	[UPDATE_PROJECT]: (state, action) => Object.assign({}, action.project),
@@ -193,6 +194,15 @@ const connection = ( state = {}, action ) => {
 	}
 }
 
+const logoSpeed = ( state = 60, action ) => {
+	switch(action.type){
+		case UPDATE_SPEED_LOGO:
+			return action.speed || state
+		default:
+			return state
+	}
+}
+
 const vars = combineReducers({ list, show })
 
 const main = combineReducers({
@@ -205,7 +215,8 @@ const main = combineReducers({
 	tabs,
 	config,
 	schema,
-	vars
+  vars,
+  logoSpeed
 })
 
 export default (state, action ) => {

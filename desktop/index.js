@@ -11,5 +11,4 @@ function createWindow () {
   win.loadFile('public/index.html');
 }
 
-
 app.on('ready', createWindow)

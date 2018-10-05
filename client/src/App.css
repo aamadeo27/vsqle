@@ -5,8 +5,8 @@ a { text-decoration: none !important }
 }
 
 .App-logo {
-  animation: App-logo-spin infinite 30s linear;
-  height: 30px;
+  height: 50px;
+  margin-top: -20px;
 }
 
 .app-brand {
