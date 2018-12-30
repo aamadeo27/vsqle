@@ -9,6 +9,7 @@ import Result from './Result.js'
 import ResultError from './ResultError.js'
 import Describe from './Describe.js'
 import Analysis from './Analysis.js'
+import Explain from './Explain';
 
 class Results extends React.Component {
   	render() {
@@ -54,11 +55,9 @@ class Results extends React.Component {
 		const sortF = (a,b) => (a.queryConfig.id - b.queryConfig.id)
 		const resultPanels = results.sort(sortF).map( (result, i) => {
 			if ( result.analysis ) return <Analysis key={i} analysis={result.analysis} expanded={i === 0}/>
-
-			if ( result.describe ) {
-				console.log({ result })
-				return <Describe key={i} table={result.table} name={result.queryConfig.table} expanded={i === 0}/>
-			}
+      else if ( result.describe ) return <Describe key={i} table={result.table} name={result.queryConfig.table} expanded={i === 0}/>
+      else if ( result.explain ) return <Explain key={i} queries={result.queries} name={result.queryConfig.object} expanded={i === 0}/>
+			
 
 			if ( result.error || !result.result ) return <ResultError {...result} key={i} retry={retry} expanded={i === 0}/> 
 

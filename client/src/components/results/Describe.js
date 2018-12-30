@@ -1,5 +1,5 @@
-import React from 'react'
-import { Table, Collapse, Glyphicon } from 'react-bootstrap'
+import React from 'react';
+import { Collapse, Glyphicon } from 'react-bootstrap';
 
 class Describe extends React.Component {
 	constructor(props){
@@ -12,17 +12,20 @@ class Describe extends React.Component {
 	}
 
 	render(){
-		const { table: {columns, pk}, name } = this.props
+		const { table: { columns, pks, type, name }} = this.props
 		const { expanded } = this.state
-		const style = { textAlign: 'left' }
 
-		const description = columns.map( column => <tr key={column.name}>
-			<td>{column.name}</td>
-			<td>{column.type}</td>
-			<td>{column.size}</td>
-			<td>{column.nullable ? "YES" : "NO" }</td>
-			<td>{column.partitionKey ? "YES" : ""}</td>
-		</tr>)
+    const nn = column => column.nullable ? '' : 'not null';
+    const size = column => column.type === 'varchar' ? `(${column.size})` : '';
+    const sep = i =>  i+1 < columns.length || pks.length > 0 ? ',' :'' 
+
+    let partitionKey = columns.find( c => c.partitionKey );
+    partitionKey = partitionKey ? partitionKey.name : null;
+
+    const ddl = columns
+      .map( (column, i) => 
+        <p key={column.name}>&nbsp;&nbsp;&nbsp;{column.name} {column.type}{size(column)} {nn(column)}{sep(i)}</p>
+      );
 
 		const glyph = expanded ? "collapse-up" : "collapse-down"
 		let title = <div className="text-left panel-success result-bar">
@@ -32,32 +35,16 @@ class Describe extends React.Component {
 			</div>
 		</div>
 
-		let primaryKey = ""
-		if ( pk && pk.length > 0) {
-			primaryKey = pk.join(", ").substring(1)
-			primaryKey = <span>PrimaryKey : {primaryKey}</span>
-		}
-
 		return <div>
 			{title}
 			<Collapse in={expanded} className="result-collapse">
-				<div>
-					<Table style={style} striped hover bordered responsive>
-						<thead>
-							<tr>
-								<td>Column</td>
-								<td>DataType</td>
-								<td>Size</td>
-								<td>Nullable</td>
-								<td>PartitionKey</td>
-							</tr>
-						</thead>
-						<tbody>
-							{description}
-						</tbody>
-					</Table>
-					{primaryKey}
-				</div>
+				<div className="ddl">
+          <p>create {type} {name + " ("}</p>
+          {ddl}
+          {pks.length > 0 ? <p>&nbsp;&nbsp;&nbsp;primary key ({pks.join(",")})</p> : ''}
+          <p>{");"}</p>
+          <p>{ partitionKey ? 'partition table ' + name + ' on column ' + partitionKey  + ';' : ''}</p>
+        </div>
 			</Collapse>
 
 			<hr />

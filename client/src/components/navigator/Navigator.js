@@ -129,7 +129,7 @@ class Navigator extends Component {
       selected: this.selected.bind(this)
     }
     
-		return <div>
+		return <div className="nav-side-bar">
       <Row><Col xsOffset={1} xs={11}>
         <ButtonToolbar>
           <ButtonGroup  bsSize="xsmall">

@@ -58,7 +58,7 @@ a { text-decoration: none !important }
 }
 
 .Navigator {
-  height: 70vh;
+  height: 85vh;
   overflow-x: scroll;
 }
 
@@ -226,4 +226,18 @@ a { text-decoration: none !important }
 
 .analysis tr td {
   width: 75vw;
+}
+
+.ddl {
+  padding: 10px;
+  border: 1px solid #333;
+}
+.ddl p {
+  font-family: monospace;
+  font-size: 1.5vh;
+  letter-spacing: 1px;
+  text-align: left;
+  margin-left: 10px;
+  margin-top: 0px;
+  margin-bottom: 0px;
 }

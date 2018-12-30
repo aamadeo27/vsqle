@@ -64,8 +64,8 @@ const StaticWordCompleter = {
 
 		wordList = wordList.concat( StaticWordCompleter.columns.filter( filter ).map( word =>
 			({ caption: word.toLowerCase(), value: word.toLowerCase(), meta: "Column" })
-		))
-
+    ));
+    
 		wordList = wordList.concat( StaticWordCompleter.variables.filter( filter ).map( word =>
 			({ caption: word, value: '${'+word+'}', meta: "Variable" })
 		))
@@ -100,7 +100,7 @@ const setCompleters = editor => {
 
 const updateCompleters = schema => {
 	StaticWordCompleter.procedures = Object.keys(schema.procedures).filter( p => ! p.match(/.+\.+/) )
-	StaticWordCompleter.tables = Object.keys(schema.tables).map(s => s.toLowerCase())
+	StaticWordCompleter.tables = Object.keys(schema.tables).map(c => c.toLowerCase())
 	StaticWordCompleter.columns = schema.columns || []
 	ColumnsCompleter.tables = schema.tables || []
 }

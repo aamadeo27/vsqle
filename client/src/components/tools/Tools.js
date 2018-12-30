@@ -31,15 +31,19 @@ class Tools extends React.Component {
 
 	loadSchema(){
 		const { updateSchema, addResult } = this.props
-		const handleError = err => addResult( { error: err.error , queryConfig: { query: "Load Schema" } })
+		const handleError = err => {
+      console.error(err);
+      addResult( { error: err.toString(), queryConfig: { query: "Load Schema" } })
+    }
 
 		schema.load( this.props.config ).then( response => {
 			if (! response ){
 				handleError({ error : "No response from back end" })
 			}
 
-			const {tables, procedures, columns, pks} = response
-			updateSchema(tables, procedures, columns, pks)
+			const { tables, procedures, columns, pks } = response
+      
+      updateSchema(tables, procedures, columns, pks)
 		}).catch( handleError )
 	}
 
