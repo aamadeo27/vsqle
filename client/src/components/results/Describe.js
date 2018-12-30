@@ -17,7 +17,11 @@ class Describe extends React.Component {
 
     const nn = column => column.nullable ? '' : 'not null';
     const size = column => column.type === 'varchar' ? `(${column.size})` : '';
-    const sep = i =>  i+1 < columns.length || pks.length > 0 ? ',' :'' 
+    const sep = i =>  i+1 < columns.length || pks.length > 0 ? ',' :'';
+    const pkSet = new Set();
+    pks.forEach( c => pkSet.add(c));
+    const pkSequence = [];
+    columns.forEach( c => pkSet.has(c.name) ? pkSequence.add(c.name) : null);
 
     let partitionKey = columns.find( c => c.partitionKey );
     partitionKey = partitionKey ? partitionKey.name : null;
@@ -41,7 +45,7 @@ class Describe extends React.Component {
 				<div className="ddl">
           <p>create {type} {name + " ("}</p>
           {ddl}
-          {pks.length > 0 ? <p>&nbsp;&nbsp;&nbsp;primary key ({pks.join(",")})</p> : ''}
+          {pks.length > 0 ? <p>&nbsp;&nbsp;&nbsp;primary key ({pkSequence.join(",")})</p> : ''}
           <p>{");"}</p>
           <p>{ partitionKey ? 'partition table ' + name + ' on column ' + partitionKey  + ';' : ''}</p>
         </div>
