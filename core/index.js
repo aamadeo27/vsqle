@@ -185,7 +185,8 @@ Core.prototype.login = function(session, params){
   }).catch( errors => {
     session.name = undefined;
 		
-    logger.log('LogInResponse', { user, error: errors.toString() });
+    logger.log('LogInResponse', { user, error: JSON.stringify(errors) });
+    voltDAO.close();
     return { errors };
   });
 };

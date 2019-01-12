@@ -21,7 +21,7 @@ class Describe extends React.Component {
     const pkSet = new Set();
     pks.forEach( c => pkSet.add(c));
     const pkSequence = [];
-    columns.forEach( c => pkSet.has(c.name) ? pkSequence.add(c.name) : null);
+    columns.forEach( c => pkSet.has(c.name) ? pkSequence.push(c.name) : null);
 
     let partitionKey = columns.find( c => c.partitionKey );
     partitionKey = partitionKey ? partitionKey.name : null;
