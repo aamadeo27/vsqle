@@ -58,8 +58,9 @@ a { text-decoration: none !important }
 }
 
 .Navigator {
-  height: 85vh;
-  overflow-x: scroll;
+  height: 50vh;
+  overflow-x: auto;
+  overflow-y: auto;
 }
 
 .node-text {

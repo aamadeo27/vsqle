@@ -9,7 +9,7 @@ class Describe extends React.Component {
 
 	onClick(){
 		this.setState({ expanded: !this.state.expanded })
-	}
+  }
 
 	render(){
 		const { table: { columns, pks, type, name }} = this.props

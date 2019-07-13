@@ -155,7 +155,7 @@ class EditorTab extends Component {
 		this.addCommand("variables","F3", "F3", toggleVars )
 
 		updateTab( tab )
-		this.props.setCompleters(tab.editor)
+    this.props.setCompleters(tab.editor)
 	}
 	
 	addCommand(name,win,mac,action){

@@ -159,6 +159,7 @@ class Navigator extends Component {
       <Row><Col xs={12}>
         <Project project={project} handlers={handlers}/>
       </Col></Row>
+      <Row><hr/></Row>
       <Download content={projectString} name={project.name+".json"} download={this.state.download}/> 
     </div> 
 	}

@@ -1,7 +1,7 @@
 const getNode = ( node, path ) => {
 	if ( path.length === 0 ) return node
 
-	const step = path.splice(0,1)[0]
+  const step = path.splice(0,1)[0]
 	const index = node.children.findIndex( e => e.name === step )
 
 	if ( path.length === 0 && index >= 0 ){
@@ -11,6 +11,19 @@ const getNode = ( node, path ) => {
 	}
 
 	return null
+}
+
+export const getDir = (root, path) => {
+  const node = getNode(root, path.split("/").slice(1) );
+
+  if ( node && node.children ) return path;
+
+  const parent = path.split('/');
+  parent.pop();
+
+  const dirPath = parent.join("/");
+
+  return dirPath.length > 0 ? dirPath : "/" + dirPath;
 }
 
 const replaceFilePath = ( node, oldPathSection, newPathSection ) => {

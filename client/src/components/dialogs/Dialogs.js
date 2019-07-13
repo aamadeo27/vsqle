@@ -76,7 +76,8 @@ class Dialogs extends Component {
 			<NewFileDialog
 				show={showDialog === 'NewFile'}
 				close={closeDialog}
-				save={this.getCreateFile()}
+        save={this.getCreateFile()}
+        getDir={api.getDir}
 				activeTab={activeTab} project={project}
 			/>
 			<ConfigDialog

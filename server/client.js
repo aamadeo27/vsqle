@@ -3,6 +3,8 @@ const core = require('vsqle-core');
 const multipartMiddleware = require('connect-multiparty')();//for files upload
 
 
+//  at Object.DerivedLogger.(anonymous function) [as log] (C:\Users\albert\dev\js\vsqle\server\node_modules\winston\lib\winston\create-logger.js:95:19)
+
 const requestHandler = method => (req, res) => {
 	const message = {
 		data: req.body,

@@ -62,9 +62,18 @@ export const getFileID = () => {
     return curID
 }
 
+export const getDir = (projectName, path) => {
+  const project = getProject(projectName);
+
+  if ( path === "/" ) return path;
+
+  return Project.getDir(project.root, path);
+};
+
 export const deleteNode = ( projectName, path, callback ) => {
-    const project = getProject(projectName)
-	Project.deleteNode(project, path)
+  const project = getProject(projectName)
+  Project.deleteNode(project, path)
+  
 	setProject(project)
 
     if ( typeof callback === 'function') callback()

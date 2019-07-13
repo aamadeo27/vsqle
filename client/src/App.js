@@ -51,6 +51,7 @@ class App extends Component {
             </Row>
             <Dialogs />
           </div>
+          <textarea id="result-clipboard" style={{ position: 'absolute', left: -1000 }}/>
         </Vars>
       </Provider>
     )

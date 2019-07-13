@@ -75,11 +75,10 @@ export default class extends Component {
 		this.setState({ download: { [format]: true }  })
 	}
 
-	getValue(row, schema, column, full){
+	getValue(row, schema, column, options = {}){
 
 		let value = row[column]
 		const { type } = schema[column]
-		const { config } = this.props
 
 		const DATE_TYPE = 'date'
 		const STRING_TYPE = 'string'
@@ -88,18 +87,13 @@ export default class extends Component {
 			value = value ? new Date(value) : "null"
 
 			if ( value && value !== "null" ){
-				const date = value
-
-				if ( config.useLocalTime ){
-					value = getLocalString(date)
-				} else {
-					value = getUTCString(date)
-				}
+        value = options.useLocalTime ? getLocalString(value) : getUTCString(value);
+        value = options.singleQuotedDate ? `'${value}'` : value;
 			}
 		}
 
 		if ( type === STRING_TYPE && value ){
-			if ( !full && value.length > 256 ) return `'${value.substr(0,253)}'...`
+			if ( !options.full && value.length > 256 ) return `'${value.substr(0,253)}'...`
 
 			return `'${value}'`
 		}
@@ -108,7 +102,8 @@ export default class extends Component {
 	}
 
 	getCSV(result){
-		console.log({ result })
+    console.log({ result })
+    const options = {...this.props.config, singleQuotedDate: true};
 
 		const csvHeader = result.schema.reduce( (content, h) => content + h.name.toLowerCase() + ",", "" ) + "\n"
 
@@ -116,7 +111,7 @@ export default class extends Component {
 			let columns = ""
 			
 			for( let j = 0 ; j < row.length; j++ ){
-				const value = this.getValue(row, result.schema, j, true)
+				const value = this.getValue(row, result.schema, j, options)
 				columns += value + ","
 			}
 			
@@ -128,12 +123,14 @@ export default class extends Component {
 	}
 
 	getXLS(result){
-		const xlsHeader = result.schema.reduce( (content, h) => content + h.name.toLowerCase() + "\t", "") + "\n"
+    const options = {...this.props.config };
+    const xlsHeader = result.schema.reduce( (content, h) => content + h.name.toLowerCase() + "\t", "") + "\n"
+    
 		return xlsHeader + result.data.reduce( (content,row) => {
 			let columns = ""
 
 			for( let j = 0 ; j < row.length; j++ ){
-				const value = this.getValue(row, result.schema, j, true)
+				const value = this.getValue(row, result.schema, j, options)
 				columns += value + "\t"
 			}
 
@@ -145,7 +142,9 @@ export default class extends Component {
 
 	getSQL(result, queryConfig){
 		if ( !queryConfig.select ) return null
-	
+  
+    const options = {...this.props.config, singleQuotedDate: true };
+
 		const table = queryConfig.select.from[0].table
 
 		let columns = result.schema.reduce( (content, h) => content + h.name.toLowerCase() + ", ", "")
@@ -155,16 +154,26 @@ export default class extends Component {
 			let args = ''
 
 			for( let j = 0; j < row.length ; j++) {
-				const value = this.getValue(row, result.schema, j, true)
+				const value = this.getValue(row, result.schema, j, options)
 				args += value + ", "
 			}
 			args = args.substring(0, args.length - 2)
 
-			const insert = `insert into ${table} (${columns})\nvalues (${args})`
+      const dboperation = this.props.config.useUpsert ? 'upsert' : 'insert';
+			const sentence = `${dboperation} into ${table} (${columns})\nvalues (${args})`
 
-			return content + insert + ";\n\n"
+			return content + sentence + ";\n\n"
 		}, "" )
-	}
+  }
+  
+  copy(content){
+    const clipboard = document.getElementById('result-clipboard');
+    clipboard.value = content;
+    clipboard.select();
+    const r = document.execCommand('copy');
+
+    console.log(r, clipboard.value);
+  }
 
 	getVoltTable(result, queryConfig){
 		if ( !queryConfig.select ) return null
@@ -239,9 +248,20 @@ export default class extends Component {
       filename = "Result." + id
     }
 
-		let rowID = 0
+    let rowID = 0
+    let data = result.data;
+    
+    for( let i = data.length; data.length > 0 && i < 4; i++ ){
+      data.push(false);
+    }
+
+    const emptyRow = rowID => <tr key={rowID}><td colSpan={result.schema.length}><span>&nbsp;</span></td></tr>;
+
 		const rows = result.data.map( row => {
-			const columns = []
+      const columns = []
+      rowID++
+
+      if ( !row ) return emptyRow(rowID);
 
 			for( let j = 0 ; j < row.length; j++ ){
 				let value = ''
@@ -257,7 +277,7 @@ export default class extends Component {
 				columns.push(<td key={j}>{value}</td>)
 			}
 
-			rowID++
+			
 			return <tr key={rowID}>{columns}</tr>
 		}, '')
 
@@ -267,15 +287,25 @@ export default class extends Component {
 			id: "exportBtn",
 			bsSize: "small",
 			bsStyle: "primary"
-		}
+    }
+    
+    const sqlButtonProps = {
+      id: 'sqlButton',
+      drop: 'right',
+      title: 'As SQL',
+      bsSize: 'small'
+    }
 
 		const exportBtn = <DropdownButton {...exportBtnProps}>
-			<MenuItem eventKey="1" onClick={() => this.download('xls')}>as XLS</MenuItem>
-			<MenuItem eventKey="1" onClick={() => this.download('csv')}>as CSV</MenuItem>
-      {sql ? <MenuItem eventKey="1" onClick={() => this.download('sql')}>as SQL</MenuItem> : ''}
+      {sql ? <MenuItem header>Copy SQL to</MenuItem> : ''}
+      {sql ? <MenuItem eventKey="1.1" onClick={() => this.copy(sql)}>in clipboard</MenuItem> : ''}
+      {sql ? <MenuItem eventKey="1.2" onClick={() => this.newTab(sql, filename)}>in new tab</MenuItem> : ''}
+      <MenuItem header>Download</MenuItem>
+      {sql ? <MenuItem eventKey="2" onClick={() => this.download('sql')}>as SQL</MenuItem> : ''}
+      <MenuItem eventKey="3" onClick={() => this.download('csv')}>as CSV</MenuItem>
+			<MenuItem eventKey="4" onClick={() => this.download('xls')}>as XLS</MenuItem>
 			<MenuItem divider />
-			{sql ? <MenuItem eventKey="1" onClick={() => this.newTab(sql, filename)}>as SQL in new tab</MenuItem> : ''}
-			<MenuItem eventKey="1" onClick={() => this.newVar(voltTable)}>as a VoltTable variable</MenuItem>
+			{/*<MenuItem eventKey="4" onClick={() => this.newVar(voltTable)}>as a VoltTable variable</MenuItem>*/}
 		</DropdownButton>
 
 		const glyph = expanded ? "collapse-up" : "collapse-down"
@@ -320,7 +350,6 @@ export default class extends Component {
 			<Download content={csv} name={filename+ ".csv"} download={this.state.download.csv}/>
 			<Download content={xls} name={filename+ ".xls"} download={this.state.download.xls}/>
 			<Download content={sql} name={filename+ ".sql"} download={this.state.download.sql}/>
-			<input type="hidden" id="clipboard" />
 			<hr />
 		</div> 
 	}

@@ -10,8 +10,6 @@ const appLogger = require('./logger');
 
 const PORT = config.port || 8084;
 
-appLogger.log('Configuration', config);
-
 /*Routers*/
 const client = require('./client');
 
@@ -32,7 +30,7 @@ app.disable('x-powered-by');
 https.createServer({
 	key: fs.readFileSync(config.key),
 	cert: fs.readFileSync(config.cert)
-}, app).listen({ port: PORT }, () => appLogger.log('Init', { PORT } ) );
+}, app).listen({ port: PORT }, () => console.log('Configuration', config) );
 
 app.use(compression());
 app.use(function (req, res, next) {
