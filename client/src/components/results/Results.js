@@ -57,7 +57,7 @@ class Results extends React.Component {
 			if ( result.analysis ) return <Analysis key={i} analysis={result.analysis} expanded={i === 0}/>
       else if ( result.describe ) return <Describe key={i} table={result.table} name={result.queryConfig.table} expanded={i === 0}/>
       else if ( result.explain ) return <Explain key={i} queries={result.queries} name={result.queryConfig.object} expanded={i === 0}/>
-			
+			console.log( { result })
 
 			if ( result.error || !result.result ) return <ResultError {...result} key={i} retry={retry} expanded={i === 0}/> 
 

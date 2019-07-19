@@ -233,7 +233,7 @@ export default class extends Component {
       const csv = this.getCSV(result)
       const xls = this.getXLS(result)
       const sql = this.getSQL(result, queryConfig)
-      const voltTable = this.getVoltTable(result, queryConfig)
+      //const voltTable = this.getVoltTable(result, queryConfig)
 
     const now = new Date()
       const id = `${now.getDate()}-${now.getMonth()}-${now.getFullYear()}`

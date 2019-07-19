@@ -52,7 +52,10 @@ export const renameNode = (path, newName) => ({ type: RENAME_NODE, path, newName
 
 export const updateQueue = queue => ({ type: UPDATE_QUEUE, queue })
 
-export const addResult = result => ({ type: ADD_RESULT, result })
+export const addResult = result => {
+  console.log("ADD_RESULT", result )
+  return { type: ADD_RESULT, result }
+}
 export const updateResult = result => ({ type: UPDATE_RESULT, result })
 export const clearResults = ({ type: CLEAR_RESULTS })
 

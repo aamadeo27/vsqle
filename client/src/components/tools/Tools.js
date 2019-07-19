@@ -58,13 +58,13 @@ class Tools extends React.Component {
 		const activeTab = tabs[this.props.activeTab]
 	
 		if ( this.props.queue.length === 0 ){
-      clearResults()
-      updateLogoSpeed(0.35)
+			clearResults()
+			updateLogoSpeed(0.35)
 			query.executeBatch(activeTab.editor, variables, schema)
 				.then( response => {
-          query.handleResponse(response, logout, addResult)
-          updateLogoSpeed(60)
-        })
+					query.handleResponse(response, logout, addResult)
+					updateLogoSpeed(60)
+				})
 		}
 	}
 
@@ -133,15 +133,23 @@ class Tools extends React.Component {
 		console.log("Load Classes ", name);
 		const { addResult, clearResults, logout, updateLogoSpeed } = this.props;
 
-    clearResults();
-    updateLogoSpeed(0.35)
+		clearResults();
+		updateLogoSpeed(0.35)
 
 		api.loadClasses(e.target.files[0])
 			.then( response => {
-				console.log("r",response)
-				if ( response.error === 'Not logged in' ){
-					logout()
-        		}
+				if ( response.error ){
+					if ( response.error === 'Not logged in' ) logout();
+
+					return addResult({
+						error: response.error,
+						queryConfig: {
+							id: 0,
+							loadClasses: true,
+							query: 'Load Classes ' + name,
+						}
+					});
+				}
 
 				addResult({
 					queryConfig: {
@@ -155,14 +163,16 @@ class Tools extends React.Component {
 				updateLogoSpeed(60);
 			})
 			.catch ( error => {
+				console.log({ error });
+
 				addResult({
+					error: error.toString(),
 					queryConfig: {
 						id: 0,
 						loadClasses: true,
 						query: 'Load Classes ' + name,
-					},
-					result: { error }
-				})
+					}
+				});
 			});
 	}
 
@@ -289,9 +299,9 @@ const mapDispatchToProps = dispatch => ({
 	changeDialog: dialog => dispatch(actions.changeDialog(dialog)),
 	toggleShowVars: () => dispatch(actions.toggleShowVars),
 
-  updateSchema: (tables, procedures, columns, pks) => dispatch(actions.updateSchema(tables, procedures, columns, pks)),
+	updateSchema: (tables, procedures, columns, pks) => dispatch(actions.updateSchema(tables, procedures, columns, pks)),
 
-  updateLogoSpeed: speed => dispatch(actions.updateLogoSpeed(speed))
+	updateLogoSpeed: speed => dispatch(actions.updateLogoSpeed(speed))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Tools)
