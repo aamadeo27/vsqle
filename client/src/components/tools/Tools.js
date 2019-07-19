@@ -141,18 +141,29 @@ class Tools extends React.Component {
 				console.log("r",response)
 				if ( response.error === 'Not logged in' ){
 					logout()
-        }
+        		}
 
 				addResult({
 					queryConfig: {
-            id: 0,
-            loadClasses: true,
+						id: 0,
+						loadClasses: true,
 						query: 'Load Classes ' + name + ' exitoso'
 					},
 					result: response
-        })
-        updateLogoSpeed(60)
+				});
+
+				updateLogoSpeed(60);
 			})
+			.catch ( error => {
+				addResult({
+					queryConfig: {
+						id: 0,
+						loadClasses: true,
+						query: 'Load Classes ' + name,
+					},
+					result: { error }
+				})
+			});
 	}
 
 	download(){
