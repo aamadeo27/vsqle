@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Button, ControlLabel, Col,	Modal, InputGroup, FormControl, FormGroup } from 'react-bootstrap'
+import { Button, ControlLabel, Modal, InputGroup, FormControl } from 'react-bootstrap'
 
 export default class NewFileDialog extends React.Component {
 	constructor(props){
@@ -50,7 +50,7 @@ export default class NewFileDialog extends React.Component {
     }
     
     let path = this.state.path;
-    if ( !path.match(/\/$/) ) path + "/";
+    if ( !path.match(/\/$/) ) path += "/";
 
 		return <Modal show={this.props.show} onHide={this.props.close}>
 			<form onSubmit={onSubmit}>
@@ -63,10 +63,6 @@ export default class NewFileDialog extends React.Component {
             <InputGroup.Addon>{path}</InputGroup.Addon>
             <FormControl type="text" id="filename" onChange={this.onChange.bind(this)} value={this.state.filename}/>
           </InputGroup>
-					{/*<InputGroup>
-						<InputGroup.Addon>path</InputGroup.Addon>
-						<FormControl type="text" id="path" onChange={this.onChange.bind(this)} value={this.state.path}/>
-					</InputGroup>*/}
 				</Modal.Body>
 				<Modal.Footer>
 					<Button bsStyle="danger" onClick={this.props.close}>Close</Button>

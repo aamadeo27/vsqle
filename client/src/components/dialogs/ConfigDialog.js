@@ -143,12 +143,7 @@ export default class ConfigDialog extends React.Component {
 	}
 
 	render(){
-		const toggleFC = e => this.setState({ fullColumn: ! this.state.fullColumn })
-		const toggleULT = e => this.setState({ useLocalTime: ! this.state.useLocalTime })
-    const toggleDebugMode = e => this.setState({ debugMode: !this.state.debugMode })
-    const toggleUseUpsert = e => this.setState({ useUpsert: !this.state.useUpsert })
-
-    const toggleCM = attr => e => this.setState({ [attr] : !this.state[attr] });
+		const toggleCM = attr => e => this.setState({ [attr] : !this.state[attr] });
 
 		const connections = this.state.connections || []
 
@@ -166,16 +161,16 @@ export default class ConfigDialog extends React.Component {
 				<Modal.Title>Configuration</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
-        <Checkbox onChange={toggleFC} checked={!!this.state.fullColumn}>
+        <Checkbox onChange={toggleCM('fullCollumn')} checked={!!this.state.fullColumn}>
 					Show full value of columns
 				</Checkbox>
 				<Checkbox onChange={toggleCM('useUpsert')} checked={!!this.state.useUpsert}>
 					Use upserts in generated SQL
 				</Checkbox>
-				<Checkbox onChange={toggleULT} checked={!!this.state.useLocalTime}>
+				<Checkbox onChange={toggleCM('useLocalTime')} checked={!!this.state.useLocalTime}>
 					Use local time
 				</Checkbox>
-				<Checkbox onChange={toggleDebugMode} checked={!!this.state.debugMode}>
+				<Checkbox onChange={toggleCM('debugMode')} checked={!!this.state.debugMode}>
 					Enable debug logging
 				</Checkbox>
 				<hr/>

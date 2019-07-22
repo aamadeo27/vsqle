@@ -132,20 +132,20 @@ class Navigator extends Component {
 		return <div className="nav-side-bar">
       <Row><Col xsOffset={1} xs={11}>
         <ButtonToolbar>
-          <ButtonGroup  bsSize="xsmall">
-            <Button title="new folder" bsStyle="success" onClick={() => this.props.changeDialog('NewFolder')}>
+          <ButtonGroup  bsSize="xsmall" >
+            <Button title="new folder"  onClick={() => this.props.changeDialog('NewFolder')}>
               <Glyphicon glyph="folder-close"/>
             </Button>
-            <Button title="delete" bsStyle="success" onClick={this.delete.bind(this)}>
+            <Button title="delete" onClick={this.delete.bind(this)}>
               <Glyphicon glyph="trash"/>
             </Button>
-            <Button title="rename" bsStyle="success" onClick={() => this.props.changeDialog('Rename')}>
+            <Button title="rename" onClick={() => this.props.changeDialog('Rename')}>
               <Glyphicon glyph="edit"/>
             </Button>
-            <Button title="download project" bsStyle="success" onClick={this.download.bind(this)}>
+            <Button title="download project" onClick={this.download.bind(this)}>
               <Glyphicon glyph="cloud-download"/>
             </Button>
-            <Button title="upload project" bsStyle="success" bsSize="xsmall">
+            <Button title="upload project" bsSize="xsmall">
 							<div className='fileUpload'>
 								<Glyphicon glyph="cloud-upload"/>
 								<input type='file' id='file' onChange={this.upload.bind(this)}/>

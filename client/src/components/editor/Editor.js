@@ -3,6 +3,7 @@ import { Row, Tab, Tabs, Glyphicon } from 'react-bootstrap'
 import { connect } from 'react-redux'
 
 import EditorTab from './EditorTab.js'
+import ExplorerTab from '../explorer/ExplorerTab.js'
 import QueueConsumer from './QueueConsumer.js'
 
 import * as actions from '../../Actions'
@@ -170,19 +171,28 @@ class Editor extends React.Component {
 		const { activeTab: activeKey, changeTab, closeTab } = this.props
 		
 		const editorTabs = this.props.tabs.map( tab => {
-			const title = <span>{tab.filepath.split("/").pop()}</span>
-			const _closeTab = () => {
+      const title = tab.exploreTab
+          ? <span><Glyphicon glyph="search"/> Explore</span> 
+          : <span>{tab.filepath.split("/").pop()}</span>;
 
+			const _closeTab = () => {
 				let nextActive = this.props.tabs.find( t => t.id !== tab.id ) 
 				nextActive = (nextActive && nextActive.id) || -1
 
 				closeTab(tab.id, nextActive)
 			}
 
-			const addTab = this.addTab.bind(this)
+      const addTab = this.addTab.bind(this)
+      
+      let tabContent = null;
+      if ( tab.exploreTab ){
+        tabContent = <ExplorerTab close={_closeTab} newTab={addTab}/>
+      } else {
+        tabContent = <EditorTab id={tab.id} close={_closeTab} newTab={addTab} setCompleters={setCompleters}/>;
+      }
 
 			return <Tab eventKey={tab.id} title={title} key={"editor.tab."+tab.id}>
-					<EditorTab id={tab.id} close={_closeTab} newTab={addTab} setCompleters={setCompleters}/>
+					{tabContent}
 			</Tab>
 		})
 

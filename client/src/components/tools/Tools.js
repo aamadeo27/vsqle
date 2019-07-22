@@ -175,21 +175,31 @@ class Tools extends React.Component {
 		const path = tabs[activeTab].filepath
 		const file = getFileFromProject( project, path )
 		changeTabContent(file)
-	}
+  }
+  
+  openExploreTab(){
+    const { addTab } = this.props
+
+    const newTab = api.exploreTab()
+    addTab(newTab)
+
+    this.setState({ activeKey: newTab.id })
+  }
 
   render() {
 		const { tabs, project, changeDialog, queue } = this.props
 		const activeTab = tabs[this.props.activeTab] || { filepath: "", content: "" }
-		const tabName = activeTab.filepath.split("/").pop() + ".sql"
+		const tabName = activeTab.exploreTab ? "Explore": activeTab.filepath.split("/").pop() + ".sql";
 		
 		const existsInProject = activeTab && getFileFromProject(project, activeTab.filepath)
 
 		const reload = this.reload.bind(this)
-		const loadSchema = this.loadSchema.bind(this)
+    const loadSchema = this.loadSchema.bind(this);
+    const openExploreTab = this.openExploreTab.bind(this);
 
 		const openWikiPage = () => window.open("https://github.com/aamadeo27/vsqle/wiki/Guide","_blank")
 		const executing = queue.length > 0;
-		const syncExecGlyph = executing ? 'remove-circle' : 'play-circle'
+    const syncExecGlyph = executing ? 'remove-circle' : 'play-circle'
 		
     return (
 			<div className="Tools">
@@ -202,16 +212,11 @@ class Tools extends React.Component {
 							<Button title="reload schema" bsStyle="warning" onClick={loadSchema} disabled={executing}>
 								<Glyphicon glyph="refresh"/>
 							</Button>
-							<Button title="async execute" bsStyle="warning" onClick={() => this.execute(true)} disabled={executing}>
-								<Glyphicon glyph="play"/>
+              <Button title="Open Explore Tab" bsStyle="warning" onClick={openExploreTab} >
+								<Glyphicon glyph="search"/>
 							</Button>
-							<Button title="sync execute" bsStyle="warning" onClick={() => this.execute(false)} >
-								<Glyphicon glyph={syncExecGlyph}/>
-							</Button>
-							<Button title="batch execute" bsStyle="warning" onClick={() => this.executeBatch()} >
-								<Glyphicon glyph="list-alt"/>
-							</Button>
-						</ButtonGroup>
+            </ButtonGroup>
+						
 						<ButtonGroup bsSize="small">
 							<Button title="save" bsStyle="warning" onClick={this.save.bind(this)}>
 								<Glyphicon glyph="floppy-disk"/>
@@ -220,15 +225,31 @@ class Tools extends React.Component {
 								<Glyphicon glyph="repeat"/>
 							</Button>
 							<Button title="download" bsStyle="warning" onClick={this.download.bind(this)}>
-								<Glyphicon glyph="save"/>
+								<Glyphicon glyph="save-file"/>
 							</Button>
 							<Button title="upload" bsStyle="warning" disabled={executing}>
 								<div className='fileUpload'>
-									<Glyphicon glyph="open"/>
+									<Glyphicon glyph="open-file"/>
 									<input type='file' id='file' onChange={this.upload.bind(this)}/>
 								</div>
 							</Button>
 						</ButtonGroup>
+
+            <ButtonGroup bsSize="small">
+							<Button title="async execute" bsStyle="success" onClick={() => this.execute(true)} disabled={executing}>
+								<Glyphicon glyph="play"/>
+							</Button>
+							<Button title="sync execute" bsStyle="success" onClick={() => this.execute(false)} >
+								<Glyphicon glyph={syncExecGlyph}/>
+							</Button>
+							<Button title="batch execute" bsStyle="success" onClick={() => this.executeBatch()} >
+								<Glyphicon glyph="list-alt"/>
+							</Button>
+              <Button title="Query to File" bsStyle="success" onClick={() => console.log("Query to file not implemented")} >
+								<Glyphicon glyph="arrow-down"/>
+							</Button>
+						</ButtonGroup>
+
 						<ButtonGroup bsSize="small">
 							<Button bsStyle="info" onClick={this.props.toggleShowVars} disabled={executing}>
 								<Glyphicon glyph="usd"/>

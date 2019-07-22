@@ -200,7 +200,7 @@ export default class extends Component {
 		const { addVar, showVars } = this.props
 
 		const variable = {
-			id : api.getFileID(),
+			id : api.getNewID(),
 			value
 		}
 
@@ -287,13 +287,6 @@ export default class extends Component {
 			id: "exportBtn",
 			bsSize: "small",
 			bsStyle: "primary"
-    }
-    
-    const sqlButtonProps = {
-      id: 'sqlButton',
-      drop: 'right',
-      title: 'As SQL',
-      bsSize: 'small'
     }
 
 		const exportBtn = <DropdownButton {...exportBtnProps}>

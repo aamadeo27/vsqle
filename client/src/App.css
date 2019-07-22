@@ -109,12 +109,25 @@ a { text-decoration: none !important }
 }
 
 .EditorTab {
-  height: auto;
   display: block;
   text-align: left;
   font-size: 1.5vw;
   width: 100%;
   border: 1px solid #DADADA;
+}
+
+.ExplorerTab {
+  display: block;
+  text-align: left;
+  font-size: 1.5vw;
+  width: 100%;
+  border: 1px solid #DADADA;
+}
+
+.object-list {
+  margin-top: 2vh;
+  overflow-y: scroll;
+  height: 30vh;
 }
 
 .Console {

@@ -54,7 +54,7 @@ export const addFolder = (projectName, folder, callback ) => {
     if ( typeof callback === 'function') callback()
 }
 
-export const getFileID = () => {
+export const getNewID = () => {
     let curID = parseInt(localStorage.getItem("FileID"), 10) || 0
     curID++
     localStorage.setItem("FileID", curID)
@@ -93,7 +93,8 @@ export const renameNode = (projectName, path, newName, callback) => {
 }
 
 const TEMPLATE_SQL = "-- New Tab\n"
-export const newTab = (content = TEMPLATE_SQL) => ({ id: getFileID(), filepath: "/New Tab", content, newTab: true })
+export const newTab = (content = TEMPLATE_SQL) => ({ id: getNewID(), filepath: "/New Tab", content, newTab: true });
+export const exploreTab = (content = TEMPLATE_SQL) => ({ id: getNewID(), content, exploreTab: true })
 
 export const getConfig = () => JSON.parse(localStorage.getItem("$config")) || undefined
 export const saveConfig = (config, callback) => {

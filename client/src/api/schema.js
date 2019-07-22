@@ -91,7 +91,11 @@ export const load = handleError => {
 					proc = schema.procedures[column[2]]
 				}
 
-				proc[column[17]] = { name: column[6] }
+        proc[column[17]] = { type: column[6] }
+        
+        if ( column[12] === 'PARTITION_PARAMETER' ){
+          proc[column[17]].partitionParameter = true;
+        }
       });
 		}
 		

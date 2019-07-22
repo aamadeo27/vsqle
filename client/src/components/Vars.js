@@ -99,7 +99,7 @@ class Vars extends Component {
 	render(){
 		const addVar = () => {
 			const variable = {
-				id : api.getFileID(),
+				id : api.getNewID(),
 				name: 'var_'+this.props.vars.list.length,
 				value: ''
 			}
