@@ -119,7 +119,7 @@ a { text-decoration: none !important }
 .ExplorerTab {
   display: block;
   text-align: left;
-  font-size: 1.5vw;
+  font-size: 14pt;
   width: 100%;
   border: 1px solid #DADADA;
 }

@@ -6,7 +6,9 @@ import ObjectList from './ObjectList';
 
 import * as actions from '../../Actions.js'
 import { IGNORE_PATTERN } from '../../Constants.js'
-import CreateObjectDialog from '../dialogs/CreateObjectDialog';
+
+import CreateTableDialog from '../dialogs/CreateTableDialog';
+import CreateProcedureDialog from '../dialogs/CreateProcedureDialog';
 
 class ExplorerTab extends Component {
   constructor(props){
@@ -32,24 +34,6 @@ class ExplorerTab extends Component {
 
 		return tabs[ (tabs.length + idx + d) % tabs.length ]
 	}
-
-  componentDidMount(){
-    /* 
-    const { changeTab } = this.props
-
-		const getRelativeTab = this.getRelativeTab.bind(this)
-		const gotoTab = d => changeTab( this.getRelativeTab(d).id )
-
-    
-		const thisTab = () => getRelativeTab(0)
-		const rightTab = () => gotoTab(+1)
-    const leftTab = () => gotoTab(-1)
-    */
-	}
-	
-	addCommand(name,win,mac,action){
-
-  }
   
   tableDesc({ remarks }){
     let desc = 'Not partitioned';
@@ -88,7 +72,7 @@ class ExplorerTab extends Component {
       const p = schema.procedures[name];
 
       const description = p.reduce( (sig,param, i) => sig + (i > 1 ? ',' : '') + param.type, '(') + ')';
-      const item = { header: name, description, action: () => console.log("View Proc", p) }
+      const item = { header: name, description, action: () => console.log("View Proc", p) };
       const partitionIdx = p.findIndex( param => param && param.partitionParameter );
 
       if ( partitionIdx >= 0 ) item.description += ' Partition on param ' + partitionIdx;
@@ -96,15 +80,18 @@ class ExplorerTab extends Component {
       procedures.push(item);
     }
 
-    const createDialogProps = {
-      show: !!this.state.createDialog,
-      save: ()=>{},
-      close: () => this.setState({ createDialog: false }),
-      fields: [
-        { name: 'name', type: 'i', label: 'Name' },
-        { name: 'partitionOn', type: 'i', label: 'Partition on table' },
-        { name: 'column', type: 'i', label: 'column' }
-      ]
+    const createTableDialogProps = {
+      schema,
+      stream: !!this.state.createStreamDialog,
+      show: !!this.state.createTableDialog || !!this.state.createStreamDialog,
+      save: object => this.saveTable(object),
+      close: () => this.setState({ createTableDialog: false, createStreamDialog: false })
+    };
+
+    const createProcedureDialogProps = {
+      schema,
+      show: !!this.state.createProcedureDialog,
+      close: () => this.setState({ createProcedureDialog: false })
     };
 
     return <div className="ExplorerTab">
@@ -117,7 +104,7 @@ class ExplorerTab extends Component {
                 </Button>
               </Row>
               <Row style={{ height: "35vh", marginTop : "1vh" }}>
-                <Col xs={3}>
+                <Col xs={2}>
                   <Nav bsStyle="pills" stacked activeKey={this.state.activeKey} onSelect={activeKey => this.setState({ activeKey })}>
                     <NavItem eventKey={1}>
                       Tables
@@ -128,22 +115,23 @@ class ExplorerTab extends Component {
                     <NavItem eventKey={3}>
                       Procedures
                     </NavItem>
-                    <NavItem eventKey={4}>
+                    <NavItem eventKey={5}>
                       Indexes
                     </NavItem>
                   </Nav>
                 </Col>
-                <Col xs={9}>
-                  {this.state.activeKey === 1 ? <ObjectList items={tables} create={() => this.setState({ createDialog: true })}/> : null}
-                  {this.state.activeKey === 2 ? <ObjectList items={streams} create={() => console.log("Create stream")} /> : null}
-                  {this.state.activeKey === 3 ? <ObjectList items={procedures} create={() => console.log("Create procedure")} /> : null}
-                  {this.state.activeKey === 4 ? <ObjectList items={tables} create={() => console.log("Create index")} /> : null}
+                <Col xs={10}>
+                  {this.state.activeKey === 1 ? <ObjectList items={tables} create={() => this.setState({ createTableDialog: true })}/> : null}
+                  {this.state.activeKey === 2 ? <ObjectList items={streams} create={() => this.setState({ createStreamDialog: true })}/> : null}
+                  {this.state.activeKey === 3 ? <ObjectList items={procedures} create={() => this.setState({ createProcedureDialog: true })} /> : null}
+                  {this.state.activeKey === 4 ? <ObjectList items={tables} create={false} /> : null}
                 </Col>
               </Row>
           </Col>
         </Row>
 			</div>
-      <CreateObjectDialog {...createDialogProps} />
+      <CreateTableDialog {...createTableDialogProps} />
+      <CreateProcedureDialog {...createProcedureDialogProps} />
     </div>
   }
 }

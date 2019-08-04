@@ -76,7 +76,11 @@ export const load = handleError => {
 				if ( table === undefined ) {
 					schema.tables[tableName] = { columns: [], pks: [] };
 					table = schema.tables[tableName];
-				}
+        }
+        
+        if ( !table.pkOrder ){
+          table.pkOrder = column[5].substring(22+1+tableName.length);
+        }
 
         table.pks[position-1] = name;
       });

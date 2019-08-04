@@ -173,7 +173,7 @@ class Editor extends React.Component {
 		const editorTabs = this.props.tabs.map( tab => {
       const title = tab.exploreTab
           ? <span><Glyphicon glyph="search"/> Explore</span> 
-          : <span>{tab.filepath.split("/").pop()}</span>;
+          : <span><Glyphicon glyph="file"/> {tab.filepath.split("/").pop()}</span>;
 
 			const _closeTab = () => {
 				let nextActive = this.props.tabs.find( t => t.id !== tab.id ) 

@@ -27,9 +27,13 @@ class ObjectList extends Component {
           <FormControl type="text" placeholder="filter" value={this.state.filterText} onChange={e => this.setState({ filterText : e.target.value })} onKeyDown={checkSubmit}/>
         </Col>
         <Col xs={2}>
-          <Button bsStyle="success" bsSize="small" onClick={this.props.create}>
-            Create
-          </Button>
+          {
+            this.props.create ?
+              <Button bsStyle="success" bsSize="small" onClick={this.props.create}>
+                Create
+              </Button>
+              : null
+          }
         </Col>
       </Row>
       <Row>
