@@ -184,6 +184,11 @@ const get = url => _fetch(url, conf)
 const DEBUG_URL = 'https://localhost:8089'
 const prefix = process.env.NODE_ENV === 'development' ? DEBUG_URL : ''
 
+console.log({
+	environment: process.env.NODE_ENV,
+	prefix
+});
+
 const urls = {
     session: prefix + "/session",
     login: prefix + "/connect",
