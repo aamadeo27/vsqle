@@ -241,7 +241,7 @@ Core.prototype.exec = function(session, params){
       return response;
     }).catch( error => {
       logger.error('StoredProcedureResponse', error);
-      return { error };
+      return { error: error.toString() };
     });
 		
   } else {

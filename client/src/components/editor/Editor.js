@@ -1,49 +1,49 @@
-import React from 'react'
-import { Row, Tab, Tabs, Glyphicon } from 'react-bootstrap'
-import { connect } from 'react-redux'
+import React from 'react';
+import { Row, Tab, Tabs, Glyphicon } from 'react-bootstrap';
+import { connect } from 'react-redux';
 
-import EditorTab from './EditorTab.js'
-import ExplorerTab from '../explorer/ExplorerTab.js'
-import QueueConsumer from './QueueConsumer.js'
+import EditorTab from './EditorTab.js';
+import ExplorerTab from '../explorer/ExplorerTab.js';
+import QueueConsumer from './QueueConsumer.js';
 
-import * as actions from '../../Actions'
-import * as api from '../../api/api.js'
-import * as schema from '../../api/schema.js'
+import * as actions from '../../Actions';
+import * as api from '../../api/api.js';
+import * as schema from '../../api/schema.js';
 
-import 'brace/mode/mysql'
-import 'brace/theme/monokai'
-import 'brace/ext/language_tools'
+import 'brace/mode/mysql';
+import 'brace/theme/monokai';
+import 'brace/ext/language_tools';
 
 const ColumnsCompleter = {
-		tables: {},
+	tables: {},
 
-		getCompletions(editor, session, pos, prefix, callback) {
-			const curLine = editor.session.getLine(pos.row)
-			let start = pos.column - 1 
-			for(; start >= 0 && curLine.charAt(start) !== ' '; start --);
+	getCompletions(editor, session, pos, prefix, callback) {
+		const curLine = editor.session.getLine(pos.row);
+		let start = pos.column - 1; 
+		for(; start >= 0 && curLine.charAt(start) !== ' '; start --);
 			
-			const prevString = curLine.substring(start, pos.column)
+		const prevString = curLine.substring(start, pos.column);
 			
-			if ( prevString.indexOf(".") < 0 ){
-				return callback(null, [])
-			}
-
-			const table = prevString.split(".")[0].toLowerCase().split(" ").join("")
-
-			if ( ! ColumnsCompleter.tables[table] ){
-				console.log("No table loaded with name : <"+table+">")
-				return callback(null, [])
-			}
-
-			const wordList = ColumnsCompleter.tables[table].filter( column =>
-				column.name.match('^'+prefix)
-			).map( column => 
-				({ caption: table + "." + column.name,	value: column.name, meta: "Column" })
-			)
-
-			callback(null, wordList)
+		if ( prevString.indexOf('.') < 0 ){
+			return callback(null, []);
 		}
-}
+
+		const table = prevString.split('.')[0].toLowerCase().split(' ').join('');
+
+		if ( ! ColumnsCompleter.tables[table] ){
+			console.log('No table loaded with name : <'+table+'>');
+			return callback(null, []);
+		}
+
+		const wordList = ColumnsCompleter.tables[table].filter( column =>
+			column.name.match('^'+prefix)
+		).map( column => 
+			({ caption: table + '.' + column.name,	value: column.name, meta: 'Column' })
+		);
+
+		callback(null, wordList);
+	}
+};
 
 const StaticWordCompleter = {
 	procedures: [],
@@ -51,176 +51,176 @@ const StaticWordCompleter = {
 	tables: [],
 	variables: [],
 	getCompletions(editor, session, pos, prefix, callback){
-		const filter = word => word.toLowerCase().match(new RegExp("^" + prefix.toLowerCase()))
+		const filter = word => word.toLowerCase().match(new RegExp('^' + prefix.toLowerCase()));
 
 		let wordList = StaticWordCompleter.procedures.filter( filter ).map( word => 
-			({ caption: word, value: word, meta: "Procedure" }) 
-		)
+			({ caption: word, value: word, meta: 'Procedure' }) 
+		);
 		
-		wordList.push({ caption: "exec", value: "exec", meta: "keyword"})
+		wordList.push({ caption: 'exec', value: 'exec', meta: 'keyword'});
 
 		wordList = wordList.concat( StaticWordCompleter.tables.filter( filter ).map( word =>
-			({ caption: word.toLowerCase(), value: word.toLowerCase(), meta: "Table" }) 
-		))
+			({ caption: word.toLowerCase(), value: word.toLowerCase(), meta: 'Table' }) 
+		));
 
 		wordList = wordList.concat( StaticWordCompleter.columns.filter( filter ).map( word =>
-			({ caption: word.toLowerCase(), value: word.toLowerCase(), meta: "Column" })
-    ));
+			({ caption: word.toLowerCase(), value: word.toLowerCase(), meta: 'Column' })
+		));
     
 		wordList = wordList.concat( StaticWordCompleter.variables.filter( filter ).map( word =>
-			({ caption: word, value: '${'+word+'}', meta: "Variable" })
-		))
+			({ caption: word, value: '${'+word+'}', meta: 'Variable' })
+		));
 		
-		callback(null, wordList)
+		callback(null, wordList);
 	}
-}
+};
 
 const setCompleters = editor => {
-	editor.completers.push(StaticWordCompleter)
+	editor.completers.push(StaticWordCompleter);
 
 	editor.completers.forEach( completer => { 
-		var getCompletions = completer.getCompletions
+		var getCompletions = completer.getCompletions;
 		completer.getCompletions = function(editor, session, pos, prefix, callback){
-			let curLine = editor.session.getLine(pos.row)
-			let start = pos.column-1
+			let curLine = editor.session.getLine(pos.row);
+			let start = pos.column-1;
 
 			for(; start >= 0 && curLine.charAt(start) !== ' '; start --); 
 			
-			const prevString = curLine.substring(start, pos.column)
+			const prevString = curLine.substring(start, pos.column);
 			
-			if ( prevString.indexOf(".") >= 0 ){
-				return callback(null, [] )
+			if ( prevString.indexOf('.') >= 0 ){
+				return callback(null, [] );
 			}
 		
-			getCompletions(editor, session, pos, prefix, callback)
-		}
-	})
+			getCompletions(editor, session, pos, prefix, callback);
+		};
+	});
 
-	editor.completers.push(ColumnsCompleter)
-}
+	editor.completers.push(ColumnsCompleter);
+};
 
 const updateCompleters = schema => {
-	StaticWordCompleter.procedures = Object.keys(schema.procedures).filter( p => ! p.match(/.+\.+/) )
-	StaticWordCompleter.tables = Object.keys(schema.tables).map(c => c.toLowerCase())
-	StaticWordCompleter.columns = schema.columns || []
-	ColumnsCompleter.tables = schema.tables || []
-}
+	StaticWordCompleter.procedures = Object.keys(schema.procedures).filter( p => ! p.match(/.+\.+/) );
+	StaticWordCompleter.tables = Object.keys(schema.tables).map(c => c.toLowerCase());
+	StaticWordCompleter.columns = schema.columns || [];
+	ColumnsCompleter.tables = schema.tables || [];
+};
 
 const updateSWCompleter = variables => {
-	StaticWordCompleter.variables = variables.map( v => v.name )
-}
+	StaticWordCompleter.variables = variables.map( v => v.name );
+};
 
 class Editor extends React.Component {
 
 	addTab(){
-		const { addTab } = this.props
+		const { addTab } = this.props;
 
-		const newTab = api.newTab()
-		addTab(newTab)
+		const newTab = api.newTab();
+		addTab(newTab);
 
-		this.setState({ activeKey: newTab.id })
+		this.setState({ activeKey: newTab.id });
 	}
 
 	checkTabs(){
 		if ( this.props.tabs.length === 0 ){
-			this.addTab()
+			this.addTab();
 		}
 	}
 
 	loadSchema(){
-		const { updateSchema, addResult, connection } = this.props
-		const handleError = err => addResult( { error: err.error, queryConfig: { query: "Load Schema" } })
+		const { updateSchema, addResult, connection } = this.props;
+		const handleError = err => addResult( { error: err.error, queryConfig: { query: 'Load Schema' } });
 
 		if ( connection.user ){
-			schema.load( ).then( response => {
-				if ( response ){
-					const {tables, procedures, columns, pks} = response
-					updateSchema(tables, procedures, columns, pks)
-				} else {
-					handleError({ error: "No response from back end" })
-				}
-			}).catch ( e => {
-				handleError(e)
-			})
+			schema.load( )
+				.then( response => {
+					if ( response ){
+						updateSchema(response);
+					} else {
+						handleError({ error: 'No response from back end' });
+					}
+				}).catch ( e => {
+					handleError(e);
+				});
 		}
 	}
 
 	componentDidMount(){
-		this.checkTabs()
-		this.loadSchema()
+		this.checkTabs();
+		this.loadSchema();
 	}
 
 	componentDidUpdate(prevProps){
-		this.checkTabs()
+		this.checkTabs();
 
 		if ( prevProps.connection !== this.props.connection ){
-			this.loadSchema()
+			this.loadSchema();
 		}
 
-		const { schema, vars } = this.props
+		const { schema, vars } = this.props;
 		if ( prevProps.schema !== schema && schema.procedures && schema.tables ){
-			updateCompleters(schema)
+			updateCompleters(schema);
 		}
 
 		if ( prevProps.vars !== vars ){
-			updateSWCompleter(vars.list)
+			updateSWCompleter(vars.list);
 		}
 	}
 
-  render() {
-		const { activeTab: activeKey, changeTab, closeTab } = this.props
+	render() {
+		const { activeTab: activeKey, changeTab, closeTab } = this.props;
 		
 		const editorTabs = this.props.tabs.map( tab => {
-      const title = tab.exploreTab
-          ? <span><Glyphicon glyph="search"/> Explore</span> 
-          : <span><Glyphicon glyph="file"/> {tab.filepath.split("/").pop()}</span>;
+			const title = tab.exploreTab
+				? <span><Glyphicon glyph="search"/> Explore</span> 
+				: <span><Glyphicon glyph="file"/> {tab.filepath.split('/').pop()}</span>;
 
 			const _closeTab = () => {
-				let nextActive = this.props.tabs.find( t => t.id !== tab.id ) 
-				nextActive = (nextActive && nextActive.id) || -1
+				let nextActive = this.props.tabs.find( t => t.id !== tab.id ); 
+				nextActive = (nextActive && nextActive.id) || -1;
 
-				closeTab(tab.id, nextActive)
+				closeTab(tab.id, nextActive);
+			};
+
+			const addTab = this.addTab.bind(this);
+      
+			let tabContent = null;
+			if ( tab.exploreTab ){
+				tabContent = <ExplorerTab close={_closeTab} newTab={addTab}/>;
+			} else {
+				tabContent = <EditorTab id={tab.id} close={_closeTab} newTab={addTab} setCompleters={setCompleters}/>;
 			}
 
-      const addTab = this.addTab.bind(this)
-      
-      let tabContent = null;
-      if ( tab.exploreTab ){
-        tabContent = <ExplorerTab close={_closeTab} newTab={addTab}/>
-      } else {
-        tabContent = <EditorTab id={tab.id} close={_closeTab} newTab={addTab} setCompleters={setCompleters}/>;
-      }
-
-			return <Tab eventKey={tab.id} title={title} key={"editor.tab."+tab.id}>
-					{tabContent}
-			</Tab>
-		})
+			return <Tab eventKey={tab.id} title={title} key={'editor.tab.'+tab.id}>
+				{tabContent}
+			</Tab>;
+		});
 
 		const selectKey = ( key ) => {
-			if ( key === "newtab" ) this.addTab()
-			else changeTab(key)
-		}
+			if ( key === 'newtab' ) this.addTab();
+			else changeTab(key);
+		};
 		
 		const props = {
 			onSelect: selectKey,
-			id: "editor-tabs",
-			className: "editor-tabs",
+			id: 'editor-tabs',
+			className: 'editor-tabs',
 			animation: false,
 			activeKey
-		}
+		};
 
-    return (
-		<Row className="section">
-			<div className="Editor">
-				<Tabs {...props} >
-					{editorTabs}
-					<Tab eventKey="newtab" title={<Glyphicon glyph="plus"/>} key="newtab" bsStyle="info"/>
-				</Tabs>
-				<QueueConsumer />
-			</div>
-		</Row>
-    )
-  }
+		return (
+			<Row className="section">
+				<div className="Editor">
+					<Tabs {...props} >
+						{editorTabs}
+						<Tab eventKey="newtab" title={<Glyphicon glyph="plus"/>} key="newtab" bsStyle="info"/>
+					</Tabs>
+					<QueueConsumer />
+				</div>
+			</Row>
+		);
+	}
 }
 
 const mapStateToProps = ({ tabs, activeTab, config, schema, vars, connection }) => ({ 
@@ -230,7 +230,7 @@ const mapStateToProps = ({ tabs, activeTab, config, schema, vars, connection }) 
 	schema,
 	vars,
 	connection
-})
+});
 
 const mapDispatchToProps =  dispatch => ({
 	closeTab: (id, nextActive) => dispatch(actions.closeTab(id, nextActive)),
@@ -240,6 +240,6 @@ const mapDispatchToProps =  dispatch => ({
 	addResult: result => dispatch(actions.addResult(result)),
 
 	updateSchema: (tables, procedures, columns, pks) => dispatch(actions.updateSchema(tables, procedures, columns, pks))
-})
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(Editor)
+export default connect(mapStateToProps, mapDispatchToProps)(Editor);

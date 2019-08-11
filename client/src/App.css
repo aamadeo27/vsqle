@@ -124,6 +124,16 @@ a { text-decoration: none !important }
   border: 1px solid #DADADA;
 }
 
+.TableInfo {
+	display: block;
+	text-align: left;
+	font-size: 14pt;
+	width: 100%;
+	min-height: 38vh;
+	border: 1px solid #DADADA;
+	padding-top: 1vh;
+ }
+
 .object-list {
   margin-top: 2vh;
   overflow-y: scroll;

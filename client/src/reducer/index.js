@@ -142,10 +142,7 @@ const config = ( state = INITIAL_CONFIG, action ) => {
 
 const schema = ( state = {}, action ) => {
 	if ( action.type === UPDATE_SCHEMA ){
-		const newSchema = Object.assign({},action)
-		delete newSchema.type
-
-		return newSchema 
+		return action.schema;
 	}
 
 	return state

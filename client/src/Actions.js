@@ -1,37 +1,37 @@
 import {
-    CHANGE_DIALOG,
+	CHANGE_DIALOG,
 
-    UPDATE_PROJECT,
-    CHANGE_ACTIVE_FILEPATH,
-    RENAME_NODE,
-    DELETE_NODE,
-    CREATE_FOLDER,
-    CREATE_FILE,
-    UPDATE_FILE,
+	UPDATE_PROJECT,
+	CHANGE_ACTIVE_FILEPATH,
+	RENAME_NODE,
+	DELETE_NODE,
+	CREATE_FOLDER,
+	CREATE_FILE,
+	UPDATE_FILE,
 
-    CHANGE_TAB,
-    CLOSE_TAB,
-    CHANGE_TAB_CONTENT,
-    ADD_TAB,
-		UPDATE_TAB,
-		
-		UPDATE_QUEUE,
-    
-    ADD_RESULT,
-    UPDATE_RESULT,
-    CLEAR_RESULTS,
+	CHANGE_TAB,
+	CLOSE_TAB,
+	CHANGE_TAB_CONTENT,
+	ADD_TAB,
+	UPDATE_TAB,
 
-    UPDATE_CONFIG,
-    UPDATE_SCHEMA,
+	UPDATE_QUEUE,
 
-		ADD_VARIABLE,
-		UPDATE_VARIABLE,
-		REMOVE_VARIABLE,
-	
-    TOGGLE_SHOWVARS,
-    UPDATE_CONNECTION,
+	ADD_RESULT,
+	UPDATE_RESULT,
+	CLEAR_RESULTS,
 
-    UPDATE_SPEED_LOGO
+	UPDATE_CONFIG,
+	UPDATE_SCHEMA,
+
+	ADD_VARIABLE,
+	UPDATE_VARIABLE,
+	REMOVE_VARIABLE,
+
+	TOGGLE_SHOWVARS,
+	UPDATE_CONNECTION,
+
+	UPDATE_SPEED_LOGO
 } from './Constants.js'
 
 export const changeDialog = dialog => ({ type: CHANGE_DIALOG, dialog })
@@ -57,7 +57,7 @@ export const updateResult = result => ({ type: UPDATE_RESULT, result })
 export const clearResults = ({ type: CLEAR_RESULTS })
 
 export const updateConfig = config => ({ type: UPDATE_CONFIG, config})
-export const updateSchema = (tables, procedures, columns, pks) => ({ type: UPDATE_SCHEMA, tables, procedures, columns, pks })
+export const updateSchema = (schema) => ({ type: UPDATE_SCHEMA, schema })
 
 export const addVariable = variable => ({ type: ADD_VARIABLE, variable })
 export const removeVariable = variable => ({ type: REMOVE_VARIABLE, variable })
