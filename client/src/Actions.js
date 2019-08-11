@@ -32,7 +32,7 @@ import {
 	UPDATE_CONNECTION,
 
 	UPDATE_SPEED_LOGO
-} from './Constants.js'
+} from './Constants'
 
 export const changeDialog = dialog => ({ type: CHANGE_DIALOG, dialog })
 

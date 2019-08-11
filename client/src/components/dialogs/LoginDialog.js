@@ -1,38 +1,38 @@
-import React from 'react'
-import { Button, Modal, InputGroup, FormControl, Fade } from 'react-bootstrap'
-import * as api from '../../api/api'
+import React from 'react';
+import { Button, Modal, InputGroup, FormControl, Fade } from 'react-bootstrap';
+import * as api from '../../api/api';
 
 export default class LoginDialog extends React.Component {
 	constructor(props){
-		super(props)
+		super(props);
 
-		const { connections } = props
+		const { connections } = props;
 
-		this.state = { user: "", password: "", connection: (connections && connections[0] && connections[0].name) || "" }
+		this.state = { user: '', password: '', connection: (connections && connections[0] && connections[0].name) || '' };
 	}
 
 	componentWillReceiveProps(props){
-		const { connections } = props
+		const { connections } = props;
 
-		this.setState({ user: "", password: "", connection: (connections && connections[0] && connections[0].name) || "" })
+		this.setState({ user: '', password: '', connection: (connections && connections[0] && connections[0].name) || '' });
 	}
 
 	onChange(e){
-		const field = e.target.id
-		const value = e.target.value
-		this.setState({ [field] : value })
+		const field = e.target.id;
+		const value = e.target.value;
+		this.setState({ [field] : value });
 	}
 
 	login(){
-		const { updateConnection, close, connections } = this.props
-		const { user, connection: name, password } = this.state
+		const { updateConnection, close, connections } = this.props;
+		const { user, connection: name, password } = this.state;
 
-		let nodes = []
+		let nodes = [];
 		if ( connections ){
-			console.log({ connections, name })
-			nodes = connections.find(c=>c.name === name).nodes
+			console.log({ connections, name });
+			nodes = connections.find(c=>c.name === name).nodes;
 		} else {
-			return this.setState({ error: "No connections found" })
+			return this.setState({ error: 'No connections found' });
 		}
 
 		const userConfig = { 
@@ -40,41 +40,41 @@ export default class LoginDialog extends React.Component {
 			password,
 			nodes,
 			name
-		}
+		};
 
 		api.login(userConfig).then( r => {
 			if ( r.status === 0 ){
-				updateConnection({ user, name })
-				this.setState({ loading: false })
-				close()
+				updateConnection({ user, name });
+				this.setState({ loading: false });
+				close();
 			} else {
-				updateConnection({})
+				updateConnection({});
 
-				this.setState({ error : "User & Password don't match", loading: false })
+				this.setState({ error : 'User & Password don\'t match', loading: false });
 			}
 		}).catch( error => {
-			console.error("Server error", error)
-			this.setState({ error : "Server error", loading: false })
-		})
+			console.error('Server error', error);
+			this.setState({ error : 'Server error', loading: false });
+		});
 	}
 
 	render(){
-		const connections = this.props.connections || []
-		const { connection, error } = this.state
-		const connectionsMenu = connections.map( c => <option key={c.name} value={c.name}>{c.name}</option> )
+		const connections = this.props.connections || [];
+		const { connection, error } = this.state;
+		const connectionsMenu = connections.map( c => <option key={c.name} value={c.name}>{c.name}</option> );
 		const onSubmit = e => {
 			e.preventDefault();
-			this.setState({ error: undefined, loading: true })
-			this.login()
+			this.setState({ error: undefined, loading: true });
+			this.login();
 
-			return true
-		}
+			return true;
+		};
 
-		let errorMessage = ""
+		let errorMessage = '';
 		if ( error ){
 			errorMessage = <Fade in={!!error} timeout={800}>
 				<span className="text-danger pull-left">{error}</span>
-			</Fade>
+			</Fade>;
 		}
 
 		return <Modal show={this.props.show} onHide={this.props.close}>
@@ -104,6 +104,6 @@ export default class LoginDialog extends React.Component {
 					<Button bsStyle="success" type="submit">Log in</Button>
 				</Modal.Footer>
 			</form>
-		</Modal>
+		</Modal>;
 	}
 }
