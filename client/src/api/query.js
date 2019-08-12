@@ -90,9 +90,8 @@ export const execute = (editor, variables, schema, asyncExecution) =>
 
 export const handleResponse = (data, logout, addResult) => {
 	if (data.error){
-		if ( data.error === 'Not logged in' ){
-			logout();
-		}
+		if ( data.error === 'Not logged in' ) logout();
+
 		
 		addResult(data);
 	} else if ( data.describe || data.analysis || data.explain) {

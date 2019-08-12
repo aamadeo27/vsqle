@@ -128,9 +128,17 @@ class Tools extends React.Component {
 
 		api.loadClasses(e.target.files[0])
 			.then( response => {
-				console.log('r',response);
-				if ( response.error === 'Not logged in' ){
-					logout();
+				if ( response.error ){
+					if ( response.error === 'Not logged in' ) logout();
+
+					return addResult({
+						error: response.error,
+						queryConfig: {
+							id: 0,
+							loadClasses: true,
+							query: 'Load Classes ' + name,
+						}
+					});
 				}
 
 				addResult({
@@ -141,7 +149,20 @@ class Tools extends React.Component {
 					},
 					result: response
 				});
+
 				updateLogoSpeed(60);
+			})
+			.catch ( error => {
+				console.log({ error });
+
+				addResult({
+					error: error.toString(),
+					queryConfig: {
+						id: 0,
+						loadClasses: true,
+						query: 'Load Classes ' + name,
+					}
+				});
 			});
 	}
 

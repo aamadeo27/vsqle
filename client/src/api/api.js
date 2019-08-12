@@ -182,7 +182,7 @@ const dataOp = method => (url, data) => {
 const post = dataOp('POST');
 const get = url => _fetch(url, conf);
 
-const DEBUG_URL = 'https://localhost:8089';
+const DEBUG_URL = 'https://falcondes-app1:8089';
 const prefix = process.env.NODE_ENV === 'development' ? DEBUG_URL : '';
 
 const urls = {
@@ -227,6 +227,7 @@ export const loadClasses = jar => {
 		});
 	}
   
+<<<<<<< HEAD
 	return _fetch(urls.loadClasses, callConf).catch( console.error );
 };
 
