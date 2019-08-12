@@ -1,6 +1,6 @@
 {
   "name": "vsqle-desktop",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Voltdb SQL Editor Desktop",
   "main": "index.js",
   "scripts": {
@@ -32,7 +32,7 @@
     "winston": "^3.1.0"
   },
   "devDependencies": {
-    "electron": "^2.0.10",
-    "electron-rebuild": "^1.8.2"
+    "electron": "^6.0.1",
+    "node-pre-gyp": "^0.13.0"
   }
 }

@@ -3,8 +3,17 @@ require('./client');
 const debug = false;
 
 function createWindow () {
-  win = new BrowserWindow({ width: 1024, height: 768 });
+  win = new BrowserWindow({
+	  width: 1024,
+	  height: 768,
+	  webPreferences: { nodeIntegration: true },
+	  icon: __dirname + '/public/favicon.ico'
+	});
+
   win.maximize();
+  
+  if ( process.env.NODE_DEV ) win.webContents.openDevTools();
+  
   if ( !debug ) Menu.setApplicationMenu(new Menu());
 
   // and load the index.html of the app.

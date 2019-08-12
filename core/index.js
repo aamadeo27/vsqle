@@ -234,6 +234,7 @@ Core.prototype.exec = function(session, params){
 
 		logger.audit('StoreProcedureRequest',{ procedure, args, username, timestamp: new Date().toLocaleString(), nodes });
 		
+<<<<<<< HEAD
 		return voltDAO.callProcedure(procedure, args).then( tables => {
 			const response = mapTables(tables);
 
@@ -243,6 +244,17 @@ Core.prototype.exec = function(session, params){
 			logger.error('StoredProcedureResponse', error);
 			return { error };
 		});
+=======
+    return voltDAO.callProcedure(procedure, args).then( tables => {
+      const response = mapTables(tables);
+
+      logger.log('StoredProcedureResponse', { procedure, args, status: 'ok' });
+      return response;
+    }).catch( error => {
+      logger.error('StoredProcedureResponse', error);
+      return { error: error.toString() };
+    });
+>>>>>>> master
 		
 	} else {
 		const response = { error: 'Not logged in' };

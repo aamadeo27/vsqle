@@ -1,6 +1,6 @@
 {
   "name": "vsqle-core",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "vsqle backend core",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,8 @@
   "author": "aamadeo27",
   "license": "MIT",
   "dependencies": {
-    "winston": "^3.1.0",
-    "voltjs": "git+https://github.com/aamadeo27/voltdb-client-nodejs.git#feature/promises"
+    "murmurhash-native": "^3.4.1",
+    "voltjs": "git+https://github.com/aamadeo27/voltdb-client-nodejs.git#feature/promises",
+    "winston": "^3.1.0"
   }
 }
