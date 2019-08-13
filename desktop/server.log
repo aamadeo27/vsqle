@@ -198,3 +198,35 @@
 [9/28/2018, 12:08:54 PM][info][StoredProcedureResponse] - { procedure: "@SystemCatalog", args: ["'tables'"], status: "ok" }
 [9/28/2018, 1:06:04 PM][info][StoreProcedureRequest] - { procedure: "@SystemCatalog", args: ["'tables'"], cid: 1538150921188 }
 [9/28/2018, 1:06:04 PM][info][StoredProcedureResponse] - { procedure: "@SystemCatalog", args: ["'tables'"], status: "ok" }
+[8/12/2019, 9:16:05 PM][info][LogInRequest,[object Object]] - {  }
+[8/12/2019, 9:16:05 PM][info][Connected] - {  }
+[8/12/2019, 9:16:05 PM][info][LogInResponse,[object Object]] - {  }
+[8/12/2019, 9:16:05 PM][info][Schema,[object Object]] - {  }
+[8/12/2019, 9:16:05 PM][info][Schema,[object Object]] - {  }
+[8/12/2019, 9:16:05 PM][info][Schema,[object Object]] - {  }
+[8/12/2019, 9:16:05 PM][info][Schema,[object Object]] - {  }
+[8/12/2019, 9:16:05 PM][info][Schema,[object Object]] - {  }
+[8/12/2019, 9:16:06 PM][info][Schema OK] - {  }
+[8/12/2019, 9:16:06 PM][info][Schema OK] - {  }
+[8/12/2019, 9:16:06 PM][info][Schema OK] - {  }
+[8/12/2019, 9:16:07 PM][info][Schema OK] - {  }
+[8/12/2019, 9:16:07 PM][info][Schema OK] - {  }
+[8/12/2019, 9:19:53 PM][info][LogInRequest] - {  }
+[8/12/2019, 9:19:53 PM][info][Connected] - {  }
+[8/12/2019, 9:19:53 PM][info][LogInResponse] - {  }
+[8/12/2019, 9:19:53 PM][info][Schema] - {  }
+[8/12/2019, 9:19:53 PM][info][Schema] - {  }
+[8/12/2019, 9:19:53 PM][info][Schema] - {  }
+[8/12/2019, 9:19:53 PM][info][Schema] - {  }
+[8/12/2019, 9:19:53 PM][info][Schema] - {  }
+[8/12/2019, 9:19:54 PM][info][Schema OK] - {  }
+[8/12/2019, 9:19:54 PM][info][Schema OK] - {  }
+[8/12/2019, 9:19:54 PM][info][Schema OK] - {  }
+[8/12/2019, 9:19:55 PM][info][Schema OK] - {  }
+[8/12/2019, 9:19:55 PM][info][Schema OK] - {  }
+[8/12/2019, 9:20:04 PM][info][QueryRequest] - {  }
+[8/12/2019, 9:20:05 PM][info][QueryResponse OK] - {  }
+[8/12/2019, 9:20:19 PM][info][QueryRequest] - {  }
+[8/12/2019, 9:20:20 PM][info][QueryResponse OK] - {  }
+[8/12/2019, 9:21:17 PM][info][StoreProcedureRequest] - {  }
+[8/12/2019, 9:21:17 PM][info][StoredProcedureResponse] - {  }

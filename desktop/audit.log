@@ -16,3 +16,8 @@
 [9/28/2018, 12:08:41 PM][][disconnected][LogIn][@AdHoc]  
 [9/28/2018, 12:08:53 PM][operator][volthost][StoreProcedureRequest][@SystemCatalog]  - 'tables'
 [9/28/2018, 1:06:04 PM][operator][volthost][StoreProcedureRequest][@SystemCatalog]  - 'tables'
+[undefined][][disconnected][LogIn,[object Object]][@AdHoc]  
+[undefined][][disconnected][LogIn][@AdHoc]  
+[undefined][][disconnected][QueryRequest][@AdHoc]  
+[undefined][][disconnected][QueryRequest][@AdHoc]  
+[undefined][][disconnected][StoreProcedureRequest][@AdHoc]  

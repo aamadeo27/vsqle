@@ -4,12 +4,16 @@ const core = require('vsqle-core');
 const session = {};
 
 const requestHandler = method => (event, message) => {
-  const result = core[method](session, message);
+	try {
+		const result = core[method](session, message);
 
-  if ( result instanceof Promise ){
-    result.then( response => event.sender.send( message.id, response ) );	
-  } else {
+		if ( result instanceof Promise ){
+		result.then( response => event.sender.send( message.id, response ) );	
+		} else {
 		event.sender.send(message.id, result);
+		}
+	} catch (error){
+		console.log('Erro at handling request', error);
 	}
 }
 

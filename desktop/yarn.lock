@@ -1249,8 +1249,8 @@ verror@1.10.0:
     murmurhash-native "^3.4.1"
     supports-color "^4.4.0"
 
-"vsqle-core@file:../core":
-  version "1.0.0"
+vsqle-core@../core/:
+  version "1.1.0"
   dependencies:
     murmurhash-native "^3.4.1"
     voltjs "git+https://github.com/aamadeo27/voltdb-client-nodejs.git#feature/promises"
