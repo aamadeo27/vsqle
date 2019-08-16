@@ -234,6 +234,9 @@ class Tools extends React.Component {
 
 				if ( resolved === promises.length ) {
 
+					console.log('Filesize: ' + queryResult.length + ' Bytes');
+					console.debug('File:\n', queryResult);
+
 					if ( queryResult.length > 0 ){
 						this.setState({ downloadQR: false });
 						this.setState({ queryResult, downloadQR: true });

@@ -1,165 +1,165 @@
-import React, { Component } from 'react'
-import AceEditor from 'react-ace'
-import { connect } from 'react-redux'
-import { Row, Col, Button, Glyphicon } from 'react-bootstrap'
+import React, { Component } from 'react';
+import AceEditor from 'react-ace';
+import { connect } from 'react-redux';
+import { Row, Col, Button, Glyphicon } from 'react-bootstrap';
 
-import * as api from '../../api/api.js'
-import * as query from '../../api/query.js'
-import * as actions from '../../Actions.js'
-import { IGNORE_PATTERN } from '../../Constants.js'
+import * as api from '../../api/api.js';
+import * as query from '../../api/query.js';
+import * as actions from '../../Actions.js';
+import { IGNORE_PATTERN } from '../../Constants.js';
 
 class EditorTab extends Component {
 	/*shouldComponentUpdate({ activeTab	}){
 		return activeTab === this.props.id
 	}*/
 
-  onChange( newValue ){
-    const { changeTabContent, id } = this.props
-		const ignorePattern = new RegExp("^" + IGNORE_PATTERN + ".*")
+	onChange( newValue ){
+		const { changeTabContent, id } = this.props;
+		const ignorePattern = new RegExp('^' + IGNORE_PATTERN + '.*');
 		
-		if ( newValue.match(ignorePattern) || newValue === "" ) {
-			return
+		if ( newValue.match(ignorePattern) || newValue === '' ) {
+			return;
 		}
 
-		changeTabContent(id, newValue)
-  }
+		changeTabContent(id, newValue);
+	}
 
 	getRelativeTab(d){
-		const { tabs, file } = this.props
+		const { tabs, file } = this.props;
 
-		const idx = tabs.findIndex( t => t.id === file.id )
+		const idx = tabs.findIndex( t => t.id === file.id );
 
-		return tabs[ (tabs.length + idx + d) % tabs.length ]
+		return tabs[ (tabs.length + idx + d) % tabs.length ];
 	}
 
 	gotoTab(d){
-		this.props.changeTab( this.getRelativeTab(d).id )
+		this.props.changeTab( this.getRelativeTab(d).id );
 	}
 
 	getProps(){
-		return this.props
+		return this.props;
 	}
 
 	execute(asyncExecution){
-    const {
-      vars,
-      addResult, clearResults, updateQueue,
+		const {
+			vars,
+			addResult, clearResults, updateQueue,
 			schema,
-      logout,
-      updateLogoSpeed
-    } = this.props
+			logout,
+			updateLogoSpeed
+		} = this.props;
 
-    const editor = this.refs.AceEditor.editor
+		const editor = this.refs.AceEditor.editor;
     
 		if ( asyncExecution ){
 			if ( this.props.queue.length > 0 ) return;
 
-      updateLogoSpeed(0.35);
-			clearResults()
-      const promises = query.execute(editor, vars.list, schema, asyncExecution);
+			updateLogoSpeed(0.35);
+			clearResults();
+			const promises = query.execute(editor, vars.list, schema, asyncExecution);
 
-      let resolved = 0;
+			let resolved = 0;
 			promises.forEach( (promise) => {
 				promise.then( response => {
-          query.handleResponse(response, logout, addResult)  
-          resolved++
-          if ( resolved === promises.length ) {
-            updateLogoSpeed(60);
-          }
-        }).catch( err => console.log(err))	
-      })
+					query.handleResponse(response, logout, addResult);  
+					resolved++;
+					if ( resolved === promises.length ) {
+						updateLogoSpeed(60);
+					}
+				}).catch( err => console.log(err));	
+			});
 
-			return
+			return;
 		}
 		
 		if ( this.props.queue.length === 0 ){
-      updateLogoSpeed(0.35);
-			clearResults()
-			const queue = query.execute(editor, vars.list, schema, asyncExecution)
-			updateQueue(queue)
+			updateLogoSpeed(0.35);
+			clearResults();
+			const queue = query.execute(editor, vars.list, schema, asyncExecution);
+			updateQueue(queue);
 		} else {
-      updateLogoSpeed(0.35)
-			updateQueue([])
+			updateLogoSpeed(0.35);
+			updateQueue([]);
 		}
 	}
 
 	executeLine(){
-    const {
-      vars,
-      addResult, clearResults,
+		const {
+			vars,
+			addResult, clearResults,
 			schema,
 			logout,
-      queue,
-      updateLogoSpeed
-    } = this.props
+			queue,
+			updateLogoSpeed
+		} = this.props;
 
-		const editor = this.refs.AceEditor.editor
+		const editor = this.refs.AceEditor.editor;
 		if ( queue.length > 0 ) return;
 
-		clearResults()
+		clearResults();
 
 		query.executeLine(editor, vars.list, schema)
 			.then( response => {
-        query.handleResponse(response, logout, addResult)  
-        updateLogoSpeed(60);
-      })
-      .catch( err => console.log(err))
+				query.handleResponse(response, logout, addResult);  
+				updateLogoSpeed(60);
+			})
+			.catch( err => console.log(err));
       
-    updateLogoSpeed(0.35);
+		updateLogoSpeed(0.35);
 	}
 
-  componentDidMount(){
-    const {
-      file, close,
+	componentDidMount(){
+		const {
+			file, close,
 			updateTab, changeDialog, toggleVars,
 			updateFile,
 			newTab
-    } = this.props
+		} = this.props;
 
-    const tab = Object.assign({}, file)
-    tab.editor = this.refs.AceEditor.editor
+		const tab = Object.assign({}, file);
+		tab.editor = this.refs.AceEditor.editor;
 
-    tab.editor.setOptions({
-    	enableBasicAutocompletion: true,
+		tab.editor.setOptions({
+    		enableBasicAutocompletion: true,
 			enableLiveAutocompletion: true
-    })
+		});
 
-		const getRelativeTab = this.getRelativeTab.bind(this)
-		const gotoTab = this.gotoTab.bind(this)
-		const getProps = this.getProps.bind(this)
+		const getRelativeTab = this.getRelativeTab.bind(this);
+		const gotoTab = this.gotoTab.bind(this);
+		const getProps = this.getProps.bind(this);
 
-		const thisTab = () => getRelativeTab(0)
-		const rightTab = () => gotoTab(+1)
-		const leftTab = () => gotoTab(-1)
+		const thisTab = () => getRelativeTab(0);
+		const rightTab = () => gotoTab(+1);
+		const leftTab = () => gotoTab(-1);
 
 		const save = () => {
-			const { projectName } = getProps()
+			const { projectName } = getProps();
 
-			const tab = thisTab()
+			const tab = thisTab();
 			
-      if ( tab.newTab ){
-        changeDialog("NewFile")
-      } else {
-        api.updateFile(projectName, tab, () => updateFile(tab))
-      }
-		}
+			if ( tab.newTab ){
+				changeDialog('NewFile');
+			} else {
+				api.updateFile(projectName, tab, () => updateFile(tab));
+			}
+		};
 
-		this.addCommand("executeLine","F4", "Cmd+L", () => this.executeLine() )
-		this.addCommand("async execute","F5", "Cmd+Enter", () => this.execute(true) )
-		this.addCommand("sync execute","F6", "Ctrl+Cmd+Enter", () => this.execute(false) )
-		this.addCommand("save","Ctrl+S", "Cmd+S", save )
-		this.addCommand("rightTab","Ctrl+Right", "", rightTab )
-		this.addCommand("leftTab","Ctrl+Left", "", leftTab )
-		this.addCommand("newTab","Alt+T", "Cmd+T", newTab )
-		this.addCommand("closeTab","Alt+W", "Cmd+W", close )
-		this.addCommand("variables","F3", "F3", toggleVars )
+		this.addCommand('executeLine','F4', 'Cmd+L', () => this.executeLine() );
+		this.addCommand('async execute','F5', 'Cmd+Enter', () => this.execute(true) );
+		this.addCommand('sync execute','F6', 'Ctrl+Cmd+Enter', () => this.execute(false) );
+		this.addCommand('save','Ctrl+S', 'Cmd+S', save );
+		this.addCommand('rightTab','Ctrl+Right', '', rightTab );
+		this.addCommand('leftTab','Ctrl+Left', '', leftTab );
+		this.addCommand('newTab','Alt+T', 'Cmd+T', newTab );
+		this.addCommand('closeTab','Alt+W', 'Cmd+W', close );
+		this.addCommand('variables','F3', 'F3', toggleVars );
 
-		updateTab( tab )
-    this.props.setCompleters(tab.editor)
+		updateTab( tab );
+		this.props.setCompleters(tab.editor);
 	}
 	
 	addCommand(name,win,mac,action){
-    const editor = this.refs.AceEditor.editor
+		const editor = this.refs.AceEditor.editor;
 
 		editor.commands.addCommand({
 			name: name,
@@ -169,29 +169,29 @@ class EditorTab extends Component {
 				sender: 'editor|cli'
 			},
 			exec: action
-		})
+		});
 	}
 
-  render(){
-    const { file } = this.props
+	render(){
+		const { file } = this.props;
 
-    const AceEditorProps = {
-      value: file.content,
-      onChange: this.onChange.bind(this),
-      mode: "mysql",
-      theme: "textmate",
-      name: "EditorTab." + file.id,
-      height: "35vh",
-			width: "100%",
+		const AceEditorProps = {
+			value: file.content,
+			onChange: this.onChange.bind(this),
+			mode: 'mysql',
+			theme: 'textmate',
+			name: 'EditorTab.' + file.id,
+			height: '35vh',
+			width: '100%',
 			showGutter: false,
-			fontFamily: "tahoma",
-			fontSize: "10pt",
-      editorProps: { 
+			fontFamily: 'tahoma',
+			fontSize: '10pt',
+			editorProps: { 
 				$blockScrolling: true,
 			}
-    }
+		};
 
-    return <div className="EditorTab">
+		return <div className="EditorTab">
 			<div className="container-fluid">
 				<Row>
 					<Col xs={12}>
@@ -201,7 +201,7 @@ class EditorTab extends Component {
 							</Button>
 						</Row>
 						<Row>
-							<AceEditor {...AceEditorProps}	ref={"AceEditor"}/>
+							<AceEditor {...AceEditorProps}	ref={'AceEditor'}/>
 						</Row>
 						<Row>
 							<span className="tab-footer pull-left">{file.filepath}</span>
@@ -209,8 +209,8 @@ class EditorTab extends Component {
 					</Col>
 				</Row>
 			</div>
-    </div>
-  }
+		</div>;
+	}
 }
 
 const mapDispatchToProps = dispatch => ({
@@ -222,28 +222,28 @@ const mapDispatchToProps = dispatch => ({
 
 	logout: () => dispatch(actions.updateConnection({})),
 
-  changeTabContent: (id,content) => dispatch(actions.changeTabContent(id,content)),
-  updateTab: tab => dispatch(actions.updateTab(tab)),
+	changeTabContent: (id,content) => dispatch(actions.changeTabContent(id,content)),
+	updateTab: tab => dispatch(actions.updateTab(tab)),
 	changeTab: id => dispatch(actions.changeTab(id)),
 
 	updateQueue: queue => dispatch(actions.updateQueue(queue)),
 
-  changeDialog: dialog => dispatch(actions.changeDialog(dialog)),
+	changeDialog: dialog => dispatch(actions.changeDialog(dialog)),
 
-  toggleVars: () => dispatch(actions.toggleShowVars),
+	toggleVars: () => dispatch(actions.toggleShowVars),
   
-  updateLogoSpeed: speed => dispatch(actions.updateLogoSpeed(speed))
-})
+	updateLogoSpeed: speed => dispatch(actions.updateLogoSpeed(speed))
+});
 
 const mapStateToProps = ({ activeTab, tabs, config, project, schema, vars, queue }, props) => ({
 	activeTab,
 	file: tabs.find( t => t.id === props.id),
-  tabs, 
+	tabs, 
 	config,
 	projectName: project.name,
 	schema,
 	vars,
 	queue
-})
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditorTab)
+export default connect(mapStateToProps, mapDispatchToProps)(EditorTab);

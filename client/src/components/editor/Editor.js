@@ -51,11 +51,13 @@ const StaticWordCompleter = {
 	tables: [],
 	variables: [],
 	getCompletions(editor, session, pos, prefix, callback){
-		const filter = word => word.toLowerCase().match(new RegExp('^' + prefix.toLowerCase()));
+		const filter = word => word.match(new RegExp('^' + prefix.toLowerCase(),'i'));
 
-		let wordList = StaticWordCompleter.procedures.filter( filter ).map( word => 
-			({ caption: word, value: word, meta: 'Procedure' }) 
-		);
+		let wordList = StaticWordCompleter.procedures
+			.filter( filter )
+			.map( word => 
+				({ caption: word, value: word, meta: 'Procedure' }) 
+			);
 		
 		wordList.push({ caption: 'exec', value: 'exec', meta: 'keyword'});
 
@@ -79,7 +81,8 @@ const setCompleters = editor => {
 	editor.completers.push(StaticWordCompleter);
 
 	editor.completers.forEach( completer => { 
-		var getCompletions = completer.getCompletions;
+		const getCompletions = completer.getCompletions;
+
 		completer.getCompletions = function(editor, session, pos, prefix, callback){
 			let curLine = editor.session.getLine(pos.row);
 			let start = pos.column-1;
@@ -159,6 +162,7 @@ class Editor extends React.Component {
 
 		const { schema, vars } = this.props;
 		if ( prevProps.schema !== schema && schema.procedures && schema.tables ){
+			console.log('Update Completers')
 			updateCompleters(schema);
 		}
 

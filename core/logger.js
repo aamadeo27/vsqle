@@ -38,7 +38,7 @@ const auditLogger = winston.createLogger({
 });
 
 module.exports = {
-	log: (info) => serverLogger.info.call(serverLogger, info),
-	error: (info) => errorLogger.error.call(errorLogger, info),
-	audit: (info) => auditLogger.error.call(auditLogger, info)
-}
+	log: (...args) => serverLogger.info(...args),
+	error: (...args) => errorLogger.error(...args),
+	audit: (...args) => auditLogger.log(...args)
+};

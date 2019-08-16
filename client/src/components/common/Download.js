@@ -24,17 +24,12 @@ export default class extends React.Component {
 	}
 
 	render(){
+		if ( !this.state.download ) return null;
+
 		const { name, content } = this.props;
-		let _content = 'Contenido no se puede parsear';
+		const blob = new Blob([content], {type: 'octet/stream'});
+		const url = window.URL.createObjectURL(blob);
 
-		try {
-			_content = window.btoa(content);
-		} catch (err) {
-			console.error('Error File:' + name);
-		}
-
-		const href = 'data:application/octet-stream;base64,' + _content;
-
-		return this.state.download ? <a href={href} download={name} ref="link" aria-hidden>Download</a> : null;
+		return <a href={url} download={name} ref="link" aria-hidden>Download</a>;
 	}
 }
