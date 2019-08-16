@@ -92,7 +92,9 @@ export default class extends Component {
 			}
 		}
 
-		if ( type === STRING_TYPE && value ){			
+		if ( type === STRING_TYPE && value ){
+			if ( options.serialize ) value = value.replace(/'/g,"''");
+
 			return ( !options.fullColumn && value.length > 256 ) ? `'${value.substr(0,253)}'...` : `'${value}'`; 
 		}
 
@@ -100,8 +102,12 @@ export default class extends Component {
 	}
 
 	getCSV(result){
-		console.log({ result });
-		const options = {...this.props.config, singleQuotedDate: true, fullColumn: true};
+		const options = {
+			...this.props.config,
+			singleQuotedDate: true,
+			fullColumn: true,
+			serialize: true
+		};
 
 		const csvHeader = result.schema.reduce( (content, h) => content + h.name.toLowerCase() + ',', '' ) + '\n';
 
@@ -140,8 +146,13 @@ export default class extends Component {
 
 	getSQL(result, queryConfig){
 		if ( !queryConfig.select ) return null;
-  
-		const options = {...this.props.config, singleQuotedDate: true, fullColumn: true };
+
+		const options = {
+			...this.props.config,
+			singleQuotedDate: true,
+			fullColumn: true,
+			serialize: true
+		};
 
 		const table = queryConfig.select.from[0].table;
 

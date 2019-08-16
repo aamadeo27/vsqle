@@ -90,6 +90,10 @@ export default class ConfigDialog extends React.Component {
 		this.state = { connections, useLocalTime, debugMode, fullColumn, new: { name: '', nodes: ''}, download: false };
 	}
 
+	shouldComponentUpdate(props){
+		return props.config !== this.props.config;
+	}
+
 	componentWillReceiveProps(props){
 		const { connections, useLocalTime, fullColumn, debugMode } = props.config;
 		this.setState({ connections, useLocalTime, fullColumn, debugMode, download: false });
@@ -130,8 +134,6 @@ export default class ConfigDialog extends React.Component {
 	}
 
 	export(){
-		console.log('Descargando Config')
-
 		this.setState({ download: true });
 
 		setTimeout(() => this.setState({ download: false }), 1500 );
@@ -166,8 +168,6 @@ export default class ConfigDialog extends React.Component {
 		});
 
 		const config = JSON.stringify({...this.state, download: undefined });
-
-		console.log({ config })
 
 		return <Modal show={this.props.show} onHide={this.props.close} bsSize="large">
 			<Modal.Header closeButton>
