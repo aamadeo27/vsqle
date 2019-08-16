@@ -230,3 +230,18 @@
 [8/12/2019, 9:20:20 PM][info][QueryResponse OK] - {  }
 [8/12/2019, 9:21:17 PM][info][StoreProcedureRequest] - {  }
 [8/12/2019, 9:21:17 PM][info][StoredProcedureResponse] - {  }
+[8/15/2019, 9:15:36 PM][info][LogInRequest] - { user: "amadeoa", nodes: "falcondes-db1-vip.sis.personal.net.py,falcondes-db2-vip.sis.personal.net.py,falcondes-db3-vip.sis.personal.net.py" }
+[8/15/2019, 9:15:36 PM][info][Connected] - {  }
+[8/15/2019, 9:15:36 PM][info][LogInResponse] - { user: "amadeoa", status: 0 }
+[8/15/2019, 9:15:36 PM][info][Schema] - { object: "PROCEDURECOLUMNS" }
+[8/15/2019, 9:15:37 PM][info][Schema] - { object: "TABLES" }
+[8/15/2019, 9:15:37 PM][info][Schema] - { object: "COLUMNS" }
+[8/15/2019, 9:15:37 PM][info][Schema] - { object: "PRIMARYKEYS" }
+[8/15/2019, 9:15:37 PM][info][Schema] - { object: "INDEXINFO" }
+[8/15/2019, 9:15:37 PM][info][Schema OK] - {  }
+[8/15/2019, 9:15:38 PM][info][Schema OK] - {  }
+[8/15/2019, 9:15:39 PM][info][Schema OK] - {  }
+[8/15/2019, 9:15:39 PM][info][Schema OK] - {  }
+[8/15/2019, 9:15:39 PM][info][Schema OK] - {  }
+[8/15/2019, 9:15:47 PM][info][QueryRequest] - { query: "select * from abonados_x_detalles_ofertas order by 1 limit 7 offset 0" }
+[8/15/2019, 9:15:47 PM][info][QueryResponse OK] - { query: "select * from abonados_x_detalles_ofertas order by 1 limit 7 offset 0" }

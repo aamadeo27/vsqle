@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Button, Checkbox, Modal, FormControl, Glyphicon, Table, ButtonGroup } from 'react-bootstrap';
+import Download from '../common/Download';
 
 class Connection extends React.Component {
 	constructor(props){
@@ -86,12 +87,12 @@ export default class ConfigDialog extends React.Component {
 
 		const { connections, useLocalTime, debugMode, fullColumn } = props.config;
 
-		this.state = { connections, useLocalTime, debugMode, fullColumn, new: { name: '', nodes: ''} };
+		this.state = { connections, useLocalTime, debugMode, fullColumn, new: { name: '', nodes: ''}, download: false };
 	}
 
 	componentWillReceiveProps(props){
 		const { connections, useLocalTime, fullColumn, debugMode } = props.config;
-		this.setState({ connections, useLocalTime, fullColumn, debugMode });
+		this.setState({ connections, useLocalTime, fullColumn, debugMode, download: false });
 	}
 
 	onChange(e){
@@ -112,7 +113,7 @@ export default class ConfigDialog extends React.Component {
 		const conn = { name: 'NewConnection' + connections.length , nodes: 'Node1,Node2,Node3', editable:true, index };
 
 		if ( connections.find(c => c.name === conn.name) ){
-			return this.setState({ error : 'Duplicate connection name'});
+			return this.setState({ error : 'Duplicate connection name' });
 		}
 
 		connections.push(conn);
@@ -126,6 +127,14 @@ export default class ConfigDialog extends React.Component {
 
 		save({ connections, useLocalTime, debugMode, fullColumn, useUpsert });
 		close();
+	}
+
+	export(){
+		console.log('Descargando Config')
+
+		this.setState({ download: true });
+
+		setTimeout(() => this.setState({ download: false }), 1500 );
 	}
 
 	edit(index){
@@ -155,6 +164,10 @@ export default class ConfigDialog extends React.Component {
 				remove={() => this.remove(c.index)}
 			/>;
 		});
+
+		const config = JSON.stringify({...this.state, download: undefined });
+
+		console.log({ config })
 
 		return <Modal show={this.props.show} onHide={this.props.close} bsSize="large">
 			<Modal.Header closeButton>
@@ -193,11 +206,15 @@ export default class ConfigDialog extends React.Component {
 						</tr>
 					</tbody>
 				</Table>
+				<Download name='vsqle.json' content={config} download={this.state.download}/>
 			</Modal.Body>
 			<Modal.Footer>
 				{ this.state.error ? <span className="text-danger pull-left">{this.state.error}</span> : ''}
-				<ButtonGroup>
+				<ButtonGroup style={{ float: 'left' }}>
 					<Button bsStyle="success" onClick={() => this.save()}>Save</Button>
+					<Button bsStyle="primary" onClick={() => this.export()}>Export</Button>
+				</ButtonGroup>
+				<ButtonGroup>
 					<Button bsStyle="danger" onClick={this.props.close}>Close</Button>
 				</ButtonGroup>
 			</Modal.Footer>
