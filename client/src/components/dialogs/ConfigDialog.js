@@ -90,10 +90,6 @@ export default class ConfigDialog extends React.Component {
 		this.state = { connections, useLocalTime, debugMode, fullColumn, new: { name: '', nodes: ''}, download: false };
 	}
 
-	shouldComponentUpdate(props){
-		return props.config !== this.props.config;
-	}
-
 	componentWillReceiveProps(props){
 		const { connections, useLocalTime, fullColumn, debugMode } = props.config;
 		this.setState({ connections, useLocalTime, fullColumn, debugMode, download: false });

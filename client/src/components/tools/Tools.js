@@ -342,7 +342,7 @@ class Tools extends React.Component {
 	}
 }
 
-const mapStateToProps = ({ tabs, activeTab, project, config, vars, schema, queue }) => ({ 
+const mapStateToProps = ({ tabs, activeTab, project, config, vars, schema, queue }) => ({
 	activeTab: tabs.findIndex( t => t.id === activeTab ),
 	tabs,
 	project,
