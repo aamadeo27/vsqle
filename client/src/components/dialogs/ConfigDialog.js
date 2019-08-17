@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Button, Checkbox, Modal, FormControl, Glyphicon, Table, ButtonGroup } from 'react-bootstrap';
 import Download from '../common/Download';
+import { readFile } from '../../api/File.js';
 
 class Connection extends React.Component {
 	constructor(props){
@@ -88,6 +89,7 @@ export default class ConfigDialog extends React.Component {
 		const { connections, useLocalTime, debugMode, fullColumn } = props.config;
 
 		this.state = { connections, useLocalTime, debugMode, fullColumn, new: { name: '', nodes: ''}, download: false };
+		this.fileInputRef = React.createRef();
 	}
 
 	componentWillReceiveProps(props){
@@ -127,6 +129,27 @@ export default class ConfigDialog extends React.Component {
 
 		save({ connections, useLocalTime, debugMode, fullColumn, useUpsert });
 		close();
+	}
+
+	import(e){
+		const target = {
+			name: e.target.value.split('\\').pop(),
+			file: e.target.files[0]
+		};
+
+		const updateConfig = content => {
+			try {
+				const parsed = JSON.parse(content);
+				const newConfig = {...parsed, download: false };
+
+				this.setState(newConfig);
+			} catch( error ){
+				console.error('[Import]', error);
+				console.error('Todo: Show in a modal');
+			}
+		}
+
+		readFile(target, updateConfig, err => console.error('[ReadFile] ',err))
 	}
 
 	export(){
@@ -203,12 +226,20 @@ export default class ConfigDialog extends React.Component {
 					</tbody>
 				</Table>
 				<Download name='vsqle.json' content={config} download={this.state.download}/>
+				<input
+					ref={this.fileInputRef}
+					type="file"
+					hidden
+					className='inputfile'
+					onChange={e => this.import(e)}
+				/>
 			</Modal.Body>
 			<Modal.Footer>
 				{ this.state.error ? <span className="text-danger pull-left">{this.state.error}</span> : ''}
 				<ButtonGroup style={{ float: 'left' }}>
+					<Button bsStyle="warning" onClick={() => this.fileInputRef.current.click()}>Import</Button>
 					<Button bsStyle="success" onClick={() => this.save()}>Save</Button>
-					<Button bsStyle="primary" onClick={() => this.export()}>Export</Button>
+					<Button bsStyle="info" onClick={() => this.export()}>Export</Button>
 				</ButtonGroup>
 				<ButtonGroup>
 					<Button bsStyle="danger" onClick={this.props.close}>Close</Button>
