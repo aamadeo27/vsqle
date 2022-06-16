@@ -32,7 +32,7 @@
     "winston": "^3.1.0"
   },
   "devDependencies": {
-    "electron": "^6.0.1",
+    "electron": "^15.5.5",
     "node-pre-gyp": "^0.13.0"
   }
 }
